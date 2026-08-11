@@ -1217,6 +1217,61 @@
     [data-raum="markt"] .mz-erfolg-aktionen .btn{width:100%;justify-content:center}
   }
 
+  /* Marktplatz: Projekt-Detail als Ebene im Raum */
+  [data-raum="markt"].mar-detail-offen .mar-intro,
+  [data-raum="markt"].mar-detail-offen .mar-featured,
+  [data-raum="markt"].mar-detail-offen .mar-zeile,
+  [data-raum="markt"].mar-detail-offen .mar-risiko{display:none}
+  [data-raum="markt"].mar-flow-offen .mar-detail{display:none}
+  [data-raum="markt"] .mar-detail{display:flex;flex-direction:column;gap:var(--space-6)}
+  [data-raum="markt"] .mar-detail[hidden]{display:none!important}
+  [data-raum="markt"] .mar-d-titel{font-size:clamp(24px,2.8vw,34px);font-weight:800;letter-spacing:-.025em}
+  [data-raum="markt"] .mar-d-pills{display:flex;gap:var(--space-2);flex-wrap:wrap;margin-top:calc(-1*var(--space-3))}
+  [data-raum="markt"] .mar-d-held{display:grid;grid-template-columns:1.6fr 1fr;gap:var(--space-6);align-items:start}
+  [data-raum="markt"] .mar-d-bild{border-radius:var(--radius-2xl);overflow:hidden;box-shadow:0 24px 70px rgba(8,27,74,.18)}
+  [data-raum="markt"] .mar-d-bild img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:16/11}
+  [data-raum="markt"] .mar-d-kaufen{padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-5)}
+  [data-raum="markt"] .mar-d-kaufen h4{font-size:15px;font-weight:500;color:var(--grey)}
+  [data-raum="markt"] .mar-d-rendite{font-size:38px;font-weight:800;letter-spacing:-.02em;line-height:1}
+  [data-raum="markt"] .mar-d-rendite small{font-size:15px;color:var(--grey);font-weight:500}
+  [data-raum="markt"] .mar-d-daten{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3) var(--space-5);font-size:14px;color:var(--grey);
+    padding:var(--space-4) 0;border-top:0.5px solid var(--line);border-bottom:0.5px solid var(--line)}
+  [data-raum="markt"] .mar-d-daten b{display:block;color:var(--ink);font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
+  [data-raum="markt"] .mar-d-fzeile{display:flex;justify-content:space-between;font-size:13px;color:var(--grey);margin-bottom:6px}
+  [data-raum="markt"] .mar-d-fzeile b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+  [data-raum="markt"] .mar-d-balken{height:100%;border-radius:var(--radius-full);background:var(--purple)}
+  [data-raum="markt"] .mar-d-hinweis{font-size:12px;color:var(--grey)}
+  [data-raum="markt"] .mar-d-countdown{display:flex;align-items:center;gap:var(--space-2);color:var(--grey);font-size:.875rem}
+  [data-raum="markt"] .mar-d-zeichnen,[data-raum="markt"] .mar-d-vormerken{width:100%;justify-content:center}
+  [data-raum="markt"] .mar-d-kaufen .btn-glass{justify-content:center}
+  [data-raum="markt"] .mar-d-vorgemerkt{justify-content:center;padding-top:9px;padding-bottom:9px}
+  /* .pill setzt display und würde das hidden-Attribut sonst übersteuern */
+  [data-raum="markt"] .mar-vorgemerkt[hidden],
+  [data-raum="markt"] .mar-d-vorgemerkt[hidden]{display:none!important}
+  [data-raum="markt"] .mar-d-vergleich{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)}
+  [data-raum="markt"] .mar-d-vergleich figure{margin:0}
+  [data-raum="markt"] .mar-d-vergleich img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:var(--radius-lg)}
+  [data-raum="markt"] .mar-d-vergleich figcaption{font-size:13px;color:var(--grey);margin-top:var(--space-2);font-weight:600}
+  [data-raum="markt"] .mar-d-fakten{padding:var(--space-6)}
+  [data-raum="markt"] .mar-d-fakten h4,[data-raum="markt"] .mar-d-plan h4{font-size:18px;font-weight:800;letter-spacing:-.02em;margin-bottom:var(--space-4)}
+  [data-raum="markt"] .mar-d-fgrid{display:grid;grid-template-columns:1fr 1fr;column-gap:var(--space-10)}
+  [data-raum="markt"] .mar-d-zeile{display:flex;justify-content:space-between;gap:var(--space-5);padding:var(--space-3) 0;
+    border-bottom:0.5px solid var(--line);font-size:15px}
+  [data-raum="markt"] .mar-d-zeile span{color:var(--grey)}
+  [data-raum="markt"] .mar-d-zeile b{font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+  [data-raum="markt"] .mar-d-plangrid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-8)}
+  [data-raum="markt"] .mar-d-schritt{border-top:2px solid var(--ink);padding-top:var(--space-4)}
+  [data-raum="markt"] .mar-d-schritt .num{font-size:13px;font-weight:700;color:var(--purple)}
+  [data-raum="markt"] .mar-d-schritt b{display:block;font-size:18px;margin:var(--space-1) 0;letter-spacing:-.01em}
+  [data-raum="markt"] .mar-d-schritt p{color:var(--grey);font-size:14.5px}
+  [data-raum="markt"] .mar-d-risiko{color:var(--grey);font-size:.8125rem;max-width:64ch}
+  @media (max-width:800px){
+    [data-raum="markt"] .mar-d-held{grid-template-columns:1fr}
+    [data-raum="markt"] .mar-d-fgrid{grid-template-columns:1fr}
+    [data-raum="markt"] .mar-d-plangrid{grid-template-columns:1fr}
+    [data-raum="markt"] .mar-d-vergleich{grid-template-columns:1fr}
+  }
+
   @media (prefers-reduced-motion:reduce){
     .kamera{transition:none;animation:none}
     .kamera img,.raum{animation:none}
@@ -1627,7 +1682,7 @@
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
         </button>
       </div>
-      <a class="btn btn-primary pro-cta-btn" href="projekte.html">In neues Projekt investieren</a>
+      <a class="btn btn-primary pro-cta-btn" href="#markt">In neues Projekt investieren</a>
     </div>
   </div>
 </section>
@@ -2049,7 +2104,7 @@
           <p class="pos-text">Meilenstein am Stadthaus Leipzig-Plagwitz: Beide Dachstühle sind saniert, die Neueindeckung ist abgeschlossen — das Gebäude ist dicht. Der Innenausbau läuft ab sofort wetterunabhängig weiter.</p>
           <img class="pos-bild" src="bilder/projekt-interior.jpg" alt="Innenausbau im Stadthaus Leipzig-Plagwitz nach der Dachsanierung">
           <p class="pos-text">Der Zeitplan hält: Als Nächstes folgen Elektro- und Sanitärinstallation, danach der Ausbau der Wohneinheiten. Die Fertigstellung bleibt für Anfang 2027 geplant, der Verkauf für Q2 2027 — deine Beteiligung verzinst sich weiter mit 13,2 % p.a.</p>
-          <div class="pos-aktion"><a class="btn btn-primary" href="projekte.html">Projekt ansehen</a></div>
+          <div class="pos-aktion"><a class="btn btn-primary" href="#projekte">Projekt ansehen</a></div>
         </div>
       </div>
     </article>
@@ -2116,9 +2171,9 @@
       </button>
       <div class="pos-inhalt" id="pos-n4">
         <div class="pane pos-inhalt-innen">
-          <p class="pos-text">Am Freitag, 14.08.2026, öffnet die Zeichnung für den Hafenspeicher Bremen: die Sanierung eines denkmalgeschützten Speichergebäudes in der Überseestadt, Beteiligung ab 100 €.</p>
+          <p class="pos-text">Am Freitag, 14.08.2026, öffnet die Zeichnung für den Hafenspeicher Bremen: ein Neubau mit 24 Wohneinheiten direkt an der Weser in der Überseestadt, Beteiligung ab 100 €.</p>
           <p class="pos-text">Gefragte Projekte sind erfahrungsgemäß schnell voll gezeichnet — sieh dir die Eckdaten am besten vorab an.</p>
-          <div class="pos-aktion"><a class="btn btn-primary" href="projekte.html">Projekt ansehen</a></div>
+          <div class="pos-aktion"><a class="btn btn-primary" href="#markt">Projekt ansehen</a></div>
         </div>
       </div>
     </article>
@@ -2176,7 +2231,7 @@
 
       <div class="mar-aktion">
         <button type="button" class="btn btn-primary mz-start">Jetzt zeichnen</button>
-        <a class="btn btn-glass" href="projekt.html">Details</a>
+        <button type="button" class="btn btn-glass mar-details" data-projekt="leipzig">Details</button>
       </div>
     </div>
   </article>
@@ -2226,6 +2281,7 @@
           Kostenlos vormerken
         </button>
         <span class="pill pill-gruen mar-vorgemerkt" hidden>Vorgemerkt – wir erinnern dich</span>
+        <button type="button" class="btn btn-glass mar-details" data-projekt="bremen">Details</button>
       </div>
     </div>
   </article>
@@ -2236,7 +2292,7 @@
       <span class="mar-meta">11,4&nbsp;% p.a. · 24 Mon. · 78&nbsp;% finanziert</span>
     </div>
     <div class="r">
-      <a class="btn btn-glass btn-small" href="projekt.html">Details</a>
+      <button type="button" class="btn btn-glass mar-details" data-projekt="hamburg">Details</button>
     </div>
   </div>
 
@@ -2252,10 +2308,10 @@
     </div>
 
     <div class="mz-projekt">
-      <img src="bilder/projekt-leipzig.jpg" alt="">
+      <img class="mz-p-bild" src="bilder/projekt-leipzig.jpg" alt="">
       <div>
-        <b>Stadthaus Leipzig-Plagwitz</b>
-        <span>13,2&nbsp;% p.a. · 24 Monate · monatliche Auszahlung</span>
+        <b class="mz-p-name">Stadthaus Leipzig-Plagwitz</b>
+        <span class="mz-p-meta">13,2&nbsp;% p.a. · 24 Monate · monatliche Auszahlung</span>
       </div>
     </div>
 
@@ -2283,10 +2339,10 @@
     <div class="mz-schritt" data-mz="2" hidden>
       <h3>Deine Zeichnung im Überblick</h3>
       <dl class="mz-summe">
-        <div><dt>Projekt</dt><dd>Stadthaus Leipzig-Plagwitz</dd></div>
+        <div><dt>Projekt</dt><dd class="mz-s-projekt">Stadthaus Leipzig-Plagwitz</dd></div>
         <div><dt>Betrag</dt><dd class="mz-s-betrag">–</dd></div>
-        <div><dt>Rendite</dt><dd>13,2&nbsp;% p.a.</dd></div>
-        <div><dt>Laufzeit</dt><dd>24 Monate, endfällig</dd></div>
+        <div><dt>Rendite</dt><dd class="mz-s-rendite">13,2&nbsp;% p.a.</dd></div>
+        <div><dt>Laufzeit</dt><dd class="mz-s-laufzeit">24 Monate, endfällig</dd></div>
         <div><dt>Monatliche Auszahlung</dt><dd class="mz-s-monat">–</dd></div>
         <div><dt>Rückzahlung gesamt</dt><dd class="mz-s-rueck">–</dd></div>
       </dl>
@@ -2310,6 +2366,199 @@
         <button type="button" class="btn btn-primary mz-fertig">Zurück zum Marktplatz</button>
       </div>
     </div>
+  </div>
+
+  <!-- Projekt-Details: eigene Ebene im Raum — niemand verlässt das Home -->
+  <div class="mar-detail" data-projekt="leipzig" hidden>
+    <h3 class="mar-d-titel">Stadthaus Leipzig-Plagwitz</h3>
+    <div class="mar-d-pills">
+      <span class="pill pill-gruen">Zeichnung geöffnet</span>
+      <span class="pill pill-violett">Sanierung · Verkauf</span>
+      <span class="pill pill-grau">Karl-Heine-Straße, Leipzig</span>
+      <span class="pill pill-grau">Baujahr 1905</span>
+    </div>
+    <div class="mar-d-held">
+      <div class="mar-d-bild"><img src="bilder/projekt-leipzig.jpg" alt="Restaurierte Gründerzeit-Fassade des Stadthauses in Leipzig-Plagwitz"></div>
+      <aside class="glass mar-d-kaufen">
+        <div>
+          <h4>Prognostizierte Rendite</h4>
+          <div class="mar-d-rendite">13,2&nbsp;% <small>p.&nbsp;a.</small></div>
+        </div>
+        <div class="mar-d-daten">
+          <span>Laufzeit<b>24 Monate</b></span>
+          <span>Mindestbetrag<b>100&nbsp;€</b></span>
+          <span>Zielsumme<b>1,45 Mio.&nbsp;€</b></span>
+          <span>Auszahlung<b>monatlich</b></span>
+        </div>
+        <div class="mar-d-funding">
+          <div class="mar-d-fzeile"><span>Finanziert</span><b>82&nbsp;% · 1.189.000&nbsp;€</b></div>
+          <div class="mar-track"><div class="mar-d-balken" style="width:82%"></div></div>
+        </div>
+        <button type="button" class="btn btn-primary mar-d-zeichnen" data-projekt="leipzig">Jetzt zeichnen</button>
+        <a class="btn btn-glass" href="#dokumente">Unterlagen ansehen</a>
+        <p class="mar-d-hinweis">Der Erwerb dieser Vermögensanlage ist mit erheblichen Risiken verbunden und kann zum vollständigen Verlust des eingesetzten Vermögens führen.</p>
+      </aside>
+    </div>
+    <div class="mar-d-vergleich">
+      <figure>
+        <img src="bilder/projekt-interior-vorher.jpg" alt="Wohnung vor der Sanierung: beschädigtes Parkett, rissige Wände">
+        <figcaption>Vorher — Ankauf, unsaniert</figcaption>
+      </figure>
+      <figure>
+        <img src="bilder/projekt-interior.jpg" alt="Dieselbe Wohnung nach der Sanierung: Fischgrätparkett, helle Wände">
+        <figcaption>Nachher — saniert, vermietbar</figcaption>
+      </figure>
+    </div>
+    <div class="pane mar-d-fakten">
+      <h4>Alle Zahlen, offen auf dem Tisch</h4>
+      <div class="mar-d-fgrid">
+        <div>
+          <div class="mar-d-zeile"><span>Objekt</span><b>Gründerzeit-Mehrfamilienhaus</b></div>
+          <div class="mar-d-zeile"><span>Wohneinheiten</span><b>12</b></div>
+          <div class="mar-d-zeile"><span>Wohnfläche</span><b>1.240&nbsp;m²</b></div>
+          <div class="mar-d-zeile"><span>Kaufpreis</span><b>2,1 Mio.&nbsp;€</b></div>
+        </div>
+        <div>
+          <div class="mar-d-zeile"><span>Sanierungsbudget</span><b>780.000&nbsp;€</b></div>
+          <div class="mar-d-zeile"><span>Geplanter Verkauf</span><b>Q2 2027</b></div>
+          <div class="mar-d-zeile"><span>Denkmalschutz</span><b>Ja, AfA-fähig</b></div>
+          <div class="mar-d-zeile"><span>Gutachten</span><b>2 unabhängige, einsehbar</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="mar-d-plan">
+      <h4>Der Fahrplan dieses Projekts</h4>
+      <div class="mar-d-plangrid">
+        <div class="mar-d-schritt"><span class="num">ERLEDIGT</span><b>Ankauf, notariell</b><p>Objekt erworben, Grundbuch eingetragen, Bestand dokumentiert. Kaufpreis 9&nbsp;% unter Gutachterwert.</p></div>
+        <div class="mar-d-schritt"><span class="num">LÄUFT</span><b>Sanierung</b><p>Dach, Leitungen, Bäder, Parkett — denkmalgerecht. Baufortschritt monatlich mit Fotos im Postfach.</p></div>
+        <div class="mar-d-schritt"><span class="num">Q2 2027</span><b>Verkauf &amp; Auszahlung</b><p>Verkauf der sanierten Einheiten. Erlös fließt anteilig an alle Beteiligten — zusätzlich zur laufenden Miete.</p></div>
+      </div>
+    </div>
+    <p class="mar-d-risiko">Risikohinweis: Vermögensanlagen bergen erhebliche Risiken bis hin zum Totalverlust. Alle Angaben sind Prognosen, keine Garantien.</p>
+  </div>
+
+  <div class="mar-detail" data-projekt="bremen" hidden>
+    <h3 class="mar-d-titel">Hafenspeicher Bremen</h3>
+    <div class="mar-d-pills">
+      <span class="pill pill-violett">Zeichnung ab Freitag 12:00</span>
+      <span class="pill pill-violett">Neubau · Miete</span>
+      <span class="pill pill-grau">Überseestadt, Bremen</span>
+      <span class="pill pill-grau">Fertigstellung 2028</span>
+    </div>
+    <div class="mar-d-held">
+      <div class="mar-d-bild"><img src="bilder/projekt-muenchen.jpg" alt="Neubau mit Holzfassade und Balkonen direkt an der Weser"></div>
+      <aside class="glass mar-d-kaufen">
+        <div>
+          <h4>Prognostizierte Rendite</h4>
+          <div class="mar-d-rendite">12,6&nbsp;% <small>p.&nbsp;a.</small></div>
+        </div>
+        <div class="mar-d-daten">
+          <span>Laufzeit<b>30 Monate</b></span>
+          <span>Mindestbetrag<b>100&nbsp;€</b></span>
+          <span>Zielsumme<b>2,3 Mio.&nbsp;€</b></span>
+          <span>Auszahlung<b>monatlich</b></span>
+        </div>
+        <div class="mar-d-funding">
+          <div class="mar-d-fzeile"><span>Vormerkungen</span><b>41&nbsp;%</b></div>
+          <div class="mar-track"><div class="mar-d-balken" style="width:41%"></div></div>
+        </div>
+        <p class="mar-d-countdown">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          Zeichnung öffnet Freitag, 14.08.2026, 12:00
+        </p>
+        <button type="button" class="btn btn-primary mar-d-vormerken">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10.5 20a1.8 1.8 0 0 0 3 0"/></svg>
+          Kostenlos vormerken
+        </button>
+        <span class="pill pill-gruen mar-d-vorgemerkt" hidden>Vorgemerkt – wir erinnern dich</span>
+        <a class="btn btn-glass" href="#dokumente">Unterlagen ansehen</a>
+        <p class="mar-d-hinweis">Der Erwerb dieser Vermögensanlage ist mit erheblichen Risiken verbunden und kann zum vollständigen Verlust des eingesetzten Vermögens führen.</p>
+      </aside>
+    </div>
+    <div class="pane mar-d-fakten">
+      <h4>Alle Zahlen, offen auf dem Tisch</h4>
+      <div class="mar-d-fgrid">
+        <div>
+          <div class="mar-d-zeile"><span>Objekt</span><b>Neubau-Mehrfamilienhaus</b></div>
+          <div class="mar-d-zeile"><span>Wohneinheiten</span><b>24</b></div>
+          <div class="mar-d-zeile"><span>Wohnfläche</span><b>1.860&nbsp;m²</b></div>
+          <div class="mar-d-zeile"><span>Lage</span><b>Direkt an der Weser</b></div>
+        </div>
+        <div>
+          <div class="mar-d-zeile"><span>Baubeginn</span><b>Q4 2026</b></div>
+          <div class="mar-d-zeile"><span>Fertigstellung</span><b>Q3 2028</b></div>
+          <div class="mar-d-zeile"><span>Vermietung</span><b>Vollvermietung vor Fertigstellung geplant</b></div>
+          <div class="mar-d-zeile"><span>Gutachten</span><b>2 unabhängige, einsehbar</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="mar-d-plan">
+      <h4>Der Fahrplan dieses Projekts</h4>
+      <div class="mar-d-plangrid">
+        <div class="mar-d-schritt"><span class="num">ERLEDIGT</span><b>Grundstück &amp; Baurecht</b><p>Grundstück erworben, Baugenehmigung erteilt, Generalunternehmer beauftragt.</p></div>
+        <div class="mar-d-schritt"><span class="num">14.08.2026</span><b>Zeichnung öffnet</b><p>Beteiligung ab 100&nbsp;€. Vorgemerkte werden 30 Minuten vor allen anderen informiert.</p></div>
+        <div class="mar-d-schritt"><span class="num">AB Q3 2028</span><b>Vermietung &amp; Auszahlung</b><p>Übergabe der Einheiten und Mietstart — deine monatliche Auszahlung beginnt mit der Vermietung.</p></div>
+      </div>
+    </div>
+    <p class="mar-d-risiko">Risikohinweis: Vermögensanlagen bergen erhebliche Risiken bis hin zum Totalverlust. Alle Angaben sind Prognosen, keine Garantien.</p>
+  </div>
+
+  <div class="mar-detail" data-projekt="hamburg" hidden>
+    <h3 class="mar-d-titel">Quartier Hamburg-Ottensen – Aufstockung</h3>
+    <div class="mar-d-pills">
+      <span class="pill pill-gruen">Zeichnung geöffnet</span>
+      <span class="pill pill-violett">Aufstockung · Miete</span>
+      <span class="pill pill-grau">Ottensen, Hamburg</span>
+      <span class="pill pill-grau">Bestand von 1958</span>
+    </div>
+    <div class="mar-d-held">
+      <div class="mar-d-bild"><img src="bilder/projekt-fassade.jpg" alt="Bestandsgebäude in Hamburg-Ottensen, das um zwei Geschosse aufgestockt wird"></div>
+      <aside class="glass mar-d-kaufen">
+        <div>
+          <h4>Prognostizierte Rendite</h4>
+          <div class="mar-d-rendite">11,4&nbsp;% <small>p.&nbsp;a.</small></div>
+        </div>
+        <div class="mar-d-daten">
+          <span>Laufzeit<b>24 Monate</b></span>
+          <span>Mindestbetrag<b>100&nbsp;€</b></span>
+          <span>Zielsumme<b>950.000&nbsp;€</b></span>
+          <span>Auszahlung<b>monatlich</b></span>
+        </div>
+        <div class="mar-d-funding">
+          <div class="mar-d-fzeile"><span>Finanziert</span><b>78&nbsp;% · 741.000&nbsp;€</b></div>
+          <div class="mar-track"><div class="mar-d-balken" style="width:78%"></div></div>
+        </div>
+        <button type="button" class="btn btn-primary mar-d-zeichnen" data-projekt="hamburg">Jetzt zeichnen</button>
+        <a class="btn btn-glass" href="#dokumente">Unterlagen ansehen</a>
+        <p class="mar-d-hinweis">Der Erwerb dieser Vermögensanlage ist mit erheblichen Risiken verbunden und kann zum vollständigen Verlust des eingesetzten Vermögens führen.</p>
+      </aside>
+    </div>
+    <div class="pane mar-d-fakten">
+      <h4>Alle Zahlen, offen auf dem Tisch</h4>
+      <div class="mar-d-fgrid">
+        <div>
+          <div class="mar-d-zeile"><span>Objekt</span><b>Aufstockung um zwei Geschosse</b></div>
+          <div class="mar-d-zeile"><span>Neue Wohneinheiten</span><b>8</b></div>
+          <div class="mar-d-zeile"><span>Neue Wohnfläche</span><b>640&nbsp;m²</b></div>
+          <div class="mar-d-zeile"><span>Bauweise</span><b>Holz-Hybrid, vorgefertigt</b></div>
+        </div>
+        <div>
+          <div class="mar-d-zeile"><span>Baubudget</span><b>950.000&nbsp;€</b></div>
+          <div class="mar-d-zeile"><span>Fertigstellung</span><b>Q4 2027</b></div>
+          <div class="mar-d-zeile"><span>Vermietung</span><b>Warteliste im Viertel vorhanden</b></div>
+          <div class="mar-d-zeile"><span>Gutachten</span><b>2 unabhängige, einsehbar</b></div>
+        </div>
+      </div>
+    </div>
+    <div class="mar-d-plan">
+      <h4>Der Fahrplan dieses Projekts</h4>
+      <div class="mar-d-plangrid">
+        <div class="mar-d-schritt"><span class="num">ERLEDIGT</span><b>Genehmigung &amp; Statik</b><p>Baugenehmigung erteilt, Statik geprüft, Bestandsmieter informiert.</p></div>
+        <div class="mar-d-schritt"><span class="num">LÄUFT</span><b>Zeichnung &amp; Vorfertigung</b><p>Beteiligung ab 100&nbsp;€. Die Holz-Module entstehen parallel im Werk — kurze Bauzeit vor Ort.</p></div>
+        <div class="mar-d-schritt"><span class="num">Q4 2027</span><b>Montage &amp; Mietstart</b><p>Aufstockung in acht Wochen montiert, danach Vermietung — deine Auszahlung beginnt mit den Mieteinnahmen.</p></div>
+      </div>
+    </div>
+    <p class="mar-d-risiko">Risikohinweis: Vermögensanlagen bergen erhebliche Risiken bis hin zum Totalverlust. Alle Angaben sind Prognosen, keine Garantien.</p>
   </div>
 </section>
 </div>
@@ -2566,7 +2815,7 @@ window.raumInit["projekte"] = function (sec) {
       betragEl.textContent = fmt(betrag) + NBSP + "€";
       minus.disabled = betrag <= MIN;
       plus.disabled = betrag >= MAX;
-      ctaBtn.setAttribute("href", "projekte.html?betrag=" + betrag);
+      ctaBtn.setAttribute("href", "#markt");
     };
     minus.addEventListener("click", function () { betrag = Math.max(MIN, betrag - SCHRITT); zeigen(); });
     plus.addEventListener("click", function () { betrag = Math.min(MAX, betrag + SCHRITT); zeigen(); });
@@ -3017,13 +3266,18 @@ window.raumInit["markt"] = function (sec) {
     }
   }
 
-  // Vormerken-Flow: Button wird zur Bestätigungs-Pill (Container ist aria-live)
+  // Vormerken-Flow: Button wird zur Bestätigungs-Pill (Container ist aria-live);
+  // Zustand auch in der Detail-Ansicht spiegeln
   var btn = sec.querySelector(".mar-vormerken");
   var confirmation = sec.querySelector(".mar-vorgemerkt");
   if (btn && confirmation) {
     btn.addEventListener("click", function () {
       btn.hidden = true;
       confirmation.hidden = false;
+      var dBtn = sec.querySelector(".mar-d-vormerken");
+      var dPill = sec.querySelector(".mar-d-vorgemerkt");
+      if (dBtn) dBtn.hidden = true;
+      if (dPill) dPill.hidden = false;
     });
   }
 };
@@ -3146,7 +3400,15 @@ window.raumInit["markt"] = function (sec) {
     sec.dataset.mzInit = "1";
 
     var reduziert = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    var RENDITE = 0.132, MONATE = 24, MIN = 100, MAX = 25000, SCHRITTWEITE = 50;
+    var MIN = 100, MAX = 25000, SCHRITTWEITE = 50;
+    // Die Strecke gehört keinem festen Projekt: Wer sie öffnet, bringt seins mit
+    var PROJEKTE = {
+      leipzig: { name: "Stadthaus Leipzig-Plagwitz", meta: "13,2 % p.a. · 24 Monate · monatliche Auszahlung",
+                 bild: "bilder/projekt-leipzig.jpg", rendite: 0.132, monate: 24 },
+      hamburg: { name: "Quartier Hamburg-Ottensen – Aufstockung", meta: "11,4 % p.a. · 24 Monate · monatliche Auszahlung",
+                 bild: "bilder/projekt-fassade.jpg", rendite: 0.114, monate: 24 }
+    };
+    var RENDITE = PROJEKTE.leipzig.rendite, MONATE = PROJEKTE.leipzig.monate;
     var flow = sec.querySelector(".mz-flow");
     var eingabe = sec.querySelector(".mz-betrag");
     var hinweis = sec.querySelector(".mz-hinweis");
@@ -3210,14 +3472,81 @@ window.raumInit["markt"] = function (sec) {
       vorschau();
     }
 
-    sec.querySelector(".mz-start").addEventListener("click", function () {
+    function flowOeffnen(key) {
+      var p = PROJEKTE[key] || PROJEKTE.leipzig;
+      RENDITE = p.rendite;
+      MONATE = p.monate;
+      sec.querySelector(".mz-p-bild").src = p.bild;
+      sec.querySelector(".mz-p-name").textContent = p.name;
+      sec.querySelector(".mz-p-meta").textContent = p.meta;
+      sec.querySelector(".mz-s-projekt").textContent = p.name;
+      sec.querySelector(".mz-s-rendite").textContent =
+        (p.rendite * 100).toLocaleString("de-DE", { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + " % p.a.";
+      sec.querySelector(".mz-s-laufzeit").textContent = p.monate + " Monate, endfällig";
       flow.hidden = false;
       sec.classList.add("mar-flow-offen");
       schritt(1);
       vorschau();
       document.getElementById("raum-ui").scrollTop = 0;
       if (!reduziert) eingabe.focus();
+    }
+
+    sec.querySelector(".mz-start").addEventListener("click", function () { flowOeffnen("leipzig"); });
+
+    // Projekt-Details: Ebene im Raum. Die Brotkrume oben übernimmt die
+    // Navigation — im Detail steht dort „← Marktplatz / Objektname".
+    var detailOffen = null;
+    var krume = document.querySelector("#zurueck .krume-home");
+    var ortEl = document.getElementById("ort");
+    function detailSchliessen() {
+      if (!detailOffen) return;
+      detailOffen.hidden = true;
+      detailOffen = null;
+      sec.classList.remove("mar-detail-offen");
+      krume.textContent = "Home";
+      ortEl.textContent = "Marktplatz";
+      document.getElementById("raum-ui").scrollTop = 0;
+    }
+    sec.querySelectorAll(".mar-details").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var d = sec.querySelector('.mar-detail[data-projekt="' + b.dataset.projekt + '"]');
+        if (!d) return;
+        detailSchliessen();
+        d.hidden = false;
+        detailOffen = d;
+        sec.classList.add("mar-detail-offen");
+        krume.textContent = "Marktplatz";
+        ortEl.textContent = d.querySelector(".mar-d-titel").textContent;
+        document.getElementById("raum-ui").scrollTop = 0;
+      });
     });
+    // Brotkrume und Escape gehen im Detail nur eine Ebene zurück, nicht ganz raus
+    document.getElementById("zurueck").addEventListener("click", function (e) {
+      if (detailOffen) { e.stopImmediatePropagation(); detailSchliessen(); }
+    }, true);
+    window.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && detailOffen) { e.stopImmediatePropagation(); detailSchliessen(); }
+    }, true);
+    sec.querySelectorAll(".mar-d-zeichnen").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var key = b.dataset.projekt;
+        detailSchliessen();
+        flowOeffnen(key);
+      });
+    });
+    // Vormerken im Detail: Bestätigung im Detail UND auf der Karte spiegeln
+    var dVormerken = sec.querySelector(".mar-d-vormerken");
+    if (dVormerken) {
+      dVormerken.addEventListener("click", function () {
+        dVormerken.hidden = true;
+        var dPill = sec.querySelector(".mar-d-vorgemerkt");
+        if (dPill) dPill.hidden = false;
+        var kBtn = sec.querySelector(".mar-vormerken");
+        var kPill = sec.querySelector(".mar-vorgemerkt");
+        if (kBtn) kBtn.hidden = true;
+        if (kPill) kPill.hidden = false;
+      });
+    }
 
     eingabe.addEventListener("input", vorschau);
     eingabe.addEventListener("blur", function () {
