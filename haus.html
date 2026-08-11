@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>currily — Dein Haus</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="plattform.css">
+<style>
+  html,body{height:100%;overflow:hidden}
+
+  /* Kopfzeile schwebt über allem */
+  .top{position:fixed;top:var(--space-4);left:0;right:0;z-index:200;margin:0 auto;max-width:1092px;padding:0 var(--space-6);pointer-events:none}
+  .top .nav-inner{pointer-events:auto}
+  .konto{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600;
+    padding:8px 16px 8px 8px;border-radius:var(--radius-full);
+    background:rgba(255,255,255,.45);border:0.5px solid rgba(8,27,74,.12);
+    backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%)}
+  .konto .avatar{width:30px;height:30px;border-radius:50%;background:var(--purple);color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+
+  /* Bühne: das Haus */
+  .buehne{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-5);padding-top:56px}
+  .gruss{text-align:center;transition:opacity .4s var(--ease-default)}
+  .gruss h1{font-size:clamp(26px,3.4vw,44px);letter-spacing:-.03em;line-height:1.05;font-weight:800}
+  .gruss h1 em{font-style:italic;color:var(--purple);line-height:1.1;display:inline-block;padding-bottom:4px}
+  .gruss p{margin-top:var(--space-1);color:var(--grey);font-size:15px}
+  body.drin .gruss{opacity:0}
+
+  .kamera{position:relative;width:min(1280px,96vw,calc((100svh - 190px) * 1.792));
+    will-change:transform;
+    transition:transform 1.05s cubic-bezier(.3,.7,.25,1)}
+  .kamera img{display:block;width:100%;height:auto;pointer-events:none;-webkit-user-select:none;user-select:none}
+
+  /* Zimmer: unsichtbare Klickflächen mit Glas-Schild */
+  .raum{position:absolute;left:var(--l);top:var(--t);width:var(--w);height:var(--h);
+    background:transparent;border:none;cursor:pointer;border-radius:10px;padding:0;
+    transition:background var(--dur-fast) var(--ease-default),box-shadow var(--dur-fast) var(--ease-default)}
+  .raum:hover{background:rgba(140,236,242,.14);box-shadow:inset 0 0 0 2px rgba(112,71,234,.55),0 0 34px rgba(112,71,234,.18)}
+  .raum .chip{position:absolute;left:50%;top:-14px;transform:translate(-50%,-100%) scale(.94);
+    white-space:nowrap;font-size:13px;font-weight:700;color:var(--ink);
+    background:rgba(255,255,255,.7);border:0.5px solid rgba(8,27,74,.10);
+    backdrop-filter:blur(16px) saturate(170%);-webkit-backdrop-filter:blur(16px) saturate(170%);
+    border-radius:var(--radius-full);padding:7px 14px;
+    box-shadow:0 10px 26px rgba(8,27,74,.16);
+    opacity:0;pointer-events:none;
+    transition:opacity var(--dur-fast) var(--ease-default),transform var(--dur-fast) var(--ease-spring)}
+  .raum:hover .chip,.raum:focus-visible .chip{opacity:1;transform:translate(-50%,-100%) scale(1)}
+  .raum.bald{cursor:default}
+  .raum.bald:hover{background:rgba(8,27,74,.05);box-shadow:inset 0 0 0 2px rgba(8,27,74,.18)}
+  .raum.bald .chip{color:var(--grey)}
+  @media (hover:none){ .raum .chip{opacity:1;transform:translate(-50%,-100%) scale(1)} }
+  body.drin .raum{pointer-events:none}
+  body.drin .raum .chip{opacity:0}
+
+  /* Schleier + Raum-Oberfläche nach dem Zoom */
+  .schleier{position:fixed;inset:0;z-index:150;background:rgba(255,255,255,.42);
+    backdrop-filter:blur(10px) saturate(160%);-webkit-backdrop-filter:blur(10px) saturate(160%);
+    opacity:0;pointer-events:none;transition:opacity .5s var(--ease-default) .45s}
+  body.drin .schleier{opacity:1}
+
+  .raum-ui{position:fixed;inset:0;z-index:160;overflow-y:auto;opacity:0;pointer-events:none;
+    transform:translateY(14px);transition:opacity .5s var(--ease-default) .55s,transform .5s var(--ease-default) .55s}
+  .raum-ui.offen{opacity:1;pointer-events:auto;transform:none}
+  .raum-ui .inhalt{max-width:960px;margin:0 auto;padding:110px var(--space-6) 80px;display:none;flex-direction:column;gap:var(--space-5)}
+  .raum-ui .inhalt.aktiv{display:flex}
+  .raum-ui h2{font-size:clamp(28px,3.4vw,42px);letter-spacing:-.03em;font-weight:800}
+  .raum-ui h2 em{font-style:italic;color:var(--purple)}
+  .zurueck{position:fixed;top:84px;left:max(24px,calc((100vw - 1092px)/2));z-index:210;
+    display:none;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer}
+  body.drin .zurueck{display:inline-flex}
+
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)}
+  .kpi{padding:var(--space-5) var(--space-6)}
+  .kpi h4{font-size:13px;font-weight:500;color:var(--grey)}
+  .kpi b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
+  .kpi .delta{font-size:13px;font-weight:700;color:var(--money)}
+
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey);font-weight:600;text-align:left;padding:var(--space-3) var(--space-5)}
+  td{padding:var(--space-4) var(--space-5);border-top:0.5px solid var(--line);font-variant-numeric:tabular-nums}
+  td:last-child,th:last-child{text-align:right}
+  td b{font-weight:700;color:var(--money)}
+  .tabelle{overflow-x:auto;padding:var(--space-2)}
+
+  .zeile{display:flex;justify-content:space-between;align-items:center;gap:var(--space-5);padding:var(--space-4) var(--space-5)}
+  .zeile + .zeile{margin-top:var(--space-3)}
+  .zeile .l b{display:block;font-weight:700}
+  .zeile .l span{font-size:13px;color:var(--grey)}
+  .zeile .r{text-align:right;font-variant-numeric:tabular-nums}
+  .zeile .r b{display:block;font-weight:700}
+  .zeile .r span{font-size:13px;color:var(--money);font-weight:700}
+
+  @media (max-width:700px){
+    .kpis{grid-template-columns:1fr}
+    .zurueck{left:16px;top:80px}
+    .raum-ui .inhalt{padding-top:130px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .kamera{transition:none}
+    .schleier,.raum-ui{transition:none}
+  }
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i></div>
+
+<div class="top">
+  <div class="nav-inner">
+    <a class="logo" href="haus.html">currily<span>.</span></a>
+    <div class="nav-links">
+      <a href="haus.html" class="aktiv">Dein Haus</a>
+      <a href="projekte.html">Alle Projekte</a>
+    </div>
+    <span class="konto"><span class="avatar">J</span> Jonas</span>
+  </div>
+</div>
+
+<button class="btn btn-glass btn-small zurueck" id="zurueck" type="button">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H5m0 0 6-6m-6 6 6 6"/></svg>
+  Zurück zum Haus
+</button>
+
+<div class="buehne">
+  <div class="gruss">
+    <h1>Willkommen in deinem <em>Haus.</em></h1>
+    <p>Jeder Raum eine Aufgabe. Fahr drüber, klick hinein.</p>
+  </div>
+  <div class="kamera" id="kamera">
+    <img src="bilder/haus-zoom.jpg" alt="Dein currily-Haus im Querschnitt: jede Funktion ist ein Zimmer">
+    <button class="raum" data-ziel="finanzen"  style="--l:30%;   --t:49.7%; --w:18.3%; --h:17%"   type="button"><span class="chip">Finanzverwaltung</span></button>
+    <button class="raum" data-ziel="konto"     style="--l:50%;   --t:48.8%; --w:21.5%; --h:18%"   type="button"><span class="chip">Konto &amp; Profil</span></button>
+    <button class="raum" data-ziel="projekte"  style="--l:31.5%; --t:69.9%; --w:17.8%; --h:17.5%" type="button"><span class="chip">Projektraum</span></button>
+    <button class="raum" data-ziel="dokumente" style="--l:50%;   --t:69%;   --w:20.3%; --h:19.3%" type="button"><span class="chip">Dokumente</span></button>
+    <button class="raum bald" style="--l:30.5%;--t:31%; --w:14%; --h:13.5%" type="button" aria-disabled="true"><span class="chip">Postfach · bald</span></button>
+  </div>
+</div>
+
+<div class="schleier" aria-hidden="true"></div>
+
+<div class="raum-ui" id="raum-ui">
+
+  <section class="inhalt" data-raum="finanzen" aria-label="Finanzverwaltung">
+    <h2>Finanz<em>verwaltung.</em></h2>
+    <div class="kpis">
+      <div class="kpi glass"><h4>Wiederkehrendes Einkommen</h4><b>1.240&nbsp;€ / Monat</b><span class="delta">+8,2 % zum Vorjahr</span></div>
+      <div class="kpi glass"><h4>Ausgezahlt insgesamt</h4><b>14.880&nbsp;€</b><span class="delta">davon 4.320&nbsp;€ reinvestiert</span></div>
+      <div class="kpi glass"><h4>Nächste Auszahlung</h4><b>15. August</b><span class="delta">in 4 Tagen, ~1.240&nbsp;€</span></div>
+    </div>
+    <div class="tabelle glass">
+      <table>
+        <thead><tr><th>Datum</th><th>Projekt</th><th>Art</th><th>Betrag</th></tr></thead>
+        <tbody>
+          <tr><td>15.07.2026</td><td>Quartier Hamburg-Ottensen</td><td>Miete</td><td><b>+518&nbsp;€</b></td></tr>
+          <tr><td>15.07.2026</td><td>Stadthaus Leipzig-Plagwitz</td><td>Miete</td><td><b>+412&nbsp;€</b></td></tr>
+          <tr><td>15.07.2026</td><td>Projekt München-Sendling</td><td>Verkaufserlös</td><td><b>+310&nbsp;€</b></td></tr>
+          <tr><td>15.06.2026</td><td>Quartier Hamburg-Ottensen</td><td>Miete</td><td><b>+518&nbsp;€</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="inhalt" data-raum="projekte" aria-label="Projektraum">
+    <h2>Projekt<em>raum.</em></h2>
+    <div class="zeile glass">
+      <div class="l"><b>Quartier Hamburg-Ottensen</b><span>Beteiligt seit 03/2025 · <span class="pill pill-gruen">vermietet</span></span></div>
+      <div class="r"><b>7.180&nbsp;€</b><span>+518&nbsp;€ / Monat</span></div>
+    </div>
+    <div class="zeile glass">
+      <div class="l"><b>Stadthaus Leipzig-Plagwitz</b><span>Beteiligt seit 08/2025 · <span class="pill pill-violett">Sanierung läuft</span></span></div>
+      <div class="r"><b>5.610&nbsp;€</b><span>+412&nbsp;€ / Monat</span></div>
+    </div>
+    <div class="zeile glass">
+      <div class="l"><b>Projekt München-Sendling</b><span>Beteiligt seit 01/2026 · <span class="pill pill-grau">Verkauf geplant</span></span></div>
+      <div class="r"><b>5.860&nbsp;€</b><span>+310&nbsp;€ / Monat</span></div>
+    </div>
+    <a class="btn btn-primary" style="align-self:flex-start" href="projekte.html">Neue Projekte ansehen</a>
+  </section>
+
+  <section class="inhalt" data-raum="dokumente" aria-label="Dokumente">
+    <h2>Doku<em>mente.</em></h2>
+    <div class="zeile glass"><div class="l"><b>Jahressteuerbescheinigung 2025</b><span>PDF · 240 KB · 12.01.2026</span></div><button class="btn btn-glass btn-small" type="button">Herunterladen</button></div>
+    <div class="zeile glass"><div class="l"><b>Zeichnungsschein Stadthaus Leipzig-Plagwitz</b><span>PDF · 180 KB · 03.08.2025</span></div><button class="btn btn-glass btn-small" type="button">Herunterladen</button></div>
+    <div class="zeile glass"><div class="l"><b>Wertgutachten Leipzig, unabhängig</b><span>PDF · 3,1 MB · 21.07.2025</span></div><button class="btn btn-glass btn-small" type="button">Herunterladen</button></div>
+    <div class="zeile glass"><div class="l"><b>Verbraucherinformationen &amp; Risikohinweise</b><span>PDF · 90 KB</span></div><button class="btn btn-glass btn-small" type="button">Herunterladen</button></div>
+  </section>
+
+  <section class="inhalt" data-raum="konto" aria-label="Konto und Profil">
+    <h2>Konto &amp; <em>Profil.</em></h2>
+    <div class="zeile glass"><div class="l"><b>Jonas M.</b><span>Identität geprüft · Anleger seit 03/2025</span></div><span class="pill pill-gruen">verifiziert</span></div>
+    <div class="zeile glass"><div class="l"><b>Auszahlungskonto</b><span>DE89 •••• •••• 3000 · Volksbank</span></div><button class="btn btn-glass btn-small" type="button">Ändern</button></div>
+    <div class="zeile glass"><div class="l"><b>Freistellungsauftrag</b><span>801&nbsp;€ von 1.000&nbsp;€ genutzt</span></div><button class="btn btn-glass btn-small" type="button">Anpassen</button></div>
+    <div class="zeile glass"><div class="l"><b>Automatisch reinvestieren</b><span>Auszahlungen fließen in neue Projekte</span></div><span class="pill pill-violett">aktiv</span></div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const kamera = document.getElementById('kamera');
+  const ui = document.getElementById('raum-ui');
+  const zurueck = document.getElementById('zurueck');
+  let offen = null;
+
+  function zoomZu(raum){
+    const ziel = raum.dataset.ziel;
+    if (!ziel || offen) return;
+    offen = ziel;
+    // Kamerafahrt: Raummitte exakt in die Bildschirmmitte, Raum füllt den Blick
+    const kb = kamera.getBoundingClientRect();
+    const rw = raum.offsetWidth, rh = raum.offsetHeight;
+    const rcxSeite = kb.left + raum.offsetLeft + rw/2;
+    const rcySeite = kb.top + raum.offsetTop + rh/2;
+    const s = Math.min(innerWidth/rw, innerHeight/rh) * 0.92;
+    kamera.style.transformOrigin = (raum.offsetLeft + rw/2) + 'px ' + (raum.offsetTop + rh/2) + 'px';
+    kamera.style.transform = 'translate(' + (innerWidth/2 - rcxSeite) + 'px,' + (innerHeight/2 - rcySeite) + 'px) scale(' + s + ')';
+    document.body.classList.add('drin');
+    ui.classList.add('offen');
+    document.querySelectorAll('.inhalt').forEach(s => s.classList.toggle('aktiv', s.dataset.raum === ziel));
+    ui.scrollTop = 0;
+    history.replaceState(null, '', '#' + ziel);
+  }
+
+  function raus(){
+    if (!offen) return;
+    offen = null;
+    kamera.style.transform = '';
+    document.body.classList.remove('drin');
+    ui.classList.remove('offen');
+    history.replaceState(null, '', location.pathname);
+  }
+
+  document.querySelectorAll('.raum[data-ziel]').forEach(r => r.addEventListener('click', () => zoomZu(r)));
+  zurueck.addEventListener('click', raus);
+  window.addEventListener('keydown', e => { if (e.key === 'Escape') raus(); });
+  window.addEventListener('resize', () => {
+    if (!offen) return;
+    const r = document.querySelector('.raum[data-ziel="' + offen + '"]');
+    const z = offen; offen = null;
+    const alt = kamera.style.transition; kamera.style.transition = 'none';
+    kamera.style.transform = '';
+    requestAnimationFrame(() => { zoomZu(r); requestAnimationFrame(() => kamera.style.transition = alt); });
+    offen = z;
+  });
+
+  // Direkteinstieg per #raum
+  const hash = location.hash.replace('#','');
+  if (hash){
+    const r = document.querySelector('.raum[data-ziel="' + hash + '"]');
+    if (r) setTimeout(() => zoomZu(r), reduced ? 0 : 350);
+  }
+})();
+</script>
+</body>
+</html>
