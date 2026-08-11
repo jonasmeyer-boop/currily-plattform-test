@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>currily — Anmelden · Entwurf E: Nachtblau</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="plattform.css?v=2">
+<style>
+  /* Entwurf E: dunkle Marken-Spalte mit Zahlen links, klares Formular rechts */
+  .split{position:relative;z-index:1;min-height:100svh;display:grid;grid-template-columns:1fr 1.1fr}
+
+  .marke{position:relative;overflow:hidden;background:var(--ink);color:#fff;
+    display:flex;flex-direction:column;justify-content:space-between;
+    padding:var(--space-12) var(--space-10)}
+  .marke .schein{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none}
+  .marke .schein.aqua{width:520px;height:520px;left:-20%;top:-15%;background:radial-gradient(circle,rgba(140,236,242,.30),transparent 70%)}
+  .marke .schein.violett{width:460px;height:460px;right:-22%;bottom:-12%;background:radial-gradient(circle,rgba(112,71,234,.42),transparent 70%)}
+  .marke > *{position:relative}
+  .marke .logo{color:#fff}
+  .marke .logo span{color:var(--aqua)}
+  .marke h1{margin-top:var(--space-10);font-size:clamp(32px,3.4vw,46px);line-height:1.08;letter-spacing:-.03em;font-weight:800;max-width:14ch}
+  .marke h1 em{font-style:italic;color:var(--aqua)}
+  .marke .claim{margin-top:var(--space-4);font-size:17px;color:rgba(255,255,255,.72);max-width:38ch}
+  .zahlen{display:flex;flex-direction:column;gap:var(--space-5);margin-top:var(--space-10)}
+  .zahl{display:flex;align-items:baseline;gap:var(--space-3)}
+  .zahl b{font-size:28px;font-weight:800;letter-spacing:-.02em;color:var(--aqua);font-variant-numeric:tabular-nums;min-width:120px}
+  .zahl span{font-size:15px;color:rgba(255,255,255,.72)}
+  .marke .kleingedruckt{margin-top:var(--space-10);font-size:12.5px;line-height:1.5;color:rgba(255,255,255,.45);max-width:52ch}
+
+  .formseite{display:flex;align-items:center;justify-content:center;padding:var(--space-10) var(--space-6)}
+  .an-karte{width:100%;max-width:420px}
+  .an-karte h2{font-size:24px;letter-spacing:-.02em;margin-bottom:var(--space-6)}
+
+  /* Umschalter Anmelden / Konto eröffnen */
+  .an-seg{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;
+    background:rgba(8,27,74,.06);border-radius:var(--radius-full);padding:4px;margin-bottom:var(--space-6)}
+  .an-seg-pill{position:absolute;top:4px;left:4px;bottom:4px;width:calc(50% - 4px);
+    background:#fff;border-radius:var(--radius-full);box-shadow:0 2px 8px rgba(8,27,74,.14);
+    transition:transform var(--dur-normal) var(--ease-spring)}
+  .an-seg.registrieren .an-seg-pill{transform:translateX(100%)}
+  .an-seg button{position:relative;z-index:1;min-height:40px;border:0;background:transparent;cursor:pointer;
+    font:inherit;font-size:15px;font-weight:600;color:var(--grey);border-radius:var(--radius-full);
+    transition:color var(--dur-fast) var(--ease-default)}
+  .an-seg button[aria-selected="true"]{color:var(--ink)}
+
+  /* Formulare */
+  [hidden]{display:none!important}
+  .an-form{display:flex;flex-direction:column;gap:var(--space-4)}
+  .an-feld{display:flex;flex-direction:column;gap:6px}
+  .an-label{color:var(--grey);font-size:.85rem;font-weight:600}
+  .an-label small{font-weight:500;color:var(--grey)}
+  .an-input{width:100%;min-height:46px;padding:0 var(--space-4);border:1px solid var(--line);
+    border-radius:var(--radius-lg);background:var(--bg);color:var(--ink);font:inherit;
+    transition:border-color var(--dur-fast) var(--ease-default),box-shadow var(--dur-fast) var(--ease-default)}
+  .an-input:hover{border-color:rgba(8,27,74,.16)}
+  .an-input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(112,71,234,.15)}
+  .an-namen{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)}
+  .an-vergessen{align-self:flex-end;margin-top:-6px;border:0;background:none;padding:0;cursor:pointer;
+    font:inherit;font-size:.85rem;font-weight:600;color:var(--purple)}
+  .an-hinweis{font-size:.85rem;color:var(--grey);text-align:center}
+  .an-check{display:flex;gap:var(--space-3);align-items:flex-start;cursor:pointer;
+    font-size:.88rem;line-height:1.45;color:var(--grey)}
+  .an-check input{width:20px;height:20px;margin-top:1px;accent-color:var(--purple);flex:0 0 auto}
+  .an-check a{color:var(--purple);font-weight:600;text-decoration:underline}
+  .an-cta{width:100%;margin-top:var(--space-2)}
+  .an-cta[disabled]{opacity:.45;pointer-events:none}
+  .an-wechsel{margin-top:var(--space-5);text-align:center;font-size:.9rem;color:var(--grey)}
+  .an-wechsel button{border:0;background:none;padding:0;cursor:pointer;
+    font:inherit;font-size:.9rem;font-weight:700;color:var(--purple)}
+
+  .zurueck{position:fixed;right:20px;bottom:20px;z-index:10}
+  body.geht-rein .split{opacity:0;transition:opacity .5s var(--ease-default)}
+
+  @media (max-width:900px){
+    .split{grid-template-columns:1fr}
+    .marke{padding:var(--space-8) var(--space-6)}
+    .marke h1{margin-top:var(--space-6)}
+    .zahlen{margin-top:var(--space-6);gap:var(--space-3)}
+    .zahl b{font-size:22px;min-width:96px}
+    .marke .kleingedruckt{margin-top:var(--space-6)}
+    .formseite{padding:var(--space-8) var(--space-5)}
+  }
+  @media (max-width:700px){
+    .zurueck{position:static;display:flex;width:max-content;margin:var(--space-2) auto var(--space-8)}
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="split">
+    <section class="marke" aria-label="currily in Zahlen">
+      <div>
+        <a class="logo" href="anmeldung-varianten.html" aria-label="currily">currily<span>.</span></a>
+        <h1>Dein Geld baut <em>Zuhause</em>.</h1>
+        <p class="claim">Investiere ab 100 € in geprüfte Wohnprojekte — und schau zu, wie daraus Häuser werden.</p>
+        <div class="zahlen">
+          <p class="zahl"><b>4,2 %</b><span>durchschnittliche Verzinsung pro Jahr</span></p>
+          <p class="zahl"><b>38</b><span>finanzierte Projekte</span></p>
+          <p class="zahl"><b>ab 100 €</b><span>bist du dabei</span></p>
+        </div>
+      </div>
+      <p class="kleingedruckt">Hinweis: Der Erwerb dieser Vermögensanlage ist mit erheblichen Risiken verbunden und kann zum vollständigen Verlust des eingesetzten Vermögens führen.</p>
+    </section>
+
+    <section class="formseite">
+      <div class="an-karte" aria-label="Anmelden oder Konto eröffnen">
+        <h2>Willkommen zurück.</h2>
+        <div class="an-seg" role="tablist" aria-label="Anmelden oder Konto eröffnen">
+          <span class="an-seg-pill" aria-hidden="true"></span>
+          <button type="button" role="tab" id="tab-anmelden" aria-selected="true" aria-controls="form-anmelden">Anmelden</button>
+          <button type="button" role="tab" id="tab-registrieren" aria-selected="false" aria-controls="form-registrieren">Konto eröffnen</button>
+        </div>
+
+        <form class="an-form" id="form-anmelden" aria-labelledby="tab-anmelden">
+          <div class="an-feld">
+            <label class="an-label" for="an-mail">E-Mail-Adresse</label>
+            <input class="an-input" id="an-mail" type="email" autocomplete="email" required>
+          </div>
+          <div class="an-feld">
+            <label class="an-label" for="an-pass">Passwort</label>
+            <input class="an-input" id="an-pass" type="password" autocomplete="current-password" required>
+          </div>
+          <button type="button" class="an-vergessen">Passwort vergessen?</button>
+          <p class="an-hinweis an-vergessen-hinweis" role="status" hidden>Demo — jedes Passwort funktioniert, melde dich einfach an.</p>
+          <button class="btn btn-primary an-cta" type="submit">Anmelden</button>
+        </form>
+
+        <form class="an-form" id="form-registrieren" aria-labelledby="tab-registrieren" hidden>
+          <div class="an-namen">
+            <div class="an-feld">
+              <label class="an-label" for="neu-vorname">Vorname</label>
+              <input class="an-input" id="neu-vorname" type="text" autocomplete="given-name" required>
+            </div>
+            <div class="an-feld">
+              <label class="an-label" for="neu-nachname">Nachname</label>
+              <input class="an-input" id="neu-nachname" type="text" autocomplete="family-name" required>
+            </div>
+          </div>
+          <div class="an-feld">
+            <label class="an-label" for="neu-mail">E-Mail-Adresse</label>
+            <input class="an-input" id="neu-mail" type="email" autocomplete="email" required>
+          </div>
+          <div class="an-feld">
+            <label class="an-label" for="neu-pass">Passwort <small>· mindestens 8 Zeichen</small></label>
+            <input class="an-input" id="neu-pass" type="password" minlength="8" autocomplete="new-password" required>
+          </div>
+          <label class="an-check">
+            <input type="checkbox">
+            <span>Ich habe die <a href="#">Risikohinweise</a> gelesen und akzeptiere die <a href="#">AGB</a>. Ein Totalverlust des eingesetzten Kapitals ist möglich.</span>
+          </label>
+          <button class="btn btn-primary an-cta" type="submit" disabled>Konto eröffnen</button>
+        </form>
+
+        <p class="an-wechsel"><span>Neu bei currily?</span> <button type="button">Konto eröffnen</button></p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<a class="btn btn-glass btn-small zurueck" href="anmeldung-varianten.html">← Alle Entwürfe</a>
+
+<script>
+(function(){
+  'use strict';
+  var seg = document.querySelector('.an-seg');
+  var tabAn = document.getElementById('tab-anmelden');
+  var tabNeu = document.getElementById('tab-registrieren');
+  var formAn = document.getElementById('form-anmelden');
+  var formNeu = document.getElementById('form-registrieren');
+  var wechsel = document.querySelector('.an-wechsel');
+  var wechselText = wechsel.querySelector('span');
+  var wechselBtn = wechsel.querySelector('button');
+  var titel = document.querySelector('.an-karte h2');
+
+  function zeige(neu){
+    seg.classList.toggle('registrieren', neu);
+    tabAn.setAttribute('aria-selected', String(!neu));
+    tabNeu.setAttribute('aria-selected', String(neu));
+    formAn.hidden = neu;
+    formNeu.hidden = !neu;
+    titel.textContent = neu ? 'Schön, dass du dabei bist.' : 'Willkommen zurück.';
+    wechselText.textContent = neu ? 'Schon ein Konto?' : 'Neu bei currily?';
+    wechselBtn.textContent = neu ? 'Anmelden' : 'Konto eröffnen';
+    history.replaceState(null, '', neu ? '#registrieren' : location.pathname);
+  }
+  tabAn.addEventListener('click', function(){ zeige(false); });
+  tabNeu.addEventListener('click', function(){ zeige(true); });
+  wechselBtn.addEventListener('click', function(){ zeige(formNeu.hidden); });
+  if (location.hash === '#registrieren') zeige(true);
+
+  var vergessen = document.querySelector('.an-vergessen');
+  var vergessenHinweis = document.querySelector('.an-vergessen-hinweis');
+  vergessen.addEventListener('click', function(){ vergessenHinweis.hidden = false; });
+
+  var haken = formNeu.querySelector('input[type=checkbox]');
+  var ctaNeu = formNeu.querySelector('.an-cta');
+  haken.addEventListener('change', function(){ ctaNeu.disabled = !haken.checked; });
+
+  [formAn, formNeu].forEach(function(f){
+    f.addEventListener('submit', function(e){
+      e.preventDefault();
+      var b = f.querySelector('.an-cta');
+      b.disabled = true;
+      b.textContent = 'Einen Moment…';
+      document.body.classList.add('geht-rein');
+      setTimeout(function(){ location.href = 'home.html'; }, 650);
+    });
+  });
+})();
+</script>
+</body>
+</html>

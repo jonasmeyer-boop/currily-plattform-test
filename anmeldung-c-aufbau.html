@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>currily — Anmelden · Entwurf C: Dein Home entsteht</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="plattform.css?v=2">
+<style>
+  /* Entwurf C: mit jedem ausgefüllten Feld baut sich das Haus ein Stück weiter auf */
+  .szene{position:relative;z-index:1;min-height:100svh;max-width:1140px;margin:0 auto;
+    display:grid;grid-template-columns:1.15fr 1fr;gap:var(--space-12);align-items:center;
+    padding:var(--space-10) var(--space-6)}
+  .baustelle{animation:grussAuf .9s var(--ease-default) both}
+  .baustelle .logo{font-size:26px}
+  .baustelle h1{margin-top:var(--space-8);font-size:clamp(34px,3.8vw,50px);line-height:1.05;letter-spacing:-.035em;font-weight:800}
+  .baustelle h1 em{font-style:italic;color:var(--purple)}
+  .baustelle .sub{margin-top:var(--space-4);font-size:18px;color:var(--grey);max-width:44ch}
+  .baustelle canvas{display:block;width:100%;aspect-ratio:1792/1000;margin-top:var(--space-8);
+    mix-blend-mode:multiply;pointer-events:none}
+  .baustand{margin-top:var(--space-3);font-size:.9rem;font-weight:600;color:var(--grey);
+    display:flex;align-items:center;gap:var(--space-3)}
+  .baustand .balken{flex:1;height:6px;border-radius:var(--radius-full);background:rgba(8,27,74,.08);overflow:hidden}
+  .baustand .balken i{display:block;height:100%;width:0;border-radius:var(--radius-full);
+    background:linear-gradient(90deg,var(--aqua),var(--purple));
+    transition:width .5s var(--ease-default)}
+  @keyframes grussAuf{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  .an-karte{width:100%;max-width:440px;justify-self:end;padding:var(--space-8);
+    animation:karteAn .9s var(--ease-default) .15s both}
+  @keyframes karteAn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
+
+  /* Umschalter Anmelden / Konto eröffnen */
+  .an-seg{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;
+    background:rgba(8,27,74,.06);border-radius:var(--radius-full);padding:4px;margin-bottom:var(--space-6)}
+  .an-seg-pill{position:absolute;top:4px;left:4px;bottom:4px;width:calc(50% - 4px);
+    background:#fff;border-radius:var(--radius-full);box-shadow:0 2px 8px rgba(8,27,74,.14);
+    transition:transform var(--dur-normal) var(--ease-spring)}
+  .an-seg.registrieren .an-seg-pill{transform:translateX(100%)}
+  .an-seg button{position:relative;z-index:1;min-height:40px;border:0;background:transparent;cursor:pointer;
+    font:inherit;font-size:15px;font-weight:600;color:var(--grey);border-radius:var(--radius-full);
+    transition:color var(--dur-fast) var(--ease-default)}
+  .an-seg button[aria-selected="true"]{color:var(--ink)}
+
+  /* Formulare */
+  [hidden]{display:none!important}
+  .an-form{display:flex;flex-direction:column;gap:var(--space-4)}
+  .an-feld{display:flex;flex-direction:column;gap:6px}
+  .an-label{color:var(--grey);font-size:.85rem;font-weight:600}
+  .an-label small{font-weight:500;color:var(--grey)}
+  .an-input{width:100%;min-height:46px;padding:0 var(--space-4);border:1px solid var(--line);
+    border-radius:var(--radius-lg);background:var(--bg);color:var(--ink);font:inherit;
+    transition:border-color var(--dur-fast) var(--ease-default),box-shadow var(--dur-fast) var(--ease-default)}
+  .an-input:hover{border-color:rgba(8,27,74,.16)}
+  .an-input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(112,71,234,.15)}
+  .an-namen{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)}
+  .an-vergessen{align-self:flex-end;margin-top:-6px;border:0;background:none;padding:0;cursor:pointer;
+    font:inherit;font-size:.85rem;font-weight:600;color:var(--purple)}
+  .an-hinweis{font-size:.85rem;color:var(--grey);text-align:center}
+  .an-check{display:flex;gap:var(--space-3);align-items:flex-start;cursor:pointer;
+    font-size:.88rem;line-height:1.45;color:var(--grey)}
+  .an-check input{width:20px;height:20px;margin-top:1px;accent-color:var(--purple);flex:0 0 auto}
+  .an-check a{color:var(--purple);font-weight:600;text-decoration:underline}
+  .an-cta{width:100%;margin-top:var(--space-2)}
+  .an-cta[disabled]{opacity:.45;pointer-events:none}
+  .an-wechsel{margin-top:var(--space-5);text-align:center;font-size:.9rem;color:var(--grey)}
+  .an-wechsel button{border:0;background:none;padding:0;cursor:pointer;
+    font:inherit;font-size:.9rem;font-weight:700;color:var(--purple)}
+
+  .zurueck{position:fixed;left:20px;bottom:20px;z-index:10}
+  body.geht-rein .szene{opacity:0;transform:scale(.985);transition:opacity .5s var(--ease-default),transform .5s var(--ease-default)}
+
+  @media (max-width:900px){
+    .szene{grid-template-columns:1fr;gap:var(--space-8);padding:var(--space-8) var(--space-5)}
+    .baustelle h1{margin-top:var(--space-6)}
+    .baustelle canvas{max-width:460px;margin:var(--space-6) auto 0}
+    .baustand{max-width:460px;margin:var(--space-3) auto 0}
+    .an-karte{justify-self:stretch;max-width:none;padding:var(--space-6)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .baustand .balken i{transition:none}
+  }
+  @media (max-width:700px){
+    .zurueck{position:static;display:flex;width:max-content;margin:var(--space-2) auto var(--space-8)}
+  }
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i></div>
+
+<main>
+  <div class="szene">
+    <section class="baustelle">
+      <a class="logo" href="anmeldung-varianten.html" aria-label="currily">currily<span>.</span></a>
+      <h1>Dein <em>Home</em> entsteht.</h1>
+      <p class="sub">Mit jedem Feld baut sich dein Home ein Stück weiter auf — beim Anmelden steht es längst.</p>
+      <canvas id="bau-cv" width="1792" height="1000" aria-hidden="true"></canvas>
+      <p class="baustand"><span class="balken"><i></i></span><span class="baustand-text">Grundstück bereit</span></p>
+    </section>
+
+    <section class="an-karte glass" aria-label="Anmelden oder Konto eröffnen">
+      <div class="an-seg registrieren" role="tablist" aria-label="Anmelden oder Konto eröffnen">
+        <span class="an-seg-pill" aria-hidden="true"></span>
+        <button type="button" role="tab" id="tab-anmelden" aria-selected="false" aria-controls="form-anmelden">Anmelden</button>
+        <button type="button" role="tab" id="tab-registrieren" aria-selected="true" aria-controls="form-registrieren">Konto eröffnen</button>
+      </div>
+
+      <form class="an-form" id="form-anmelden" aria-labelledby="tab-anmelden" hidden>
+        <div class="an-feld">
+          <label class="an-label" for="an-mail">E-Mail-Adresse</label>
+          <input class="an-input" id="an-mail" type="email" autocomplete="email" required>
+        </div>
+        <div class="an-feld">
+          <label class="an-label" for="an-pass">Passwort</label>
+          <input class="an-input" id="an-pass" type="password" autocomplete="current-password" required>
+        </div>
+        <button type="button" class="an-vergessen">Passwort vergessen?</button>
+        <p class="an-hinweis an-vergessen-hinweis" role="status" hidden>Demo — jedes Passwort funktioniert, melde dich einfach an.</p>
+        <button class="btn btn-primary an-cta" type="submit">Anmelden</button>
+      </form>
+
+      <form class="an-form" id="form-registrieren" aria-labelledby="tab-registrieren">
+        <div class="an-namen">
+          <div class="an-feld">
+            <label class="an-label" for="neu-vorname">Vorname</label>
+            <input class="an-input" id="neu-vorname" type="text" autocomplete="given-name" required>
+          </div>
+          <div class="an-feld">
+            <label class="an-label" for="neu-nachname">Nachname</label>
+            <input class="an-input" id="neu-nachname" type="text" autocomplete="family-name" required>
+          </div>
+        </div>
+        <div class="an-feld">
+          <label class="an-label" for="neu-mail">E-Mail-Adresse</label>
+          <input class="an-input" id="neu-mail" type="email" autocomplete="email" required>
+        </div>
+        <div class="an-feld">
+          <label class="an-label" for="neu-pass">Passwort <small>· mindestens 8 Zeichen</small></label>
+          <input class="an-input" id="neu-pass" type="password" minlength="8" autocomplete="new-password" required>
+        </div>
+        <label class="an-check">
+          <input type="checkbox">
+          <span>Ich habe die <a href="#">Risikohinweise</a> gelesen und akzeptiere die <a href="#">AGB</a>. Ein Totalverlust des eingesetzten Kapitals ist möglich.</span>
+        </label>
+        <button class="btn btn-primary an-cta" type="submit" disabled>Konto eröffnen</button>
+      </form>
+
+      <p class="an-wechsel"><span>Schon ein Konto?</span> <button type="button">Anmelden</button></p>
+    </section>
+  </div>
+</main>
+
+<a class="btn btn-glass btn-small zurueck" href="anmeldung-varianten.html">← Alle Entwürfe</a>
+
+<script>
+(function(){
+  'use strict';
+  var seg = document.querySelector('.an-seg');
+  var tabAn = document.getElementById('tab-anmelden');
+  var tabNeu = document.getElementById('tab-registrieren');
+  var formAn = document.getElementById('form-anmelden');
+  var formNeu = document.getElementById('form-registrieren');
+  var wechsel = document.querySelector('.an-wechsel');
+  var wechselText = wechsel.querySelector('span');
+  var wechselBtn = wechsel.querySelector('button');
+
+  function zeige(neu){
+    seg.classList.toggle('registrieren', neu);
+    tabAn.setAttribute('aria-selected', String(!neu));
+    tabNeu.setAttribute('aria-selected', String(neu));
+    formAn.hidden = neu;
+    formNeu.hidden = !neu;
+    wechselText.textContent = neu ? 'Schon ein Konto?' : 'Neu bei currily?';
+    wechselBtn.textContent = neu ? 'Anmelden' : 'Konto eröffnen';
+    history.replaceState(null, '', neu ? location.pathname : '#anmelden');
+    baustandNeu();
+  }
+  tabAn.addEventListener('click', function(){ zeige(false); });
+  tabNeu.addEventListener('click', function(){ zeige(true); });
+  wechselBtn.addEventListener('click', function(){ zeige(formNeu.hidden); });
+  if (location.hash === '#anmelden') zeige(false);
+
+  var vergessen = document.querySelector('.an-vergessen');
+  var vergessenHinweis = document.querySelector('.an-vergessen-hinweis');
+  vergessen.addEventListener('click', function(){ vergessenHinweis.hidden = false; });
+
+  var haken = formNeu.querySelector('input[type=checkbox]');
+  var ctaNeu = formNeu.querySelector('.an-cta');
+  haken.addEventListener('change', function(){ ctaNeu.disabled = !haken.checked; baustandNeu(); });
+
+  [formAn, formNeu].forEach(function(f){
+    f.addEventListener('submit', function(e){
+      e.preventDefault();
+      var b = f.querySelector('.an-cta');
+      b.disabled = true;
+      b.textContent = 'Einen Moment…';
+      document.body.classList.add('geht-rein');
+      setTimeout(function(){ location.href = 'home.html'; }, 650);
+    });
+  });
+
+  /* ---- Haus baut sich mit dem Formular auf ---- */
+  var cv = document.getElementById('bau-cv');
+  var ctx = cv.getContext('2d');
+  var reduziert = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var NUMMERN = [];
+  for (var n = 1; n <= 110; n += 4) NUMMERN.push(n);
+  if (NUMMERN[NUMMERN.length - 1] !== 110) NUMMERN.push(110);
+  var N = NUMMERN.length;
+  var frames = new Array(N);
+  NUMMERN.forEach(function(nr, i){
+    var im = new Image();
+    im.onload = function(){ if (i === 0) male(0); };
+    im.src = 'anflug/frame_' + String(nr).padStart(3, '0') + '.jpg';
+    frames[i] = im;
+  });
+
+  var letzter = -1;
+  function male(idx){
+    idx = Math.round(idx);
+    while (idx > 0 && !(frames[idx] && frames[idx].complete && frames[idx].naturalWidth)) idx--;
+    var im = frames[idx];
+    if (!(im && im.complete && im.naturalWidth) || idx === letzter) return;
+    letzter = idx;
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.drawImage(im, 0, 0, cv.width, cv.height);
+  }
+
+  var felder = Array.prototype.slice.call(formNeu.querySelectorAll('.an-input'));
+  var balken = document.querySelector('.baustand .balken i');
+  var baustandText = document.querySelector('.baustand-text');
+  var STUFEN = ['Grundstück bereit', 'Fundament steht', 'Wände stehen', 'Dach ist drauf', 'Innenausbau läuft', 'Dein Home ist fertig'];
+
+  function fortschritt(){
+    if (formNeu.hidden) return 1; /* Anmelden: das Haus steht längst */
+    var voll = felder.filter(function(f){ return f.value.trim() !== ''; }).length + (haken.checked ? 1 : 0);
+    return voll / (felder.length + 1);
+  }
+
+  var ist = 0, ziel = 0, laeuft = false;
+  function tick(){
+    ist += (ziel - ist) * 0.07;
+    if (Math.abs(ziel - ist) < 0.004) { ist = ziel; laeuft = false; }
+    male(ist * (N - 1));
+    if (laeuft) requestAnimationFrame(tick);
+  }
+  function baustandNeu(){
+    var p = fortschritt();
+    ziel = p;
+    balken.style.width = (p * 100) + '%';
+    baustandText.textContent = formNeu.hidden ? STUFEN[STUFEN.length - 1]
+      : STUFEN[Math.min(STUFEN.length - 1, Math.floor(p * (STUFEN.length - 1) + 0.001))];
+    if (reduziert) { ist = ziel; male(ist * (N - 1)); return; }
+    if (!laeuft) { laeuft = true; requestAnimationFrame(tick); }
+  }
+  felder.forEach(function(f){ f.addEventListener('input', baustandNeu); });
+  baustandNeu();
+})();
+</script>
+</body>
+</html>

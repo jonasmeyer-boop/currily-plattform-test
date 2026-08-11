@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>currily — Anmelden · Entwurf B: Vor der Tür</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="plattform.css?v=2">
+<style>
+  /* Entwurf B: das Home steht groß hinter Milchglas — beim Anmelden öffnet sich die Tür */
+  .haus-hinten{position:fixed;inset:0;z-index:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .haus-hinten img{width:min(1300px,135vw);height:auto;mix-blend-mode:multiply;
+    transition:transform .7s var(--ease-default)}
+  .milchglas{position:fixed;inset:0;z-index:1;background:rgba(255,255,255,.44);
+    backdrop-filter:blur(10px) saturate(160%);-webkit-backdrop-filter:blur(10px) saturate(160%);
+    transition:opacity .6s var(--ease-default)}
+  body.geht-rein .milchglas{opacity:0}
+  body.geht-rein .haus-hinten img{transform:scale(1.05)}
+  body.geht-rein .buehne{opacity:0;transform:translateY(-8px);
+    transition:opacity .45s var(--ease-default),transform .45s var(--ease-default)}
+
+  .buehne{position:relative;z-index:2;min-height:100svh;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:var(--space-6);padding:var(--space-10) var(--space-5)}
+  .buehne .logo{font-size:26px;animation:auftauchen .8s var(--ease-default) both}
+  @keyframes auftauchen{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .an-karte{width:100%;max-width:440px;padding:var(--space-8);
+    animation:karteAn .8s var(--ease-default) .12s both}
+  @keyframes karteAn{from{opacity:0;transform:translateY(16px) scale(.985)}to{opacity:1;transform:none}}
+  .an-claim{text-align:center;font-size:15px;color:var(--grey);max-width:38ch;
+    animation:auftauchen .8s var(--ease-default) .2s both}
+
+  /* Umschalter Anmelden / Konto eröffnen */
+  .an-seg{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:0;
+    background:rgba(8,27,74,.06);border-radius:var(--radius-full);padding:4px;margin-bottom:var(--space-6)}
+  .an-seg-pill{position:absolute;top:4px;left:4px;bottom:4px;width:calc(50% - 4px);
+    background:#fff;border-radius:var(--radius-full);box-shadow:0 2px 8px rgba(8,27,74,.14);
+    transition:transform var(--dur-normal) var(--ease-spring)}
+  .an-seg.registrieren .an-seg-pill{transform:translateX(100%)}
+  .an-seg button{position:relative;z-index:1;min-height:40px;border:0;background:transparent;cursor:pointer;
+    font:inherit;font-size:15px;font-weight:600;color:var(--grey);border-radius:var(--radius-full);
+    transition:color var(--dur-fast) var(--ease-default)}
+  .an-seg button[aria-selected="true"]{color:var(--ink)}
+
+  /* Formulare */
+  [hidden]{display:none!important}
+  .an-form{display:flex;flex-direction:column;gap:var(--space-4)}
+  .an-feld{display:flex;flex-direction:column;gap:6px}
+  .an-label{color:var(--grey);font-size:.85rem;font-weight:600}
+  .an-label small{font-weight:500;color:var(--grey)}
+  .an-input{width:100%;min-height:46px;padding:0 var(--space-4);border:1px solid var(--line);
+    border-radius:var(--radius-lg);background:var(--bg);color:var(--ink);font:inherit;
+    transition:border-color var(--dur-fast) var(--ease-default),box-shadow var(--dur-fast) var(--ease-default)}
+  .an-input:hover{border-color:rgba(8,27,74,.16)}
+  .an-input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(112,71,234,.15)}
+  .an-namen{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-3)}
+  .an-vergessen{align-self:flex-end;margin-top:-6px;border:0;background:none;padding:0;cursor:pointer;
+    font:inherit;font-size:.85rem;font-weight:600;color:var(--purple)}
+  .an-hinweis{font-size:.85rem;color:var(--grey);text-align:center}
+  .an-check{display:flex;gap:var(--space-3);align-items:flex-start;cursor:pointer;
+    font-size:.88rem;line-height:1.45;color:var(--grey)}
+  .an-check input{width:20px;height:20px;margin-top:1px;accent-color:var(--purple);flex:0 0 auto}
+  .an-check a{color:var(--purple);font-weight:600;text-decoration:underline}
+  .an-cta{width:100%;margin-top:var(--space-2)}
+  .an-cta[disabled]{opacity:.45;pointer-events:none}
+  .an-wechsel{margin-top:var(--space-5);text-align:center;font-size:.9rem;color:var(--grey)}
+  .an-wechsel button{border:0;background:none;padding:0;cursor:pointer;
+    font:inherit;font-size:.9rem;font-weight:700;color:var(--purple)}
+
+  .zurueck{position:fixed;left:20px;bottom:20px;z-index:10}
+
+  @media (max-width:700px){
+    .an-karte{padding:var(--space-6)}
+    .haus-hinten img{width:230vw}
+  }
+  @media (max-width:700px){
+    .zurueck{position:static;display:flex;width:max-content;margin:var(--space-2) auto var(--space-8)}
+  }
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i></div>
+<div class="haus-hinten" aria-hidden="true"><img src="anflug/frame_110.jpg" alt="" width="1792" height="1000"></div>
+<div class="milchglas" aria-hidden="true"></div>
+
+<main>
+  <div class="buehne">
+    <a class="logo" href="anmeldung-varianten.html" aria-label="currily">currily<span>.</span></a>
+
+    <section class="an-karte glass" aria-label="Anmelden oder Konto eröffnen">
+      <div class="an-seg" role="tablist" aria-label="Anmelden oder Konto eröffnen">
+        <span class="an-seg-pill" aria-hidden="true"></span>
+        <button type="button" role="tab" id="tab-anmelden" aria-selected="true" aria-controls="form-anmelden">Anmelden</button>
+        <button type="button" role="tab" id="tab-registrieren" aria-selected="false" aria-controls="form-registrieren">Konto eröffnen</button>
+      </div>
+
+      <form class="an-form" id="form-anmelden" aria-labelledby="tab-anmelden">
+        <div class="an-feld">
+          <label class="an-label" for="an-mail">E-Mail-Adresse</label>
+          <input class="an-input" id="an-mail" type="email" autocomplete="email" required>
+        </div>
+        <div class="an-feld">
+          <label class="an-label" for="an-pass">Passwort</label>
+          <input class="an-input" id="an-pass" type="password" autocomplete="current-password" required>
+        </div>
+        <button type="button" class="an-vergessen">Passwort vergessen?</button>
+        <p class="an-hinweis an-vergessen-hinweis" role="status" hidden>Demo — jedes Passwort funktioniert, melde dich einfach an.</p>
+        <button class="btn btn-primary an-cta" type="submit">Anmelden</button>
+      </form>
+
+      <form class="an-form" id="form-registrieren" aria-labelledby="tab-registrieren" hidden>
+        <div class="an-namen">
+          <div class="an-feld">
+            <label class="an-label" for="neu-vorname">Vorname</label>
+            <input class="an-input" id="neu-vorname" type="text" autocomplete="given-name" required>
+          </div>
+          <div class="an-feld">
+            <label class="an-label" for="neu-nachname">Nachname</label>
+            <input class="an-input" id="neu-nachname" type="text" autocomplete="family-name" required>
+          </div>
+        </div>
+        <div class="an-feld">
+          <label class="an-label" for="neu-mail">E-Mail-Adresse</label>
+          <input class="an-input" id="neu-mail" type="email" autocomplete="email" required>
+        </div>
+        <div class="an-feld">
+          <label class="an-label" for="neu-pass">Passwort <small>· mindestens 8 Zeichen</small></label>
+          <input class="an-input" id="neu-pass" type="password" minlength="8" autocomplete="new-password" required>
+        </div>
+        <label class="an-check">
+          <input type="checkbox">
+          <span>Ich habe die <a href="#">Risikohinweise</a> gelesen und akzeptiere die <a href="#">AGB</a>. Ein Totalverlust des eingesetzten Kapitals ist möglich.</span>
+        </label>
+        <button class="btn btn-primary an-cta" type="submit" disabled>Konto eröffnen</button>
+      </form>
+
+      <p class="an-wechsel"><span>Neu bei currily?</span> <button type="button">Konto eröffnen</button></p>
+    </section>
+
+    <p class="an-claim">Dein Home steht schon vor der Tür — melde dich an und geh hinein.</p>
+  </div>
+</main>
+
+<a class="btn btn-glass btn-small zurueck" href="anmeldung-varianten.html">← Alle Entwürfe</a>
+
+<script>
+(function(){
+  'use strict';
+  var seg = document.querySelector('.an-seg');
+  var tabAn = document.getElementById('tab-anmelden');
+  var tabNeu = document.getElementById('tab-registrieren');
+  var formAn = document.getElementById('form-anmelden');
+  var formNeu = document.getElementById('form-registrieren');
+  var wechsel = document.querySelector('.an-wechsel');
+  var wechselText = wechsel.querySelector('span');
+  var wechselBtn = wechsel.querySelector('button');
+
+  function zeige(neu){
+    seg.classList.toggle('registrieren', neu);
+    tabAn.setAttribute('aria-selected', String(!neu));
+    tabNeu.setAttribute('aria-selected', String(neu));
+    formAn.hidden = neu;
+    formNeu.hidden = !neu;
+    wechselText.textContent = neu ? 'Schon ein Konto?' : 'Neu bei currily?';
+    wechselBtn.textContent = neu ? 'Anmelden' : 'Konto eröffnen';
+    history.replaceState(null, '', neu ? '#registrieren' : location.pathname);
+  }
+  tabAn.addEventListener('click', function(){ zeige(false); });
+  tabNeu.addEventListener('click', function(){ zeige(true); });
+  wechselBtn.addEventListener('click', function(){ zeige(formNeu.hidden); });
+  if (location.hash === '#registrieren') zeige(true);
+
+  var vergessen = document.querySelector('.an-vergessen');
+  var vergessenHinweis = document.querySelector('.an-vergessen-hinweis');
+  vergessen.addEventListener('click', function(){ vergessenHinweis.hidden = false; });
+
+  var haken = formNeu.querySelector('input[type=checkbox]');
+  var ctaNeu = formNeu.querySelector('.an-cta');
+  haken.addEventListener('change', function(){ ctaNeu.disabled = !haken.checked; });
+
+  [formAn, formNeu].forEach(function(f){
+    f.addEventListener('submit', function(e){
+      e.preventDefault();
+      var b = f.querySelector('.an-cta');
+      b.disabled = true;
+      b.textContent = 'Einen Moment…';
+      document.body.classList.add('geht-rein');
+      setTimeout(function(){ location.href = 'home.html'; }, 750);
+    });
+  });
+})();
+</script>
+</body>
+</html>

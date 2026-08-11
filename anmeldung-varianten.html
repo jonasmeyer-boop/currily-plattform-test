@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>currily — Anmeldung: fünf Entwürfe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="plattform.css?v=2">
+<style>
+  /* Anmeldung — fünf Entwürfe zur Auswahl */
+  .liste{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:var(--space-12) var(--space-6) var(--space-12)}
+  .liste .logo{font-size:26px}
+  .liste h1{margin-top:var(--space-8);font-size:clamp(30px,3.6vw,44px);line-height:1.06;letter-spacing:-.03em;font-weight:800}
+  .liste h1 em{font-style:italic;color:var(--purple)}
+  .liste .sub{margin-top:var(--space-3);font-size:17px;color:var(--grey);max-width:52ch}
+  .karten{display:flex;flex-direction:column;gap:var(--space-4);margin-top:var(--space-8)}
+  .karte{display:flex;align-items:center;gap:var(--space-5);padding:var(--space-5) var(--space-6);
+    transition:transform var(--dur-fast) var(--ease-spring),box-shadow var(--dur-fast) var(--ease-default)}
+  .karte:hover{transform:translateY(-2px);box-shadow:0 28px 80px rgba(8,27,74,.18)}
+  .karte .kennung{flex:0 0 auto;width:46px;height:46px;border-radius:var(--radius-full);
+    display:flex;align-items:center;justify-content:center;
+    background:var(--purple);color:#fff;font-size:19px;font-weight:800}
+  .karte div{min-width:0}
+  .karte h2{font-size:18px;letter-spacing:-.01em}
+  .karte p{margin-top:2px;font-size:14.5px;color:var(--grey)}
+  .karte .pfeil{margin-left:auto;color:var(--grey);flex:0 0 auto}
+  @media (max-width:700px){
+    .liste{padding:var(--space-8) var(--space-5)}
+    .karte{align-items:flex-start}
+    .karte .pfeil{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i></div>
+
+<main>
+  <div class="liste">
+    <span class="logo">currily<span>.</span></span>
+    <h1>Anmeldung — <em>fünf Entwürfe</em>.</h1>
+    <p class="sub">Anmelden und Konto eröffnen in einer Seite, jeweils im Design der Plattform. Jeder Entwurf führt nach dem Anmelden ins begehbare Home.</p>
+
+    <div class="karten">
+      <a class="karte glass" href="anmeldung-a-haus.html">
+        <span class="kennung">A</span>
+        <div>
+          <h2>Schwebendes Haus</h2>
+          <p>Begrüßung links, das fertige Haus schwebt frei auf Weiß, Glas-Karte rechts.</p>
+        </div>
+        <span class="pfeil">→</span>
+      </a>
+      <a class="karte glass" href="anmeldung-b-tuer.html">
+        <span class="kennung">B</span>
+        <div>
+          <h2>Vor der Tür</h2>
+          <p>Das Home steht groß hinter Milchglas — beim Anmelden öffnet sich die Tür.</p>
+        </div>
+        <span class="pfeil">→</span>
+      </a>
+      <a class="karte glass" href="anmeldung-c-aufbau.html">
+        <span class="kennung">C</span>
+        <div>
+          <h2>Dein Home entsteht</h2>
+          <p>Mit jedem ausgefüllten Feld baut sich das Haus ein Stück weiter auf.</p>
+        </div>
+        <span class="pfeil">→</span>
+      </a>
+      <a class="karte glass" href="anmeldung-d-pur.html">
+        <span class="kennung">D</span>
+        <div>
+          <h2>Pur</h2>
+          <p>Nur Wortmarke und Karte — ganz ruhig, ohne Bildwelt.</p>
+        </div>
+        <span class="pfeil">→</span>
+      </a>
+      <a class="karte glass" href="anmeldung-e-nachtblau.html">
+        <span class="kennung">E</span>
+        <div>
+          <h2>Nachtblau</h2>
+          <p>Dunkle Marken-Spalte mit Zahlen links, klares Formular rechts.</p>
+        </div>
+        <span class="pfeil">→</span>
+      </a>
+    </div>
+  </div>
+</main>
+</body>
+</html>
