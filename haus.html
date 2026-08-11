@@ -97,6 +97,16 @@
     .kpis{grid-template-columns:1fr}
     .zurueck{left:16px;top:80px}
     .raum-ui .inhalt{padding-top:130px}
+    /* Handy: Bühne rückt näher ans Haus, Schilder mittig im Zimmer */
+    .buehne{padding-top:76px;gap:var(--space-3);justify-content:flex-start}
+    .gruss{padding:0 var(--space-6)}
+    .gruss h1{font-size:26px}
+    .gruss p{font-size:14px}
+    .kamera{width:190vw;max-width:none;margin-top:var(--space-4)}
+    .raum .chip{font-size:11px;padding:5px 11px;top:50%;transform:translate(-50%,-50%) scale(1)}
+    .raum:hover .chip,.raum:focus-visible .chip{transform:translate(-50%,-50%) scale(1)}
+    .zeile{flex-wrap:wrap}
+    .zeile .r{text-align:left}
   }
   @media (prefers-reduced-motion:reduce){
     .kamera{transition:none}
