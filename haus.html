@@ -87,7 +87,7 @@
   .raum-ui{position:fixed;inset:0;z-index:160;overflow-y:auto;opacity:0;pointer-events:none;
     transition:opacity .25s var(--ease-default)}
   .raum-ui.offen{opacity:1;pointer-events:auto;transition:opacity .35s var(--ease-default) .95s}
-  .raum-ui .inhalt{max-width:960px;margin:0 auto;padding:118px var(--space-6) 90px;display:none;flex-direction:column;gap:var(--space-5)}
+  .raum-ui .inhalt{max-width:960px;margin:0 auto;padding:156px var(--space-6) 90px;display:none;flex-direction:column;gap:var(--space-5)}
   .raum-ui .inhalt.aktiv{display:flex}
   .raum-ui .inhalt.aktiv > *{animation:panelIn .55s var(--ease-default) both}
   .raum-ui .inhalt.aktiv > *:nth-child(1){animation-delay:1s}
@@ -101,16 +101,15 @@
   .raum-ui .inhalt.aktiv > .kon-inline,.raum-ui .inhalt.aktiv > .kon-feedback,
   .raum-ui .inhalt.aktiv > .kon-backup,.raum-ui .inhalt.aktiv > .mz-flow{animation:none}
   @keyframes panelIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-  .raum-ui h2{font-size:clamp(28px,3.4vw,42px);letter-spacing:-.03em;font-weight:800}
-  .raum-ui h2 em{font-style:italic;color:var(--purple)}
-
-  .leiste{position:fixed;top:84px;left:max(24px,calc((100vw - 1092px)/2));z-index:210;
-    display:none;align-items:center;gap:var(--space-3)}
+  /* Raum-Kopf: eine Brotkrumen-Pille „← Haus / Ort" — der Ortsname ist der Titel,
+     eine große Wortmarke darunter gibt es nicht mehr */
+  .leiste{position:fixed;top:84px;left:calc(max(24px,(100vw - 960px)/2) + 24px);z-index:210;
+    display:none;align-items:center}
   body.drin .leiste{display:flex}
-  .ort{font-size:13px;font-weight:700;color:var(--grey);
-    background:rgba(255,255,255,.6);border:0.5px solid rgba(8,27,74,.10);
-    backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%);
-    border-radius:var(--radius-full);padding:8px 14px}
+  .krume-haus{color:var(--grey);font-weight:600}
+  #zurueck:hover .krume-haus{color:var(--ink)}
+  .krume-trenner{color:var(--grey);font-weight:400;margin:0 2px}
+  .ort{font-weight:800}
 
   /* Gemeinsame Bausteine für Raum-Module */
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)}
@@ -1124,7 +1123,7 @@
   @media (max-width:700px){
     .kpis{grid-template-columns:1fr}
     .leiste{left:16px;top:80px}
-    .raum-ui .inhalt{padding-top:136px}
+    .raum-ui .inhalt{padding-top:148px}
     .buehne{padding-top:76px;gap:var(--space-3);justify-content:flex-start}
     .kamera{width:172vw;max-width:none;margin-top:var(--space-4)}
     .anflug{padding-top:76px;align-items:flex-start}
@@ -1264,9 +1263,8 @@
 <div class="leiste">
   <button class="btn btn-glass btn-small" id="zurueck" type="button">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H5m0 0 6-6m-6 6 6 6"/></svg>
-    Zurück zum Haus
+    <span class="krume-haus">Haus</span><span class="krume-trenner" aria-hidden="true">/</span><span class="ort" id="ort" aria-live="polite"></span>
   </button>
-  <span class="ort" id="ort" aria-live="polite"></span>
 </div>
 
 <div class="buehne">
@@ -1285,7 +1283,6 @@
 
 <div class="raum-ui" id="raum-ui">
 <section class="inhalt" data-raum="finanzen" aria-label="Finanzverwaltung – Einkommen, Auszahlungen und Steuern">
-  <h2>Finanz<em>zentrale.</em></h2>
   <p class="fin-intro">Dein Einkommen, deine Auszahlungen, deine Steuern – alles auf einen Blick.</p>
 
   <div class="kpis">
@@ -1497,7 +1494,6 @@
   </div>
 </section>
 <section class="inhalt" data-raum="projekte" aria-label="Projektraum: Portfolio und Beteiligungen">
-  <h2>Projekt<em>raum.</em></h2>
 
   <header class="pro-kopf glass">
     <div class="pro-kopf-links">
@@ -1623,7 +1619,6 @@
   </div>
 </section>
 <section class="inhalt" data-raum="dokumente" aria-label="Dokumente – Nachweise und Verträge deiner Beteiligungen">
-  <h2>Doku<em>mente.</em></h2>
   <p class="dok-intro">Alle Nachweise deiner Beteiligungen – jederzeit als PDF.</p>
 
   <div class="dok-kopf">
@@ -1788,7 +1783,6 @@
   </div>
 </section>
 <section class="inhalt" data-raum="konto" aria-label="Konto und Profil">
-  <h2>Konto<em> &amp; Profil.</em></h2>
 
   <div class="glass kon-profil reveal">
     <span class="kon-avatar" aria-hidden="true">J</span>
@@ -2019,7 +2013,6 @@
   </div>
 </section>
 <section class="inhalt" data-raum="postfach" aria-label="Postfach mit deinen Nachrichten">
-  <h2>Post<em>fach.</em></h2>
   <div class="pos-kopf">
     <span class="pill pill-violett pos-zaehler" aria-live="polite">3 ungelesen</span>
     <button class="btn btn-glass pos-alle-lesen" type="button">Alle als gelesen markieren</button>
@@ -2141,7 +2134,6 @@
   </div>
 </section>
 <section class="inhalt" data-raum="markt" aria-label="Marktplatz – neue Projekte zeichnen">
-  <h2>Markt<em>platz.</em></h2>
   <p class="mar-intro">Neue Beteiligungen, bevor die Zeichnung öffnet – sichere dir deinen Platz.</p>
 
   <article class="glass mar-featured reveal">
