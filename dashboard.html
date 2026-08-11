@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>currily — Dein Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="plattform.css">
+<style>
+  .konto{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600;
+    padding:8px 16px 8px 8px;border-radius:var(--radius-full);
+    background:rgba(255,255,255,.45);border:0.5px solid rgba(8,27,74,.12);
+    backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%)}
+  .konto .avatar{width:30px;height:30px;border-radius:50%;background:var(--purple);color:#fff;
+    display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+
+  .kopf .datum{margin-top:var(--space-2);color:var(--grey);font-size:15px}
+
+  .board{display:grid;grid-template-columns:1.6fr 1fr;gap:var(--space-6);padding-bottom:var(--space-6)}
+  .einkommen{padding:var(--space-6);display:flex;flex-direction:column}
+  .einkommen h3{font-size:14px;font-weight:500;color:var(--grey)}
+  .betrag{font-size:44px;font-weight:800;letter-spacing:-.02em;margin-top:var(--space-1);font-variant-numeric:tabular-nums}
+  .betrag small{font-size:16px;color:var(--grey);font-weight:500}
+  .chart{position:relative;height:170px;margin-top:var(--space-5)}
+  .chart svg{position:absolute;inset:0;width:100%;height:100%}
+  .chart .achse{position:absolute;bottom:-22px;left:0;right:0;display:flex;justify-content:space-between;font-size:12px;color:var(--grey)}
+
+  .seite{display:flex;flex-direction:column;gap:var(--space-4)}
+  .kpi{padding:var(--space-5) var(--space-6)}
+  .kpi h4{font-size:13px;font-weight:500;color:var(--grey)}
+  .kpi b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
+  .kpi .delta{font-size:13px;font-weight:700;color:var(--money)}
+
+  .abschnitt{padding:var(--space-8) 0 0}
+  .abschnitt h2{font-size:clamp(22px,2.6vw,30px);letter-spacing:-.025em;font-weight:800;margin-bottom:var(--space-5)}
+
+  .beteiligung{display:grid;grid-template-columns:1fr auto auto;gap:var(--space-4) var(--space-6);align-items:center;
+    padding:var(--space-4) var(--space-5);margin-bottom:var(--space-3)}
+  .beteiligung .name b{display:block;font-weight:700}
+  .beteiligung .name span{font-size:13px;color:var(--grey)}
+  .beteiligung .wert{text-align:right;font-variant-numeric:tabular-nums}
+  .beteiligung .wert b{display:block;font-weight:700}
+  .beteiligung .wert span{font-size:13px;color:var(--money);font-weight:700}
+
+  table{width:100%;border-collapse:collapse;font-size:15px}
+  th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey);font-weight:600;text-align:left;padding:var(--space-3) var(--space-5)}
+  td{padding:var(--space-4) var(--space-5);border-top:0.5px solid var(--line);font-variant-numeric:tabular-nums}
+  td:last-child,th:last-child{text-align:right}
+  td b{font-weight:700;color:var(--money)}
+  .tabelle{overflow-x:auto;padding:var(--space-2)}
+
+  .reinvest{margin:var(--space-10) 0 96px;padding:var(--space-8) var(--space-10);display:flex;align-items:center;justify-content:space-between;gap:var(--space-6);flex-wrap:wrap}
+  .reinvest h2{font-size:clamp(22px,2.6vw,30px);letter-spacing:-.025em;font-weight:800;max-width:26ch}
+  .reinvest p{color:var(--grey);font-size:15px;margin-top:var(--space-1)}
+
+  @media (max-width:920px){
+    .board{grid-template-columns:1fr}
+    .beteiligung{grid-template-columns:1fr auto}
+    .beteiligung .status{display:none}
+    .reinvest{justify-content:center;text-align:center;padding:var(--space-6)}
+  }
+</style>
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i></div>
+<main>
+
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="https://jonasmeyer-boop.github.io/currily-design-test/">currily<span>.</span></a>
+    <div class="nav-links">
+      <a href="dashboard.html" class="aktiv">Übersicht</a>
+      <a href="projekte.html">Projekte</a>
+    </div>
+    <span class="konto"><span class="avatar">J</span> Jonas</span>
+  </div>
+</nav>
+
+<header class="kopf">
+  <div class="wrap">
+    <h1>Guten Morgen, <em>Jonas.</em></h1>
+    <p class="datum">Dienstag, 11. August 2026 · Nächste Auszahlung in 4 Tagen</p>
+  </div>
+</header>
+
+<section class="wrap board">
+  <div class="einkommen glass reveal">
+    <h3>Dein wiederkehrendes Einkommen</h3>
+    <div class="betrag"><span class="zaehler" data-ziel="1240">0</span>&nbsp;€ <small>/ Monat</small></div>
+    <span class="pill pill-gruen" style="align-self:flex-start;margin-top:8px">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true"><path d="M3 17 9 11l4 4 8-8"/><path d="M14 7h7v7"/></svg>
+      +8,2 % zum Vorjahr
+    </span>
+    <div class="chart" aria-hidden="true">
+      <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#7047EA" stop-opacity=".22"/>
+            <stop offset="1" stop-color="#7047EA" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path id="flaeche" d="M0,125 C36,121 57,108 86,104 C125,99 143,110 179,100 C218,90 236,73 271,69 C311,65 329,80 364,64 C400,49 429,36 461,29 L500,23 L500,150 L0,150 Z" fill="url(#fill)" opacity="0"/>
+        <path id="linie" d="M0,125 C36,121 57,108 86,104 C125,99 143,110 179,100 C218,90 236,73 271,69 C311,65 329,80 364,64 C400,49 429,36 461,29 L500,23" fill="none" stroke="#7047EA" stroke-width="2.5"/>
+      </svg>
+      <div class="achse"><span>Sep</span><span>Nov</span><span>Jan</span><span>Mär</span><span>Mai</span><span>Aug</span></div>
+    </div>
+  </div>
+
+  <div class="seite">
+    <div class="kpi glass reveal"><h4>Gesamtwert deiner Beteiligungen</h4><b><span class="zaehler" data-ziel="18650">0</span>&nbsp;€</b><span class="delta">+1.870&nbsp;€ seit Einstieg</span></div>
+    <div class="kpi glass reveal"><h4>Ausgezahlt insgesamt</h4><b><span class="zaehler" data-ziel="14880">0</span>&nbsp;€</b><span class="delta">davon 4.320&nbsp;€ reinvestiert</span></div>
+    <div class="kpi glass reveal"><h4>Durchschnittliche Rendite</h4><b><span class="zaehler" data-ziel="121" data-dezimal="1">0</span>&nbsp;%</b><span class="delta">über alle Projekte, p.&nbsp;a.</span></div>
+  </div>
+</section>
+
+<section class="wrap abschnitt">
+  <h2>Deine Beteiligungen</h2>
+  <div class="beteiligung glass reveal">
+    <div class="name"><b>Quartier Hamburg-Ottensen</b><span>Beteiligt seit 03/2025 · 6.500&nbsp;€</span></div>
+    <span class="pill pill-gruen status">vermietet</span>
+    <div class="wert"><b>7.180&nbsp;€</b><span>+518&nbsp;€ / Monat</span></div>
+  </div>
+  <div class="beteiligung glass reveal">
+    <div class="name"><b>Stadthaus Leipzig-Plagwitz</b><span>Beteiligt seit 08/2025 · 5.000&nbsp;€</span></div>
+    <span class="pill pill-violett status">Sanierung läuft</span>
+    <div class="wert"><b>5.610&nbsp;€</b><span>+412&nbsp;€ / Monat</span></div>
+  </div>
+  <div class="beteiligung glass reveal">
+    <div class="name"><b>Projekt München-Sendling</b><span>Beteiligt seit 01/2026 · 5.280&nbsp;€</span></div>
+    <span class="pill pill-grau status">Verkauf geplant</span>
+    <div class="wert"><b>5.860&nbsp;€</b><span>+310&nbsp;€ / Monat</span></div>
+  </div>
+</section>
+
+<section class="wrap abschnitt">
+  <h2>Letzte Auszahlungen</h2>
+  <div class="tabelle glass reveal">
+    <table>
+      <thead><tr><th>Datum</th><th>Projekt</th><th>Art</th><th>Betrag</th></tr></thead>
+      <tbody>
+        <tr><td>15.07.2026</td><td>Quartier Hamburg-Ottensen</td><td>Mieteinnahmen</td><td><b>+518&nbsp;€</b></td></tr>
+        <tr><td>15.07.2026</td><td>Stadthaus Leipzig-Plagwitz</td><td>Mieteinnahmen</td><td><b>+412&nbsp;€</b></td></tr>
+        <tr><td>15.07.2026</td><td>Projekt München-Sendling</td><td>Verkaufserlös, anteilig</td><td><b>+310&nbsp;€</b></td></tr>
+        <tr><td>15.06.2026</td><td>Quartier Hamburg-Ottensen</td><td>Mieteinnahmen</td><td><b>+518&nbsp;€</b></td></tr>
+        <tr><td>15.06.2026</td><td>Stadthaus Leipzig-Plagwitz</td><td>Mieteinnahmen</td><td><b>+405&nbsp;€</b></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="reinvest glass reveal">
+    <div>
+      <h2>1.240&nbsp;€ liegen bereit. Lass sie weiterarbeiten.</h2>
+      <p>Reinvestiere deine Auszahlung in ein neues Projekt — der Zinseszins macht den Rest.</p>
+    </div>
+    <a class="btn btn-primary" href="projekte.html">Projekte ansehen</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 currily AG</span>
+    <span>Impressum · Datenschutz · Risikohinweise</span>
+  </div>
+</footer>
+
+</main>
+<script>
+(function(){
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Sanftes Erscheinen + Zähler
+  const io = new IntersectionObserver(es => es.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('in');
+    e.target.querySelectorAll('.zaehler').forEach(z => {
+      if (z.dataset.laeuft) return;
+      z.dataset.laeuft = 1;
+      const ziel = +z.dataset.ziel, dez = +(z.dataset.dezimal || 0);
+      const fmt = v => dez ? (v/10).toFixed(1).replace('.', ',') : Math.round(v).toLocaleString('de-DE');
+      if (reduced){ z.textContent = fmt(ziel); return; }
+      const t0 = performance.now();
+      (function tick(t){
+        const p = Math.min((t - t0) / 900, 1);
+        z.textContent = fmt(ziel * (1 - Math.pow(1 - p, 3)));
+        if (p < 1) requestAnimationFrame(tick);
+      })(t0);
+    });
+    io.unobserve(e.target);
+  }), {threshold:.2});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Einkommenskurve zeichnet sich einmal beim Laden
+  const linie = document.getElementById('linie');
+  const flaeche = document.getElementById('flaeche');
+  if (reduced){ flaeche.style.opacity = 1; return; }
+  const len = linie.getTotalLength();
+  linie.style.strokeDasharray = len;
+  linie.style.strokeDashoffset = len;
+  linie.style.transition = 'stroke-dashoffset 1.1s cubic-bezier(.25,.1,.25,1)';
+  flaeche.style.transition = 'opacity .6s ease .7s';
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    linie.style.strokeDashoffset = 0;
+    flaeche.style.opacity = 1;
+  }));
+})();
+</script>
+</body>
+</html>

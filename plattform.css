@@ -1,0 +1,106 @@
+/* currily Designsystem — Quelle: Entwurf G (siehe docs/chronik 2026-08-11) */
+:root{
+  --bg:#FFFFFF; --ink:#081B4A; --grey:#5A6478;
+  --aqua:#8CECF2; --purple:#7047EA; --money:#12805C;
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+  --space-5:20px; --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px;
+  --radius-lg:16px; --radius-xl:20px; --radius-2xl:24px; --radius-full:9999px;
+  --ease-spring:cubic-bezier(.175,.885,.32,1.275);
+  --ease-default:cubic-bezier(.25,.1,.25,1);
+  --dur-instant:100ms; --dur-fast:200ms; --dur-normal:300ms;
+  --line:rgba(8,27,74,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;
+  background:var(--bg); color:var(--ink);
+  font-size:17px; line-height:1.47;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--purple);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1140px;margin:0 auto;padding:0 var(--space-6)}
+
+/* Aurora */
+.aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.aurora i{position:absolute;border-radius:50%;filter:blur(100px)}
+.aurora i:nth-child(1){width:600px;height:600px;left:62%;top:-18%;background:radial-gradient(circle,rgba(140,236,242,.35),transparent 70%);animation:drift1 28s var(--ease-default) infinite alternate}
+.aurora i:nth-child(2){width:480px;height:480px;left:-14%;top:30%;background:radial-gradient(circle,rgba(112,71,234,.14),transparent 70%);animation:drift2 34s var(--ease-default) infinite alternate}
+@keyframes drift1{from{transform:translate3d(0,0,0)}to{transform:translate3d(-60px,50px,0)}}
+@keyframes drift2{from{transform:translate3d(0,0,0)}to{transform:translate3d(70px,-40px,0)}}
+main{position:relative;z-index:1}
+
+/* Schwebende Glas-Kapsel-Navigation */
+nav{position:sticky;top:var(--space-4);z-index:100;margin:0 auto;max-width:1092px;padding:0 var(--space-6)}
+.nav-inner{
+  height:60px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 var(--space-3) 0 var(--space-6);
+  background:rgba(255,255,255,.55);
+  backdrop-filter:blur(40px) saturate(200%);
+  -webkit-backdrop-filter:blur(40px) saturate(200%);
+  border:0.5px solid rgba(8,27,74,.10);
+  border-radius:var(--radius-full);
+  box-shadow:0 12px 32px rgba(8,27,74,.10);
+}
+.logo{font-weight:800;font-size:21px;letter-spacing:-.02em}
+.logo span{color:var(--purple)}
+.nav-links{display:flex;gap:var(--space-8);font-size:15px;color:var(--grey)}
+.nav-links a{transition:color var(--dur-fast) var(--ease-default)}
+.nav-links a:hover,.nav-links a.aktiv{color:var(--ink)}
+.nav-links a.aktiv{font-weight:600}
+
+/* Knöpfe */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);
+  white-space:nowrap;font-weight:600;border-radius:var(--radius-full);cursor:pointer;border:none;font:inherit;font-weight:600;
+  transition:transform var(--dur-instant) var(--ease-spring),filter var(--dur-fast) var(--ease-default),box-shadow var(--dur-fast) var(--ease-default)}
+.btn:hover{filter:brightness(1.05);box-shadow:0 8px 24px rgba(112,71,234,.24)}
+.btn:active{transform:scale(.97);filter:brightness(.95);box-shadow:0 2px 8px rgba(8,27,74,.15)}
+.btn-primary{background:var(--purple);color:#fff;padding:14px 28px;box-shadow:0 6px 18px rgba(112,71,234,.28)}
+.btn-small{padding:10px 22px;font-size:15px}
+.btn-glass{color:var(--ink);padding:14px 26px;
+  background:rgba(255,255,255,.45);
+  backdrop-filter:blur(12px) saturate(150%);
+  -webkit-backdrop-filter:blur(12px) saturate(150%);
+  border:0.5px solid rgba(8,27,74,.12)}
+
+/* Glasflächen */
+.glass{
+  background:rgba(255,255,255,.40);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border:0.5px solid rgba(8,27,74,.10);
+  border-radius:var(--radius-2xl);
+  box-shadow:0 24px 70px rgba(8,27,74,.14);
+}
+.pane{background:rgba(255,255,255,.72);border-radius:var(--radius-lg);border:0.5px solid rgba(8,27,74,.05)}
+
+/* Status-Pillen */
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;border-radius:var(--radius-full);padding:4px 12px}
+.pill-gruen{color:var(--money);background:#E7F6EF}
+.pill-violett{color:var(--purple);background:#F0EBFD}
+.pill-grau{color:var(--grey);background:#EEF1F6}
+
+/* Sanftes Erscheinen beim Scrollen */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s var(--ease-default),transform .5s var(--ease-default)}
+.reveal.in{opacity:1;transform:none}
+
+/* Seitenkopf */
+.kopf{padding:88px 0 var(--space-8)}
+.kopf h1{font-size:clamp(34px,4.2vw,52px);line-height:1.04;letter-spacing:-.035em;font-weight:800}
+.kopf h1 em{font-style:italic;color:var(--purple);line-height:1.1;display:inline-block;padding-bottom:4px}
+.kopf .sub{margin-top:var(--space-4);font-size:18px;color:var(--grey);max-width:52ch}
+
+footer{border-top:0.5px solid var(--line);padding:var(--space-6) 0;color:var(--grey);font-size:14px;position:relative;z-index:1}
+footer .wrap{display:flex;justify-content:space-between;align-items:center}
+
+@media (max-width:700px){
+  .nav-links{display:none}
+  .kopf{padding:76px 0 var(--space-6)}
+  footer .wrap{flex-direction:column;gap:var(--space-2);text-align:center}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important}
+  html{scroll-behavior:auto}
+  .reveal{opacity:1;transform:none}
+}
