@@ -17,10 +17,6 @@
 
   /* Bühne */
   .buehne{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-5);padding-top:56px}
-  .gruss{text-align:center;transition:opacity .4s var(--ease-default);animation:gruss .8s var(--ease-default) .35s both}
-  .gruss p{color:var(--grey);font-size:15px}
-  body.drin .gruss{opacity:0}
-  @keyframes gruss{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 
   .kamera{position:relative;width:min(1280px,96vw,calc((100svh - 190px) * 1.792));
     will-change:transform;
@@ -1094,8 +1090,6 @@
     .leiste{left:16px;top:80px}
     .raum-ui .inhalt{padding-top:136px}
     .buehne{padding-top:76px;gap:var(--space-3);justify-content:flex-start}
-    .gruss{padding:0 var(--space-6)}
-    .gruss p{font-size:14px}
     .kamera{width:190vw;max-width:none;margin-top:var(--space-4)}
     .raum .chip{font-size:11px;padding:5px 11px;top:50%;transform:translate(-50%,-50%) scale(1)}
     .raum:hover .chip,.raum:focus-visible .chip{transform:translate(-50%,-50%) scale(1)}
@@ -1106,7 +1100,6 @@
   @media (prefers-reduced-motion:reduce){
     .kamera{transition:none;animation:none}
     .kamera img,.raum{animation:none}
-    .gruss{animation:none}
     .schleier,.raum-ui{transition:none}
     .raum-ui .inhalt.aktiv > *{animation:none}
   }
@@ -1160,9 +1153,6 @@
 </div>
 
 <div class="buehne">
-  <div class="gruss">
-    <p>Jeder Raum eine Aufgabe. Fahr drüber, klick hinein.</p>
-  </div>
   <div class="kamera" id="kamera">
     <img src="bilder/haus-zoom.webp" alt="Dein currily-Haus im Querschnitt: jede Funktion ist ein Zimmer">
     <button class="raum" data-ziel="postfach"  style="--l:30.5%;--t:31%;   --w:14%;   --h:13.5%" type="button"><span class="chip">Postfach</span><span class="zahl violett" data-zahl="postfach">3</span></button>
