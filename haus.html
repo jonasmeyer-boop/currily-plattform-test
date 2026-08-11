@@ -17,9 +17,9 @@
 
   /* Anflug: Scroll-Film vom leeren Grundstück zum fertigen Haus */
   .anflug{position:fixed;inset:0;z-index:190;background:var(--bg);
-    display:flex;align-items:center;justify-content:center;padding-top:56px;
-    transition:opacity .7s var(--ease-default)}
-  .anflug.fertig{opacity:0;pointer-events:none}
+    display:flex;align-items:center;justify-content:center;padding-top:56px}
+  /* Übergang nur beim Überspringen — der Film blendet selbst Bild für Bild aus */
+  .anflug.fertig{opacity:0;pointer-events:none;transition:opacity .5s var(--ease-default)}
   .anflug-kamera{width:min(1280px,96vw,calc((100svh - 190px) * 1.792))}
   .anflug-kamera canvas{display:block;width:100%;aspect-ratio:1792/1000}
   .anflug-tafel{position:fixed;left:50%;top:13%;transform:translateX(-50%) translateY(10px);
