@@ -23,9 +23,7 @@
   /* Bühne */
   .buehne{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-5);padding-top:56px}
   .gruss{text-align:center;transition:opacity .4s var(--ease-default);animation:gruss .8s var(--ease-default) .35s both}
-  .gruss h1{font-size:clamp(26px,3.4vw,44px);letter-spacing:-.03em;line-height:1.05;font-weight:800}
-  .gruss h1 em{font-style:italic;color:var(--purple);line-height:1.1;display:inline-block;padding-bottom:4px}
-  .gruss p{margin-top:var(--space-1);color:var(--grey);font-size:15px}
+  .gruss p{color:var(--grey);font-size:15px}
   body.drin .gruss{opacity:0}
   @keyframes gruss{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 
@@ -1102,7 +1100,6 @@
     .raum-ui .inhalt{padding-top:136px}
     .buehne{padding-top:76px;gap:var(--space-3);justify-content:flex-start}
     .gruss{padding:0 var(--space-6)}
-    .gruss h1{font-size:26px}
     .gruss p{font-size:14px}
     .kamera{width:190vw;max-width:none;margin-top:var(--space-4)}
     .raum .chip{font-size:11px;padding:5px 11px;top:50%;transform:translate(-50%,-50%) scale(1)}
@@ -1143,7 +1140,6 @@
 
 <div class="buehne">
   <div class="gruss">
-    <h1>Willkommen in deinem <em>Haus.</em></h1>
     <p>Jeder Raum eine Aufgabe. Fahr drüber, klick hinein.</p>
   </div>
   <div class="kamera" id="kamera">
