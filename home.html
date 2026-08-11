@@ -1227,9 +1227,11 @@
   [data-raum="markt"] .mar-detail[hidden]{display:none!important}
   [data-raum="markt"] .mar-d-titel{font-size:clamp(24px,2.8vw,34px);font-weight:800;letter-spacing:-.025em}
   [data-raum="markt"] .mar-d-pills{display:flex;gap:var(--space-2);flex-wrap:wrap;margin-top:calc(-1*var(--space-3))}
-  [data-raum="markt"] .mar-d-held{display:grid;grid-template-columns:1.6fr 1fr;gap:var(--space-6);align-items:start}
-  [data-raum="markt"] .mar-d-bild{border-radius:var(--radius-2xl);overflow:hidden;box-shadow:0 24px 70px rgba(8,27,74,.18)}
-  [data-raum="markt"] .mar-d-bild img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:16/11}
+  /* Bild und Kauf-Panel exakt gleich hoch: Das Panel gibt die Höhe vor,
+     das Bild füllt sie deckend — Ober- und Unterkante bündig */
+  [data-raum="markt"] .mar-d-held{display:grid;grid-template-columns:1.6fr 1fr;gap:var(--space-6);align-items:stretch}
+  [data-raum="markt"] .mar-d-bild{position:relative;min-height:320px;border-radius:var(--radius-2xl);overflow:hidden;box-shadow:0 24px 70px rgba(8,27,74,.18)}
+  [data-raum="markt"] .mar-d-bild img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   [data-raum="markt"] .mar-d-kaufen{padding:var(--space-6);display:flex;flex-direction:column;gap:var(--space-5)}
   [data-raum="markt"] .mar-d-kaufen h4{font-size:15px;font-weight:500;color:var(--grey)}
   [data-raum="markt"] .mar-d-rendite{font-size:38px;font-weight:800;letter-spacing:-.02em;line-height:1}
@@ -1267,6 +1269,8 @@
   [data-raum="markt"] .mar-d-risiko{color:var(--grey);font-size:.8125rem;max-width:64ch}
   @media (max-width:800px){
     [data-raum="markt"] .mar-d-held{grid-template-columns:1fr}
+    [data-raum="markt"] .mar-d-bild{position:static;min-height:0}
+    [data-raum="markt"] .mar-d-bild img{position:static;height:auto;aspect-ratio:16/11}
     [data-raum="markt"] .mar-d-fgrid{grid-template-columns:1fr}
     [data-raum="markt"] .mar-d-plangrid{grid-template-columns:1fr}
     [data-raum="markt"] .mar-d-vergleich{grid-template-columns:1fr}
