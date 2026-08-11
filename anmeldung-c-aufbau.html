@@ -9,26 +9,38 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="plattform.css?v=2">
 <style>
-  /* Entwurf C: mit jedem ausgefüllten Feld baut sich das Haus ein Stück weiter auf */
+  /* Entwurf C: jedes fertige Feld ist eine echte Baustufe — die Stufen sitzen auf den
+     Phasen des Aufbau-Films (Bodenplatte ~10%, EG ~24%, 2. Etage ~44%, Dach ~62%, fertig 100%).
+     Ein Feld zählt erst, wenn es gültig ist — nicht beim ersten Buchstaben.
+     Nach Anmelden/Bestätigen wächst das Haus an die Stelle, wo es im Home steht,
+     die Anmelde-Oberfläche wird weggedrückt — der Aufbau-Film läuft nicht doppelt. */
   .szene{position:relative;z-index:1;min-height:100svh;max-width:1140px;margin:0 auto;
-    display:grid;grid-template-columns:1.15fr 1fr;gap:var(--space-12);align-items:center;
+    display:grid;grid-template-columns:1.15fr 1fr;grid-template-areas:"kopf karte" "buehne karte";
+    align-content:center;column-gap:var(--space-12);row-gap:0;
     padding:var(--space-10) var(--space-6)}
-  .baustelle{animation:grussAuf .9s var(--ease-default) both}
+  .baustelle{grid-area:kopf;animation:grussAuf .9s var(--ease-default) both}
   .baustelle .logo{font-size:26px}
   .baustelle h1{margin-top:var(--space-8);font-size:clamp(34px,3.8vw,50px);line-height:1.05;letter-spacing:-.035em;font-weight:800}
   .baustelle h1 em{font-style:italic;color:var(--purple)}
   .baustelle .sub{margin-top:var(--space-4);font-size:18px;color:var(--grey);max-width:44ch}
-  .baustelle canvas{display:block;width:100%;aspect-ratio:1792/1000;margin-top:var(--space-8);
+  @keyframes grussAuf{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  .bau-buehne{grid-area:buehne;animation:grussAuf .9s var(--ease-default) both}
+  .bau-buehne canvas{display:block;width:100%;aspect-ratio:1792/1000;margin-top:var(--space-6);
     mix-blend-mode:multiply;pointer-events:none}
+  .bau-buehne.fertig canvas{animation:bauPop .6s var(--ease-spring)}
+  @keyframes bauPop{0%{transform:scale(1)}45%{transform:scale(1.02)}100%{transform:scale(1)}}
   .baustand{margin-top:var(--space-3);font-size:.9rem;font-weight:600;color:var(--grey);
     display:flex;align-items:center;gap:var(--space-3)}
   .baustand .balken{flex:1;height:6px;border-radius:var(--radius-full);background:rgba(8,27,74,.08);overflow:hidden}
   .baustand .balken i{display:block;height:100%;width:0;border-radius:var(--radius-full);
     background:linear-gradient(90deg,var(--aqua),var(--purple));
     transition:width .5s var(--ease-default)}
-  @keyframes grussAuf{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .baustand-text{transition:color var(--dur-fast) var(--ease-default)}
+  .bau-buehne.fertig .baustand-text{color:var(--money)}
+  .bau-buehne.fertig .balken i{background:var(--money)}
 
-  .an-karte{width:100%;max-width:440px;justify-self:end;padding:var(--space-8);
+  .an-karte{grid-area:karte;width:100%;max-width:440px;justify-self:end;align-self:center;padding:var(--space-8);
     animation:karteAn .9s var(--ease-default) .15s both}
   @keyframes karteAn{from{opacity:0;transform:translateY(18px) scale(.985)}to{opacity:1;transform:none}}
 
@@ -69,21 +81,44 @@
   .an-wechsel button{border:0;background:none;padding:0;cursor:pointer;
     font:inherit;font-size:.9rem;font-weight:700;color:var(--purple)}
 
+  /* E-Mail bestätigen: sitzt exakt an der Stelle des Registrierungsformulars */
+  .an-code-text{font-size:.95rem;line-height:1.5;color:var(--grey)}
+  .an-code-text b{color:var(--ink)}
+  .an-code-input{letter-spacing:.35em;font-weight:700;font-size:20px;text-align:center;
+    font-variant-numeric:tabular-nums}
+  .an-nochmal{border:0;background:none;padding:0;cursor:pointer;align-self:center;
+    font:inherit;font-size:.85rem;font-weight:600;color:var(--purple)}
+
   .zurueck{position:fixed;left:20px;bottom:20px;z-index:10}
-  body.geht-rein .szene{opacity:0;transform:scale(.985);transition:opacity .5s var(--ease-default),transform .5s var(--ease-default)}
+
+  /* Einzug: Haus wächst in die Home-Position, der Rest wird weggedrückt.
+     animation:none ist Pflicht — die Einschwebe-Animationen (fill:both) würden
+     sonst ihre End-Deckkraft festhalten und die Ausblendung übersteuern */
+  body.geht-rein .baustelle,body.geht-rein .baustand,body.geht-rein .zurueck{opacity:0;animation:none;
+    transition:opacity .45s var(--ease-default)}
+  body.geht-rein .an-karte{opacity:0;transform:translateX(48px);animation:none;
+    transition:opacity .5s var(--ease-default),transform .5s var(--ease-default)}
+  body.geht-rein .bau-buehne{background:transparent;animation:none}
 
   @media (max-width:900px){
-    .szene{grid-template-columns:1fr;gap:var(--space-8);padding:var(--space-8) var(--space-5)}
+    .szene{grid-template-columns:1fr;grid-template-areas:"kopf" "buehne" "karte";
+      gap:0;padding:var(--space-8) var(--space-5)}
     .baustelle h1{margin-top:var(--space-6)}
-    .baustelle canvas{max-width:460px;margin:var(--space-6) auto 0}
-    .baustand{max-width:460px;margin:var(--space-3) auto 0}
-    .an-karte{justify-self:stretch;max-width:none;padding:var(--space-6)}
+    /* Die Bau-Bühne bleibt beim Tippen oben im Bild kleben — sonst baut das Haus
+       unsichtbar hinter der Tastatur */
+    .bau-buehne{position:sticky;top:0;z-index:5;padding:var(--space-2) 0 var(--space-3);
+      background:rgba(255,255,255,.9);
+      backdrop-filter:blur(10px) saturate(160%);-webkit-backdrop-filter:blur(10px) saturate(160%)}
+    .bau-buehne canvas{max-width:330px;margin:0 auto}
+    .baustand{max-width:330px;margin:var(--space-2) auto 0}
+    .an-karte{justify-self:stretch;max-width:none;padding:var(--space-6);margin-top:var(--space-5)}
+  }
+  @media (max-width:700px){
+    .zurueck{position:static;display:flex;width:max-content;margin:var(--space-6) auto var(--space-8)}
   }
   @media (prefers-reduced-motion:reduce){
     .baustand .balken i{transition:none}
-  }
-  @media (max-width:700px){
-    .zurueck{position:static;display:flex;width:max-content;margin:var(--space-2) auto var(--space-8)}
+    .bau-buehne.fertig canvas{animation:none}
   }
 </style>
 </head>
@@ -94,11 +129,14 @@
   <div class="szene">
     <section class="baustelle">
       <a class="logo" href="anmeldung-varianten.html" aria-label="currily">currily<span>.</span></a>
-      <h1>Dein <em>Home</em> entsteht.</h1>
-      <p class="sub">Mit jedem Feld baut sich dein Home ein Stück weiter auf — beim Anmelden steht es längst.</p>
-      <canvas id="bau-cv" width="1792" height="1000" aria-hidden="true"></canvas>
-      <p class="baustand"><span class="balken"><i></i></span><span class="baustand-text">Grundstück bereit</span></p>
+      <h1 class="bau-titel">Dein <em>Home</em> entsteht.</h1>
+      <p class="sub bau-sub">Jedes fertige Feld ist eine Baustufe — beim letzten Haken ist dein Home bezugsfertig.</p>
     </section>
+
+    <div class="bau-buehne">
+      <canvas id="bau-cv" width="1792" height="1000" aria-hidden="true"></canvas>
+      <p class="baustand"><span class="balken"><i></i></span><span class="baustand-text">Dein Grundstück ist reserviert</span></p>
+    </div>
 
     <section class="an-karte glass" aria-label="Anmelden oder Konto eröffnen">
       <div class="an-seg registrieren" role="tablist" aria-label="Anmelden oder Konto eröffnen">
@@ -147,6 +185,18 @@
         <button class="btn btn-primary an-cta" type="submit" disabled>Konto eröffnen</button>
       </form>
 
+      <form class="an-form" id="form-code" hidden>
+        <p class="an-code-text">Wir haben dir einen Bestätigungscode an <b class="an-code-mail">deine E-Mail</b> geschickt.</p>
+        <div class="an-feld">
+          <label class="an-label" for="an-code">Bestätigungscode</label>
+          <input class="an-input an-code-input" id="an-code" type="text" inputmode="numeric" maxlength="6"
+            pattern="[0-9]{6}" placeholder="000000" autocomplete="one-time-code" required>
+        </div>
+        <p class="an-hinweis" role="status">Demo — jeder 6-stellige Code funktioniert.</p>
+        <button class="btn btn-primary an-cta" type="submit">Bestätigen &amp; einziehen</button>
+        <button type="button" class="an-nochmal">Angaben ändern</button>
+      </form>
+
       <p class="an-wechsel"><span>Schon ein Konto?</span> <button type="button">Anmelden</button></p>
     </section>
   </div>
@@ -162,25 +212,35 @@
   var tabNeu = document.getElementById('tab-registrieren');
   var formAn = document.getElementById('form-anmelden');
   var formNeu = document.getElementById('form-registrieren');
+  var formCode = document.getElementById('form-code');
   var wechsel = document.querySelector('.an-wechsel');
   var wechselText = wechsel.querySelector('span');
   var wechselBtn = wechsel.querySelector('button');
+  var titel = document.querySelector('.bau-titel');
+  var sub = document.querySelector('.bau-sub');
+  var reduziert = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function zeige(neu){
+    formCode.hidden = true;
+    seg.hidden = false;
+    wechsel.hidden = false;
     seg.classList.toggle('registrieren', neu);
     tabAn.setAttribute('aria-selected', String(!neu));
     tabNeu.setAttribute('aria-selected', String(neu));
     formAn.hidden = neu;
     formNeu.hidden = !neu;
+    titel.innerHTML = neu ? 'Dein <em>Home</em> entsteht.' : 'Willkommen <em>zuhause</em>.';
+    sub.textContent = neu
+      ? 'Jedes fertige Feld ist eine Baustufe — beim letzten Haken ist dein Home bezugsfertig.'
+      : 'Dein Home steht schon — melde dich an und komm rein.';
     wechselText.textContent = neu ? 'Schon ein Konto?' : 'Neu bei currily?';
     wechselBtn.textContent = neu ? 'Anmelden' : 'Konto eröffnen';
     history.replaceState(null, '', neu ? location.pathname : '#anmelden');
-    baustandNeu();
+    baustandNeu(true);
   }
   tabAn.addEventListener('click', function(){ zeige(false); });
   tabNeu.addEventListener('click', function(){ zeige(true); });
   wechselBtn.addEventListener('click', function(){ zeige(formNeu.hidden); });
-  if (location.hash === '#anmelden') zeige(false);
 
   var vergessen = document.querySelector('.an-vergessen');
   var vergessenHinweis = document.querySelector('.an-vergessen-hinweis');
@@ -190,30 +250,24 @@
   var ctaNeu = formNeu.querySelector('.an-cta');
   haken.addEventListener('change', function(){ ctaNeu.disabled = !haken.checked; baustandNeu(); });
 
-  [formAn, formNeu].forEach(function(f){
-    f.addEventListener('submit', function(e){
-      e.preventDefault();
-      var b = f.querySelector('.an-cta');
-      b.disabled = true;
-      b.textContent = 'Einen Moment…';
-      document.body.classList.add('geht-rein');
-      setTimeout(function(){ location.href = 'home.html'; }, 650);
-    });
-  });
-
-  /* ---- Haus baut sich mit dem Formular auf ---- */
+  /* ---- Die Bau-Bühne: Baustufen sitzen auf den echten Phasen des Films ---- */
   var cv = document.getElementById('bau-cv');
   var ctx = cv.getContext('2d');
-  var reduziert = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Jedes 2. Bild = flüssiger Mini-Film je Baustufe (Dateien teilen sich mit home.html) */
   var NUMMERN = [];
-  for (var n = 1; n <= 110; n += 4) NUMMERN.push(n);
-  if (NUMMERN[NUMMERN.length - 1] !== 110) NUMMERN.push(110);
+  for (var n = 1; n <= 109; n += 2) NUMMERN.push(n);
+  NUMMERN.push(110);
   var N = NUMMERN.length;
   var frames = new Array(N);
-  NUMMERN.forEach(function(nr, i){
+  /* Das Fertig-Bild lädt zuerst: wer anmeldet, sieht sofort das fertige Haus —
+     nie ein halbes, nur weil die Dateien noch unterwegs sind */
+  var reihenfolge = [N - 1, 0];
+  for (var r = 1; r < N - 1; r++) reihenfolge.push(r);
+  reihenfolge.forEach(function(i){
     var im = new Image();
-    im.onload = function(){ if (i === 0) male(0); };
-    im.src = 'anflug/frame_' + String(nr).padStart(3, '0') + '.jpg';
+    im.onload = function(){ if (!laeuft) male(ist); };
+    im.src = 'anflug/frame_' + String(NUMMERN[i]).padStart(3, '0') + '.jpg';
     frames[i] = im;
   });
 
@@ -227,36 +281,115 @@
     ctx.clearRect(0, 0, cv.width, cv.height);
     ctx.drawImage(im, 0, 0, cv.width, cv.height);
   }
+  function idxZuFrame(nr){
+    var best = 0;
+    for (var i = 0; i < N; i++) if (Math.abs(NUMMERN[i] - nr) < Math.abs(NUMMERN[best] - nr)) best = i;
+    return best;
+  }
+
+  /* Stufe -> Filmbild + Tafeltext. Die Bilder sind auf Sicht geprüft:
+     12 Bodenplatte, 26 Erdgeschoss, 48 zwei Etagen, 68 Dachstuhl, 110 fertig. */
+  var STUFEN = [
+    { frame: 1,   text: 'Dein Grundstück ist reserviert' },
+    { frame: 12,  text: 'Bodenplatte liegt' },
+    { frame: 26,  text: 'Erdgeschoss steht' },
+    { frame: 48,  text: 'Zweite Etage steht' },
+    { frame: 68,  text: 'Dachstuhl sitzt' },
+    { frame: 110, text: 'Bezugsfertig.' }
+  ];
 
   var felder = Array.prototype.slice.call(formNeu.querySelectorAll('.an-input'));
+  var buehne = document.querySelector('.bau-buehne');
   var balken = document.querySelector('.baustand .balken i');
   var baustandText = document.querySelector('.baustand-text');
-  var STUFEN = ['Grundstück bereit', 'Fundament steht', 'Wände stehen', 'Dach ist drauf', 'Innenausbau läuft', 'Dein Home ist fertig'];
 
-  function fortschritt(){
-    if (formNeu.hidden) return 1; /* Anmelden: das Haus steht längst */
-    var voll = felder.filter(function(f){ return f.value.trim() !== ''; }).length + (haken.checked ? 1 : 0);
-    return voll / (felder.length + 1);
+  /* Ein Feld zählt erst als Baustufe, wenn es wirklich gültig ist
+     (E-Mail mit @, Passwort ab 8 Zeichen) — nicht beim ersten Buchstaben */
+  function stufe(){
+    if (!formCode.hidden) return STUFEN.length - 1;
+    if (formNeu.hidden) return STUFEN.length - 1;
+    var voll = felder.filter(function(f){ return f.value.trim() !== '' && f.checkValidity(); }).length;
+    return Math.min(voll + (haken.checked ? 1 : 0), STUFEN.length - 1);
   }
 
   var ist = 0, ziel = 0, laeuft = false;
   function tick(){
-    ist += (ziel - ist) * 0.07;
-    if (Math.abs(ziel - ist) < 0.004) { ist = ziel; laeuft = false; }
-    male(ist * (N - 1));
-    if (laeuft) requestAnimationFrame(tick);
+    var schritt = 0.62; /* konstantes Bautempo: jede Stufe läuft als kurzer Filmschnipsel */
+    if (ist < ziel) ist = Math.min(ziel, ist + schritt);
+    else if (ist > ziel) ist = Math.max(ziel, ist - schritt);
+    male(ist);
+    if (ist === ziel) { laeuft = false; return; }
+    requestAnimationFrame(tick);
   }
-  function baustandNeu(){
-    var p = fortschritt();
-    ziel = p;
-    balken.style.width = (p * 100) + '%';
-    baustandText.textContent = formNeu.hidden ? STUFEN[STUFEN.length - 1]
-      : STUFEN[Math.min(STUFEN.length - 1, Math.floor(p * (STUFEN.length - 1) + 0.001))];
-    if (reduziert) { ist = ziel; male(ist * (N - 1)); return; }
+  /* sofort=true springt ohne Bau-Animation auf den Stand — beim Tab-Wechsel und
+     beim Start steht das Haus einfach da; gebaut wird nur, während man tippt */
+  function baustandNeu(sofort){
+    var s = stufe();
+    ziel = idxZuFrame(STUFEN[s].frame);
+    balken.style.width = (s / (STUFEN.length - 1) * 100) + '%';
+    baustandText.textContent = formNeu.hidden && formCode.hidden ? 'Dein Home steht — komm rein.' : STUFEN[s].text;
+    buehne.classList.toggle('fertig', formAn.hidden && s === STUFEN.length - 1);
+    if (reduziert || sofort === true) { ist = ziel; laeuft = false; male(ist); return; }
     if (!laeuft) { laeuft = true; requestAnimationFrame(tick); }
   }
-  felder.forEach(function(f){ f.addEventListener('input', baustandNeu); });
-  baustandNeu();
+  felder.forEach(function(f){
+    f.addEventListener('input', function(){ baustandNeu(); });
+    f.addEventListener('change', function(){ baustandNeu(); });
+  });
+
+  /* ---- Einzug: das Haus ist schon da — es wächst an seine Home-Position,
+          die Anmelde-Oberfläche wird weggedrückt, der Film läuft nicht doppelt ---- */
+  function einziehen(){
+    document.body.classList.add('geht-rein');
+    if (reduziert){ location.href = 'home.html#willkommen'; return; }
+    /* Zielgeometrie = .kamera im Home: width:min(1280px,96vw,(100svh-190px)*1.792), mittig unter 56px Kopf */
+    var r = cv.getBoundingClientRect();
+    var vw = innerWidth, vh = innerHeight;
+    var W = Math.min(1280, vw * 0.96, (vh - 190) * 1.792);
+    var x = (vw - W) / 2;
+    var y = 56 + (vh - 56 - W / 1.792) / 2;
+    cv.style.position = 'fixed';
+    cv.style.left = r.left + 'px';
+    cv.style.top = r.top + 'px';
+    cv.style.width = r.width + 'px';
+    cv.style.margin = '0';
+    cv.style.zIndex = '60';
+    cv.style.transformOrigin = 'top left';
+    void cv.getBoundingClientRect();
+    cv.style.transition = 'transform 1.05s cubic-bezier(.3,.7,.25,1)';
+    cv.style.transform = 'translate(' + (x - r.left) + 'px,' + (y - r.top) + 'px) scale(' + (W / r.width) + ')';
+    setTimeout(function(){ location.href = 'home.html#willkommen'; }, 1150);
+  }
+
+  formAn.addEventListener('submit', function(e){
+    e.preventDefault();
+    var b = formAn.querySelector('.an-cta');
+    b.disabled = true; b.textContent = 'Einen Moment…';
+    einziehen();
+  });
+
+  /* Registrieren: erst E-Mail bestätigen — der Schritt ersetzt das Formular an Ort und Stelle */
+  formNeu.addEventListener('submit', function(e){
+    e.preventDefault();
+    document.querySelector('.an-code-mail').textContent = document.getElementById('neu-mail').value;
+    formNeu.hidden = true;
+    seg.hidden = true;
+    wechsel.hidden = true;
+    formCode.hidden = false;
+    titel.innerHTML = 'Der <em>Schlüssel</em> liegt bereit.';
+    sub.textContent = 'Bestätige deine E-Mail-Adresse — dann ziehst du ein.';
+    baustandNeu();
+    document.getElementById('an-code').focus();
+  });
+  formCode.addEventListener('submit', function(e){
+    e.preventDefault();
+    var b = formCode.querySelector('.an-cta');
+    b.disabled = true; b.textContent = 'Einen Moment…';
+    einziehen();
+  });
+  formCode.querySelector('.an-nochmal').addEventListener('click', function(){ zeige(true); });
+
+  if (location.hash === '#anmelden') zeige(false); else baustandNeu(true);
 })();
 </script>
 </body>
