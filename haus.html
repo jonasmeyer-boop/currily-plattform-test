@@ -11,34 +11,37 @@
 <style>
   html,body{height:100%;overflow:hidden}
 
-  /* Kopfzeile schwebt über allem */
   .top{position:fixed;top:var(--space-4);left:0;right:0;z-index:200;margin:0 auto;max-width:1092px;padding:0 var(--space-6);pointer-events:none}
   .top .nav-inner{pointer-events:auto}
-  .konto{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600;
+  .konto-chip{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600;
     padding:8px 16px 8px 8px;border-radius:var(--radius-full);
     background:rgba(255,255,255,.45);border:0.5px solid rgba(8,27,74,.12);
     backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%)}
-  .konto .avatar{width:30px;height:30px;border-radius:50%;background:var(--purple);color:#fff;
+  .konto-chip .avatar{width:30px;height:30px;border-radius:50%;background:var(--purple);color:#fff;
     display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
 
-  /* Bühne: das Haus */
+  /* Bühne */
   .buehne{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-5);padding-top:56px}
-  .gruss{text-align:center;transition:opacity .4s var(--ease-default)}
+  .gruss{text-align:center;transition:opacity .4s var(--ease-default);animation:gruss .8s var(--ease-default) .35s both}
   .gruss h1{font-size:clamp(26px,3.4vw,44px);letter-spacing:-.03em;line-height:1.05;font-weight:800}
   .gruss h1 em{font-style:italic;color:var(--purple);line-height:1.1;display:inline-block;padding-bottom:4px}
   .gruss p{margin-top:var(--space-1);color:var(--grey);font-size:15px}
   body.drin .gruss{opacity:0}
+  @keyframes gruss{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
 
   .kamera{position:relative;width:min(1280px,96vw,calc((100svh - 190px) * 1.792));
     will-change:transform;
-    transition:transform 1.05s cubic-bezier(.3,.7,.25,1)}
+    transition:transform 1.05s cubic-bezier(.3,.7,.25,1);
+    animation:ankunft 1s var(--ease-default) both}
   .kamera img{display:block;width:100%;height:auto;pointer-events:none;-webkit-user-select:none;user-select:none}
+  @keyframes ankunft{from{opacity:0;transform:scale(.955) translateY(14px)}to{opacity:1;transform:none}}
 
-  /* Zimmer: unsichtbare Klickflächen mit Glas-Schild */
+  /* Zimmer */
   .raum{position:absolute;left:var(--l);top:var(--t);width:var(--w);height:var(--h);
     background:transparent;border:none;cursor:pointer;border-radius:10px;padding:0;
     transition:background var(--dur-fast) var(--ease-default),box-shadow var(--dur-fast) var(--ease-default)}
-  .raum:hover{background:rgba(140,236,242,.14);box-shadow:inset 0 0 0 2px rgba(112,71,234,.55),0 0 34px rgba(112,71,234,.18)}
+  .raum:hover,.raum:focus-visible{background:rgba(255,238,200,.16);
+    box-shadow:inset 0 0 0 2px rgba(112,71,234,.55),0 0 40px rgba(112,71,234,.22)}
   .raum .chip{position:absolute;left:50%;top:-14px;transform:translate(-50%,-100%) scale(.94);
     white-space:nowrap;font-size:13px;font-weight:700;color:var(--ink);
     background:rgba(255,255,255,.7);border:0.5px solid rgba(8,27,74,.10);
@@ -48,43 +51,61 @@
     opacity:0;pointer-events:none;
     transition:opacity var(--dur-fast) var(--ease-default),transform var(--dur-fast) var(--ease-spring)}
   .raum:hover .chip,.raum:focus-visible .chip{opacity:1;transform:translate(-50%,-100%) scale(1)}
-  .raum.bald{cursor:default}
-  .raum.bald:hover{background:rgba(8,27,74,.05);box-shadow:inset 0 0 0 2px rgba(8,27,74,.18)}
-  .raum.bald .chip{color:var(--grey)}
   @media (hover:none){ .raum .chip{opacity:1;transform:translate(-50%,-100%) scale(1)} }
   body.drin .raum{pointer-events:none}
-  body.drin .raum .chip{opacity:0}
+  body.drin .raum .chip,body.drin .raum .zahl{opacity:0}
 
-  /* Schleier + Raum-Oberfläche nach dem Zoom */
+  /* Türschilder mit Live-Zahl */
+  .raum .zahl{position:absolute;right:6px;bottom:6px;font-size:11px;font-weight:800;color:var(--ink);
+    background:rgba(255,255,255,.78);border:0.5px solid rgba(8,27,74,.10);
+    border-radius:var(--radius-full);padding:3px 9px;pointer-events:none;
+    box-shadow:0 6px 16px rgba(8,27,74,.14);font-variant-numeric:tabular-nums;
+    transition:opacity var(--dur-fast) var(--ease-default)}
+  .raum .zahl.violett{background:var(--purple);color:#fff;border-color:var(--purple)}
+
+  /* Schleier + Raum-Oberfläche */
   .schleier{position:fixed;inset:0;z-index:150;background:rgba(255,255,255,.42);
     backdrop-filter:blur(10px) saturate(160%);-webkit-backdrop-filter:blur(10px) saturate(160%);
     opacity:0;pointer-events:none;transition:opacity .5s var(--ease-default) .45s}
   body.drin .schleier{opacity:1}
 
   .raum-ui{position:fixed;inset:0;z-index:160;overflow-y:auto;opacity:0;pointer-events:none;
-    transform:translateY(14px);transition:opacity .5s var(--ease-default) .55s,transform .5s var(--ease-default) .55s}
-  .raum-ui.offen{opacity:1;pointer-events:auto;transform:none}
-  .raum-ui .inhalt{max-width:960px;margin:0 auto;padding:110px var(--space-6) 80px;display:none;flex-direction:column;gap:var(--space-5)}
+    transition:opacity .35s var(--ease-default) .5s}
+  .raum-ui.offen{opacity:1;pointer-events:auto}
+  .raum-ui .inhalt{max-width:960px;margin:0 auto;padding:118px var(--space-6) 90px;display:none;flex-direction:column;gap:var(--space-5)}
   .raum-ui .inhalt.aktiv{display:flex}
+  .raum-ui .inhalt.aktiv > *{animation:panelIn .55s var(--ease-default) both}
+  .raum-ui .inhalt.aktiv > *:nth-child(1){animation-delay:.55s}
+  .raum-ui .inhalt.aktiv > *:nth-child(2){animation-delay:.62s}
+  .raum-ui .inhalt.aktiv > *:nth-child(3){animation-delay:.69s}
+  .raum-ui .inhalt.aktiv > *:nth-child(4){animation-delay:.76s}
+  .raum-ui .inhalt.aktiv > *:nth-child(5){animation-delay:.83s}
+  .raum-ui .inhalt.aktiv > *:nth-child(6){animation-delay:.90s}
+  .raum-ui .inhalt.aktiv > *:nth-child(n+7){animation-delay:.96s}
+  @keyframes panelIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
   .raum-ui h2{font-size:clamp(28px,3.4vw,42px);letter-spacing:-.03em;font-weight:800}
   .raum-ui h2 em{font-style:italic;color:var(--purple)}
-  .zurueck{position:fixed;top:84px;left:max(24px,calc((100vw - 1092px)/2));z-index:210;
-    display:none;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer}
-  body.drin .zurueck{display:inline-flex}
 
+  .leiste{position:fixed;top:84px;left:max(24px,calc((100vw - 1092px)/2));z-index:210;
+    display:none;align-items:center;gap:var(--space-3)}
+  body.drin .leiste{display:flex}
+  .ort{font-size:13px;font-weight:700;color:var(--grey);
+    background:rgba(255,255,255,.6);border:0.5px solid rgba(8,27,74,.10);
+    backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%);
+    border-radius:var(--radius-full);padding:8px 14px}
+
+  /* Gemeinsame Bausteine für Raum-Module */
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)}
   .kpi{padding:var(--space-5) var(--space-6)}
   .kpi h4{font-size:13px;font-weight:500;color:var(--grey)}
   .kpi b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
   .kpi .delta{font-size:13px;font-weight:700;color:var(--money)}
-
   table{width:100%;border-collapse:collapse;font-size:15px}
   th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--grey);font-weight:600;text-align:left;padding:var(--space-3) var(--space-5)}
   td{padding:var(--space-4) var(--space-5);border-top:0.5px solid var(--line);font-variant-numeric:tabular-nums}
   td:last-child,th:last-child{text-align:right}
   td b{font-weight:700;color:var(--money)}
   .tabelle{overflow-x:auto;padding:var(--space-2)}
-
   .zeile{display:flex;justify-content:space-between;align-items:center;gap:var(--space-5);padding:var(--space-4) var(--space-5)}
   .zeile + .zeile{margin-top:var(--space-3)}
   .zeile .l b{display:block;font-weight:700}
@@ -93,11 +114,989 @@
   .zeile .r b{display:block;font-weight:700}
   .zeile .r span{font-size:13px;color:var(--money);font-weight:700}
 
+  /* --- finanzen --- */
+[data-raum="finanzen"] .fin-intro {
+  color: var(--grey);
+  margin: var(--space-2) 0 var(--space-6);
+  max-width: 52ch;
+}
+[data-raum="finanzen"] .kpis {
+  margin-bottom: var(--space-6);
+}
+[data-raum="finanzen"] .fin-panel {
+  padding: var(--space-6);
+}
+[data-raum="finanzen"] .fin-chartpanel {
+  margin-bottom: var(--space-6);
+}
+[data-raum="finanzen"] .fin-unten {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+@media (max-width: 900px) {
+  [data-raum="finanzen"] .fin-unten {
+    grid-template-columns: 1fr;
+  }
+}
+[data-raum="finanzen"] .fin-panelkopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+[data-raum="finanzen"] .fin-panelkopf h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+[data-raum="finanzen"] .fin-sub {
+  color: var(--grey);
+  font-size: 0.85rem;
+}
+[data-raum="finanzen"] .fin-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Chart */
+[data-raum="finanzen"] .fin-chartwrap {
+  position: relative;
+  margin: 0;
+}
+[data-raum="finanzen"] .fin-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+[data-raum="finanzen"] .fin-gridlines line {
+  stroke: rgba(8, 27, 74, 0.07);
+  stroke-width: 1;
+}
+[data-raum="finanzen"] .fin-ylabel text,
+[data-raum="finanzen"] .fin-mlabels text {
+  fill: var(--grey);
+  font-size: 11px;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+}
+[data-raum="finanzen"] .fin-linie {
+  fill: none;
+  stroke: var(--purple);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+[data-raum="finanzen"] .fin-flaeche {
+  fill: url(#fin-grad);
+}
+[data-raum="finanzen"] .fin-punkt {
+  fill: var(--bg);
+  stroke: var(--purple);
+  stroke-width: 2;
+  transition: r var(--dur-fast) var(--ease-default);
+}
+[data-raum="finanzen"] .fin-hit {
+  fill: transparent;
+  cursor: pointer;
+}
+[data-raum="finanzen"] .fin-hit:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+[data-raum="finanzen"] .fin-tooltip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  opacity: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  white-space: nowrap;
+  transform: translate(-50%, -135%);
+  transition: opacity var(--dur-fast) var(--ease-default);
+}
+[data-raum="finanzen"] .fin-tooltip.fin-sichtbar {
+  opacity: 1;
+}
+[data-raum="finanzen"] .fin-tip-monat {
+  display: block;
+  color: var(--grey);
+  font-size: 0.75rem;
+}
+[data-raum="finanzen"] .fin-tip-wert {
+  display: block;
+  color: var(--money);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Historie */
+[data-raum="finanzen"] .fin-filterzeile {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+[data-raum="finanzen"] .fin-filter {
+  min-height: 44px;
+  cursor: pointer;
+  transition: transform var(--dur-instant) var(--ease-spring), background-color var(--dur-fast) var(--ease-default), color var(--dur-fast) var(--ease-default);
+}
+[data-raum="finanzen"] .fin-filter:hover {
+  transform: translateY(-2px);
+}
+[data-raum="finanzen"] .fin-filter:active {
+  transform: scale(0.97);
+}
+[data-raum="finanzen"] .fin-filter:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+[data-raum="finanzen"] .fin-filter[aria-pressed="true"] {
+  background: var(--purple);
+  border-color: var(--purple);
+  color: #fff;
+}
+[data-raum="finanzen"] .fin-rechts {
+  text-align: right;
+}
+[data-raum="finanzen"] .fin-datum {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+[data-raum="finanzen"] .fin-betrag {
+  color: var(--money);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+[data-raum="finanzen"] .fin-leer td {
+  color: var(--grey);
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+}
+
+/* Steuern */
+[data-raum="finanzen"] .fin-frei {
+  margin-bottom: var(--space-5);
+}
+[data-raum="finanzen"] .fin-frei-zeile {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: var(--ink);
+  margin-bottom: var(--space-2);
+}
+[data-raum="finanzen"] .fin-frei-zeile b {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+[data-raum="finanzen"] .fin-balken {
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: rgba(8, 27, 74, 0.08);
+  overflow: hidden;
+}
+[data-raum="finanzen"] .fin-balken-wert {
+  display: block;
+  height: 100%;
+  width: 80.1%;
+  border-radius: var(--radius-full);
+  background: var(--purple);
+}
+[data-raum="finanzen"] .fin-hinweis {
+  color: var(--grey);
+  font-size: 0.85rem;
+  margin: var(--space-2) 0 0;
+}
+[data-raum="finanzen"] .fin-steuer .zeile {
+  margin-top: var(--space-4);
+}
+[data-raum="finanzen"] .fin-steuer .zeile .l {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+[data-raum="finanzen"] .fin-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  background: rgba(8, 27, 74, 0.04);
+  color: var(--ink);
+}
+[data-raum="finanzen"] .fin-icon svg {
+  width: 20px;
+  height: 20px;
+}
+[data-raum="finanzen"] .fin-zeile-text {
+  display: flex;
+  flex-direction: column;
+}
+[data-raum="finanzen"] .fin-zeile-titel {
+  font-weight: 600;
+  color: var(--ink);
+}
+[data-raum="finanzen"] .fin-zeile-sub {
+  color: var(--grey);
+  font-size: 0.85rem;
+}
+[data-raum="finanzen"] .fin-download {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  transition: transform var(--dur-instant) var(--ease-spring);
+}
+[data-raum="finanzen"] .fin-download svg {
+  width: 18px;
+  height: 18px;
+}
+[data-raum="finanzen"] .fin-download:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+[data-raum="finanzen"] .fin-download:active:not(:disabled) {
+  transform: scale(0.97);
+}
+[data-raum="finanzen"] .fin-download:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+[data-raum="finanzen"] .fin-download:disabled {
+  cursor: default;
+  opacity: 1;
+  color: var(--ink);
+}
+[data-raum="finanzen"] .fin-status {
+  margin: var(--space-3) 0 0;
+  font-size: 0.85rem;
+  color: var(--grey);
+  min-height: 1.2em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-raum="finanzen"] * {
+    transition: none !important;
+  }
+}
+  /* --- projekte --- */
+[data-raum="projekte"] .pro-kopf{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-4);padding:var(--space-6);margin-bottom:var(--space-4)}
+[data-raum="projekte"] .pro-kopf-label{display:block;color:var(--grey);font-size:.875rem;margin-bottom:var(--space-1)}
+[data-raum="projekte"] .pro-portfoliowert{display:block;font-size:clamp(1.75rem,4vw,2.5rem);font-weight:700;line-height:1.1;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
+[data-raum="projekte"] .pro-kopf-sub{margin:var(--space-1) 0 0;color:var(--grey);font-size:.875rem;font-variant-numeric:tabular-nums}
+
+[data-raum="projekte"] .pro-pane{padding:var(--space-6);margin-bottom:var(--space-4)}
+[data-raum="projekte"] .pro-titel{margin:0 0 var(--space-4);font-size:1.0625rem;font-weight:600;color:var(--ink)}
+
+[data-raum="projekte"] .pro-balken{display:flex;gap:2px;height:16px;margin-bottom:var(--space-4)}
+[data-raum="projekte"] .pro-seg{width:0;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(8,27,74,.06);transition:width .7s var(--ease-default),transform var(--dur-fast) var(--ease-spring)}
+[data-raum="projekte"] .pro-seg:first-child{border-top-left-radius:8px;border-bottom-left-radius:8px}
+[data-raum="projekte"] .pro-seg:last-child{border-top-right-radius:8px;border-bottom-right-radius:8px}
+[data-raum="projekte"] .pro-seg.pro-an{width:var(--pro-anteil)}
+[data-raum="projekte"] .pro-seg:hover{transform:translateY(-2px)}
+[data-raum="projekte"] .pro-seg-1{background:var(--purple)}
+[data-raum="projekte"] .pro-seg-2{background:#A98BFF}
+[data-raum="projekte"] .pro-seg-3{background:#C7D0E0}
+[data-raum="projekte"] .pro-legende{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:var(--space-2) var(--space-6)}
+[data-raum="projekte"] .pro-legende li{display:flex;align-items:center;gap:var(--space-2);font-size:.875rem}
+[data-raum="projekte"] .pro-legende-name{color:var(--grey)}
+[data-raum="projekte"] .pro-punkt{width:10px;height:10px;border-radius:var(--radius-full);box-shadow:inset 0 0 0 1px rgba(8,27,74,.06);flex:none}
+[data-raum="projekte"] .pro-prozent{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+
+[data-raum="projekte"] .pro-karten{display:grid;gap:var(--space-3);margin-bottom:var(--space-4)}
+[data-raum="projekte"] .pro-karte-kopf{width:100%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-3) var(--space-4);border:0;font:inherit;text-align:left;color:var(--ink);cursor:pointer;min-height:44px;transition:transform var(--dur-fast) var(--ease-spring)}
+[data-raum="projekte"] .pro-karte-kopf:hover{transform:translateY(-2px)}
+[data-raum="projekte"] .pro-karte-kopf:active{transform:scale(.97)}
+[data-raum="projekte"] .pro-karte-kopf .l{display:flex;align-items:center;gap:var(--space-3);min-width:0}
+[data-raum="projekte"] .pro-karte-kopf .r{display:flex;align-items:center;gap:var(--space-4)}
+[data-raum="projekte"] .pro-thumb{width:44px;height:44px;border-radius:12px;object-fit:cover;flex:none}
+[data-raum="projekte"] .pro-karte-info{display:flex;flex-direction:column;gap:var(--space-1);min-width:0}
+[data-raum="projekte"] .pro-karte-name{font-weight:600;color:var(--ink)}
+[data-raum="projekte"] .pro-karte-meta{display:flex;align-items:center;flex-wrap:wrap;gap:var(--space-2)}
+[data-raum="projekte"] .pro-fluss{color:var(--grey);font-size:.875rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+[data-raum="projekte"] .pro-fluss-wert{color:var(--ink);font-weight:600}
+[data-raum="projekte"] .pro-ertrag{color:var(--money);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+[data-raum="projekte"] .pro-spark{color:var(--money);flex:none;overflow:visible}
+[data-raum="projekte"] .pro-chevron{color:var(--grey);flex:none;transition:transform var(--dur-fast) var(--ease-default)}
+[data-raum="projekte"] .pro-karte-kopf[aria-expanded="true"] .pro-chevron{transform:rotate(180deg)}
+
+[data-raum="projekte"] .pro-detail{max-height:0;overflow:hidden;visibility:hidden;transition:max-height var(--dur-normal) var(--ease-default),visibility 0s linear var(--dur-normal)}
+[data-raum="projekte"] .pro-detail.pro-offen{max-height:480px;visibility:visible;transition:max-height var(--dur-normal) var(--ease-default),visibility 0s}
+[data-raum="projekte"] .pro-detail-inner{margin-top:var(--space-1);padding:var(--space-4) var(--space-5)}
+[data-raum="projekte"] .pro-detail-liste{margin:0;display:flex;flex-wrap:wrap;gap:var(--space-2) var(--space-8)}
+[data-raum="projekte"] .pro-detail-liste div{display:flex;flex-direction:column;gap:2px}
+[data-raum="projekte"] .pro-detail-liste dt{font-size:.8125rem;color:var(--grey)}
+[data-raum="projekte"] .pro-detail-liste dd{margin:0;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+[data-raum="projekte"] .pro-baufortschritt{margin:var(--space-3) 0 0;padding-top:var(--space-3);border-top:1px solid var(--line);font-size:.875rem;color:var(--grey)}
+
+[data-raum="projekte"] .pro-cta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:var(--space-5);padding:var(--space-6)}
+[data-raum="projekte"] .pro-cta-hinweis{margin:0;color:var(--grey);font-size:.875rem;max-width:44ch;font-variant-numeric:tabular-nums}
+[data-raum="projekte"] .pro-cta-aktion{display:flex;align-items:center;flex-wrap:wrap;gap:var(--space-4)}
+[data-raum="projekte"] .pro-stepper{display:flex;align-items:center;gap:var(--space-2)}
+[data-raum="projekte"] .pro-step{width:44px;height:44px;min-height:44px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-lg);transition:transform var(--dur-fast) var(--ease-spring)}
+[data-raum="projekte"] .pro-step:active:not(:disabled){transform:scale(.97)}
+[data-raum="projekte"] .pro-step:disabled{opacity:.4;cursor:not-allowed}
+[data-raum="projekte"] .pro-betrag{min-width:5.5ch;text-align:center;font-size:1.125rem;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+
+[data-raum="projekte"] .pro-karte-kopf:focus-visible,
+[data-raum="projekte"] .pro-step:focus-visible,
+[data-raum="projekte"] .pro-cta-btn:focus-visible{outline:2px solid var(--purple);outline-offset:2px}
+
+@media (max-width:600px){
+  [data-raum="projekte"] .pro-karte-kopf .r{width:100%;justify-content:space-between}
+}
+
+@media (prefers-reduced-motion:reduce){
+  [data-raum="projekte"] .pro-seg,
+  [data-raum="projekte"] .pro-detail,
+  [data-raum="projekte"] .pro-detail.pro-offen,
+  [data-raum="projekte"] .pro-karte-kopf,
+  [data-raum="projekte"] .pro-step,
+  [data-raum="projekte"] .pro-chevron{transition:none}
+  [data-raum="projekte"] .pro-karte-kopf:hover{transform:none}
+}
+  /* --- dokumente --- */
+[data-raum="dokumente"] .dok-intro {
+  color: var(--grey);
+  margin: var(--space-2) 0 0;
+}
+
+[data-raum="dokumente"] .dok-kopf {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin: var(--space-6) 0 var(--space-4);
+}
+
+[data-raum="dokumente"] .dok-suche {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1 1 260px;
+  min-height: 48px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-full);
+  color: var(--grey);
+  cursor: text;
+}
+
+[data-raum="dokumente"] .dok-suche:focus-within {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+
+[data-raum="dokumente"] .dok-suchfeld {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: var(--ink);
+  padding: var(--space-3) 0;
+  outline: none;
+}
+
+[data-raum="dokumente"] .dok-suchfeld::placeholder {
+  color: var(--grey);
+}
+
+[data-raum="dokumente"] .dok-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+[data-raum="dokumente"] .dok-kat {
+  min-height: 44px;
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--line);
+  background: transparent;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--grey);
+  cursor: pointer;
+  transition:
+    color var(--dur-fast) var(--ease-default),
+    background var(--dur-fast) var(--ease-default),
+    border-color var(--dur-fast) var(--ease-default),
+    transform var(--dur-fast) var(--ease-spring);
+}
+
+[data-raum="dokumente"] .dok-kat:hover {
+  color: var(--ink);
+  transform: translateY(-2px);
+}
+
+[data-raum="dokumente"] .dok-kat:active {
+  transform: scale(0.97);
+}
+
+[data-raum="dokumente"] .dok-kat[aria-pressed="true"] {
+  background: var(--purple);
+  border-color: var(--purple);
+  color: #fff;
+}
+
+[data-raum="dokumente"] .dok-kat:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+
+[data-raum="dokumente"] .dok-liste {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+[data-raum="dokumente"] .dok-doc[hidden] {
+  display: none;
+}
+
+[data-raum="dokumente"] .dok-doc .l {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+[data-raum="dokumente"] .dok-doc .r {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: none;
+}
+
+[data-raum="dokumente"] .dok-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: var(--radius-lg);
+  background: rgba(112, 71, 234, 0.08);
+  color: var(--purple);
+}
+
+[data-raum="dokumente"] .dok-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+[data-raum="dokumente"] .dok-titel {
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+[data-raum="dokumente"] .dok-meta {
+  font-size: 0.82rem;
+  color: var(--grey);
+  font-variant-numeric: tabular-nums;
+}
+
+[data-raum="dokumente"] .dok-download,
+[data-raum="dokumente"] .dok-zip {
+  min-height: 44px;
+}
+
+[data-raum="dokumente"] .dok-download:focus-visible,
+[data-raum="dokumente"] .dok-zip:focus-visible,
+[data-raum="dokumente"] .dok-reset:focus-visible,
+[data-raum="dokumente"] .dok-suchfeld:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+
+[data-raum="dokumente"] .dok-fb-normal,
+[data-raum="dokumente"] .dok-fb-ok {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+[data-raum="dokumente"] .dok-fb-normal[hidden],
+[data-raum="dokumente"] .dok-fb-ok[hidden] {
+  display: none;
+}
+
+[data-raum="dokumente"] .dok-leer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-10) var(--space-6);
+  text-align: center;
+  color: var(--grey);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-xl);
+}
+
+[data-raum="dokumente"] .dok-leer[hidden] {
+  display: none;
+}
+
+[data-raum="dokumente"] .dok-leer-suche,
+[data-raum="dokumente"] .dok-leer-filter {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+[data-raum="dokumente"] .dok-leer-suche[hidden],
+[data-raum="dokumente"] .dok-leer-filter[hidden] {
+  display: none;
+}
+
+[data-raum="dokumente"] .dok-leer-begriff {
+  color: var(--purple);
+}
+
+[data-raum="dokumente"] .dok-leer-hinweis {
+  font-size: 0.9rem;
+}
+
+[data-raum="dokumente"] .dok-fuss {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+[data-raum="dokumente"] .dok-anzahl {
+  color: var(--grey);
+  font-size: 0.9rem;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-raum="dokumente"] .dok-kat,
+  [data-raum="dokumente"] .dok-download,
+  [data-raum="dokumente"] .dok-zip {
+    transition: none;
+  }
+
+  [data-raum="dokumente"] .dok-kat:hover,
+  [data-raum="dokumente"] .dok-kat:active {
+    transform: none;
+  }
+}
+  /* --- konto --- */
+[data-raum="konto"] .kon-profil { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-5); margin-bottom: var(--space-6); }
+[data-raum="konto"] .kon-avatar { flex: 0 0 56px; width: 56px; height: 56px; border-radius: var(--radius-full); background: var(--purple); color: #fff; display: grid; place-items: center; font-size: 1.35rem; font-weight: 600; }
+[data-raum="konto"] .kon-profil-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; margin-right: auto; }
+[data-raum="konto"] .kon-profil-text strong { color: var(--ink); font-size: 1.05rem; }
+[data-raum="konto"] .kon-profil-text span { color: var(--grey); font-size: .9rem; }
+
+[data-raum="konto"] .kon-untertitel { margin: var(--space-8) 0 var(--space-3); color: var(--grey); font-size: .85rem; font-weight: 600; letter-spacing: .02em; }
+
+[data-raum="konto"] .kon-num { font-variant-numeric: tabular-nums; }
+[data-raum="konto"] .kon-fsa-genutzt, [data-raum="konto"] .kon-fsa-max { font-weight: 600; color: var(--ink); }
+
+[data-raum="konto"] .kon-inline { display: flex; flex-direction: column; gap: var(--space-3); margin: var(--space-2) 0 var(--space-4); padding: var(--space-4); border: 1px solid var(--line); border-radius: var(--radius-lg); background: rgba(255, 255, 255, .6); }
+[data-raum="konto"] .kon-label { color: var(--grey); font-size: .85rem; font-weight: 600; }
+[data-raum="konto"] .kon-input { width: 100%; min-height: 44px; padding: 0 var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--bg); color: var(--ink); font: inherit; font-variant-numeric: tabular-nums; }
+[data-raum="konto"] .kon-input:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+[data-raum="konto"] .kon-input[aria-invalid="true"] { border-color: #B4232A; }
+[data-raum="konto"] .kon-fehler { margin: 0; color: #B4232A; font-size: .85rem; }
+[data-raum="konto"] .kon-inline-aktionen { display: flex; gap: var(--space-2); }
+
+[data-raum="konto"] .kon-slider { width: 100%; min-height: 44px; accent-color: var(--purple); cursor: pointer; }
+[data-raum="konto"] .kon-slider:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-radius: var(--radius-full); }
+[data-raum="konto"] .kon-fsa-out { color: var(--ink); font-weight: 600; }
+
+[data-raum="konto"] .kon-toggle { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0; border: 0; background: transparent; cursor: pointer; border-radius: var(--radius-full); transition: transform var(--dur-fast) var(--ease-spring); }
+[data-raum="konto"] .kon-toggle:active { transform: scale(.97); }
+[data-raum="konto"] .kon-toggle:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+[data-raum="konto"] .kon-track { position: relative; display: block; width: 52px; height: 30px; border-radius: var(--radius-full); background: rgba(8, 27, 74, .12); border: 1.5px solid rgba(90, 100, 120, .75); transition: background var(--dur-fast) var(--ease-default), border-color var(--dur-fast) var(--ease-default); }
+[data-raum="konto"] .kon-knubbel { position: absolute; top: 2px; left: 2px; width: 23px; height: 23px; border-radius: var(--radius-full); background: #fff; box-shadow: 0 1px 3px rgba(8, 27, 74, .3); transition: transform var(--dur-normal) var(--ease-spring); }
+[data-raum="konto"] .kon-toggle[aria-pressed="true"] .kon-track { background: var(--purple); border-color: var(--purple); }
+[data-raum="konto"] .kon-toggle[aria-pressed="true"] .kon-knubbel { transform: translateX(22px); }
+
+[data-raum="konto"] .kon-feedback { margin: var(--space-2) 0 0; color: var(--grey); font-size: .9rem; opacity: 0; transition: opacity var(--dur-normal) var(--ease-default); }
+[data-raum="konto"] .kon-feedback.kon-an { opacity: 1; }
+
+[data-raum="konto"] .kon-abmelden-zeile { margin-top: var(--space-8); padding-top: var(--space-4); border-top: 1px solid var(--line); }
+[data-raum="konto"] .kon-abmelden { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; padding: 0 var(--space-2); border: 0; background: transparent; color: var(--grey); font: inherit; font-size: .95rem; cursor: pointer; border-radius: var(--radius-lg); transition: color var(--dur-fast) var(--ease-default); }
+[data-raum="konto"] .kon-abmelden:hover { color: var(--ink); }
+[data-raum="konto"] .kon-abmelden:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+
+[data-raum="konto"] .btn[disabled] { opacity: .45; cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-raum="konto"] .kon-toggle, [data-raum="konto"] .kon-track, [data-raum="konto"] .kon-knubbel, [data-raum="konto"] .kon-feedback, [data-raum="konto"] .kon-abmelden { transition: none; }
+}
+  /* --- postfach --- */
+[data-raum="postfach"] .pos-kopf {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin: var(--space-4) 0 var(--space-5);
+}
+[data-raum="postfach"] .pos-zaehler {
+  font-variant-numeric: tabular-nums;
+}
+[data-raum="postfach"] .pos-zaehler.pos-puls {
+  animation: pos-puls var(--dur-normal) var(--ease-spring);
+}
+@keyframes pos-puls {
+  50% { transform: scale(1.12); }
+}
+[data-raum="postfach"] .pos-liste {
+  display: grid;
+  gap: var(--space-3);
+}
+[data-raum="postfach"] .pos-zeile {
+  width: 100%;
+  min-height: 44px;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+[data-raum="postfach"] .pos-zeile:hover {
+  transform: translateY(-2px);
+}
+[data-raum="postfach"] .pos-zeile:active {
+  transform: translateY(0) scale(.97);
+}
+[data-raum="postfach"] .pos-zeile:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+[data-raum="postfach"] .pos-zeile .l {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+[data-raum="postfach"] .pos-zeile .r {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: none;
+}
+[data-raum="postfach"] .pos-punkt {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: var(--radius-full);
+  background: var(--purple);
+  transition: opacity var(--dur-normal) var(--ease-default), transform var(--dur-normal) var(--ease-default);
+}
+[data-raum="postfach"] .pos-nachricht[data-ungelesen="false"] .pos-punkt {
+  opacity: 0;
+  transform: scale(.4);
+}
+[data-raum="postfach"] .pos-icon {
+  flex: none;
+  display: inline-flex;
+  color: var(--grey);
+}
+[data-raum="postfach"] .pos-titel {
+  min-width: 0;
+  font-weight: 500;
+}
+[data-raum="postfach"] .pos-nachricht[data-ungelesen="true"] .pos-titel {
+  font-weight: 700;
+}
+[data-raum="postfach"] .pos-datum {
+  color: var(--grey);
+  font-size: .85rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+[data-raum="postfach"] .pos-pfeil {
+  display: inline-flex;
+  color: var(--grey);
+  transition: transform var(--dur-normal) var(--ease-default);
+}
+[data-raum="postfach"] .pos-nachricht[data-offen="true"] .pos-pfeil {
+  transform: rotate(180deg);
+}
+[data-raum="postfach"] .pos-inhalt {
+  overflow: hidden;
+  max-height: 0;
+  visibility: hidden;
+  transition: max-height var(--dur-normal) var(--ease-default), visibility 0s linear var(--dur-normal);
+}
+[data-raum="postfach"] .pos-nachricht[data-offen="true"] .pos-inhalt {
+  visibility: visible;
+  transition: max-height var(--dur-normal) var(--ease-default);
+}
+[data-raum="postfach"] .pos-inhalt-innen {
+  margin-top: var(--space-2);
+}
+[data-raum="postfach"] .pos-text {
+  margin: 0 0 var(--space-3);
+  line-height: 1.55;
+}
+[data-raum="postfach"] .pos-bild {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: var(--radius-lg);
+  margin: var(--space-2) 0 var(--space-4);
+}
+[data-raum="postfach"] .pos-aufstellung {
+  list-style: none;
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+[data-raum="postfach"] .pos-posten {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+[data-raum="postfach"] .pos-summe {
+  border-top: 1px solid var(--line);
+  padding-top: var(--space-2);
+  font-weight: 600;
+}
+[data-raum="postfach"] .pos-betrag {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--money);
+}
+[data-raum="postfach"] .pos-aktion {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: var(--space-2);
+}
+[data-raum="postfach"] .pos-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-raum="postfach"] .pos-zeile,
+  [data-raum="postfach"] .pos-punkt,
+  [data-raum="postfach"] .pos-pfeil,
+  [data-raum="postfach"] .pos-inhalt,
+  [data-raum="postfach"] .pos-nachricht[data-offen="true"] .pos-inhalt {
+    transition: none;
+  }
+  [data-raum="postfach"] .pos-zeile:hover,
+  [data-raum="postfach"] .pos-zeile:active {
+    transform: none;
+  }
+  [data-raum="postfach"] .pos-zaehler.pos-puls {
+    animation: none;
+  }
+}
+  /* --- markt --- */
+[data-raum="markt"] .mar-intro {
+  color: var(--grey);
+  margin: var(--space-2) 0 var(--space-6);
+  max-width: 44ch;
+}
+
+[data-raum="markt"] .mar-featured {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  padding: 0;
+  overflow: hidden;
+  border-radius: var(--radius-2xl);
+  transition: transform var(--dur-fast) var(--ease-default);
+}
+
+[data-raum="markt"] .mar-featured:hover {
+  transform: translateY(-2px);
+}
+
+[data-raum="markt"] .mar-media {
+  position: relative;
+  min-height: 240px;
+}
+
+[data-raum="markt"] .mar-bild {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+[data-raum="markt"] .mar-badge {
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-4);
+}
+
+[data-raum="markt"] .mar-body {
+  padding: var(--space-6);
+  min-width: 0;
+}
+
+[data-raum="markt"] .mar-titel {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--ink);
+  margin: 0 0 var(--space-2);
+}
+
+[data-raum="markt"] .mar-desc {
+  color: var(--grey);
+  margin: 0 0 var(--space-5);
+  max-width: 52ch;
+}
+
+[data-raum="markt"] .mar-kpis {
+  margin-bottom: var(--space-5);
+}
+
+[data-raum="markt"] .mar-kpis b {
+  font-variant-numeric: tabular-nums;
+}
+
+[data-raum="markt"] .mar-progress-kopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 0.875rem;
+  color: var(--grey);
+  margin-bottom: var(--space-2);
+}
+
+[data-raum="markt"] .mar-pct {
+  color: var(--ink);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-raum="markt"] .mar-track {
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--line);
+  overflow: hidden;
+}
+
+[data-raum="markt"] .mar-fill {
+  height: 100%;
+  width: 0;
+  border-radius: var(--radius-full);
+  background: var(--purple);
+  transition: width 0.9s var(--ease-default);
+}
+
+[data-raum="markt"] .mar-countdown {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--grey);
+  font-size: 0.875rem;
+  margin: var(--space-4) 0 var(--space-5);
+}
+
+[data-raum="markt"] .mar-aktion {
+  display: flex;
+  align-items: center;
+}
+
+[data-raum="markt"] .mar-vormerken {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+}
+
+[data-raum="markt"] .mar-vormerken:focus-visible,
+[data-raum="markt"] .mar-zeile .btn:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+
+[data-raum="markt"] .mar-zeile {
+  margin-top: var(--space-4);
+}
+
+[data-raum="markt"] .mar-zeile .l {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+[data-raum="markt"] .mar-meta {
+  color: var(--grey);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+[data-raum="markt"] .mar-risiko {
+  color: var(--grey);
+  font-size: 0.8125rem;
+  margin-top: var(--space-6);
+  max-width: 64ch;
+}
+
+@media (max-width: 720px) {
+  [data-raum="markt"] .mar-featured {
+    grid-template-columns: 1fr;
+  }
+
+  [data-raum="markt"] .mar-media {
+    min-height: 180px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-raum="markt"] .mar-fill {
+    transition: none;
+  }
+
+  [data-raum="markt"] .mar-featured,
+  [data-raum="markt"] .mar-featured:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
   @media (max-width:700px){
     .kpis{grid-template-columns:1fr}
-    .zurueck{left:16px;top:80px}
-    .raum-ui .inhalt{padding-top:130px}
-    /* Handy: Bühne rückt näher ans Haus, Schilder mittig im Zimmer */
+    .leiste{left:16px;top:80px}
+    .raum-ui .inhalt{padding-top:136px}
     .buehne{padding-top:76px;gap:var(--space-3);justify-content:flex-start}
     .gruss{padding:0 var(--space-6)}
     .gruss h1{font-size:26px}
@@ -105,12 +1104,15 @@
     .kamera{width:190vw;max-width:none;margin-top:var(--space-4)}
     .raum .chip{font-size:11px;padding:5px 11px;top:50%;transform:translate(-50%,-50%) scale(1)}
     .raum:hover .chip,.raum:focus-visible .chip{transform:translate(-50%,-50%) scale(1)}
+    .raum .zahl{right:4px;bottom:4px;font-size:10px;padding:2px 7px}
     .zeile{flex-wrap:wrap}
     .zeile .r{text-align:left}
   }
   @media (prefers-reduced-motion:reduce){
-    .kamera{transition:none}
+    .kamera{transition:none;animation:none}
+    .gruss{animation:none}
     .schleier,.raum-ui{transition:none}
+    .raum-ui .inhalt.aktiv > *{animation:none}
   }
 </style>
 </head>
@@ -124,14 +1126,17 @@
       <a href="haus.html" class="aktiv">Dein Haus</a>
       <a href="projekte.html">Alle Projekte</a>
     </div>
-    <span class="konto"><span class="avatar">J</span> Jonas</span>
+    <span class="konto-chip"><span class="avatar">J</span> Jonas</span>
   </div>
 </div>
 
-<button class="btn btn-glass btn-small zurueck" id="zurueck" type="button">
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H5m0 0 6-6m-6 6 6 6"/></svg>
-  Zurück zum Haus
-</button>
+<div class="leiste">
+  <button class="btn btn-glass btn-small" id="zurueck" type="button">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M19 12H5m0 0 6-6m-6 6 6 6"/></svg>
+    Zurück zum Haus
+  </button>
+  <span class="ort" id="ort" aria-live="polite"></span>
+</div>
 
 <div class="buehne">
   <div class="gruss">
@@ -140,86 +1145,1455 @@
   </div>
   <div class="kamera" id="kamera">
     <img src="bilder/haus-zoom.jpg" alt="Dein currily-Haus im Querschnitt: jede Funktion ist ein Zimmer">
-    <button class="raum" data-ziel="finanzen"  style="--l:30%;   --t:49.7%; --w:18.3%; --h:17%"   type="button"><span class="chip">Finanzverwaltung</span></button>
-    <button class="raum" data-ziel="konto"     style="--l:50%;   --t:48.8%; --w:21.5%; --h:18%"   type="button"><span class="chip">Konto &amp; Profil</span></button>
-    <button class="raum" data-ziel="projekte"  style="--l:31.5%; --t:69.9%; --w:17.8%; --h:17.5%" type="button"><span class="chip">Projektraum</span></button>
-    <button class="raum" data-ziel="dokumente" style="--l:50%;   --t:69%;   --w:20.3%; --h:19.3%" type="button"><span class="chip">Dokumente</span></button>
-    <button class="raum bald" style="--l:30.5%;--t:31%; --w:14%; --h:13.5%" type="button" aria-disabled="true"><span class="chip">Postfach · bald</span></button>
+    <button class="raum" data-ziel="postfach"  style="--l:30.5%;--t:31%;   --w:14%;   --h:13.5%" type="button"><span class="chip">Postfach</span><span class="zahl violett" data-zahl="postfach">3</span></button>
+    <button class="raum" data-ziel="markt"     style="--l:50%;  --t:28%;   --w:16.5%; --h:17.5%" type="button"><span class="chip">Marktplatz</span><span class="zahl">NEU</span></button>
+    <button class="raum" data-ziel="finanzen"  style="--l:30%;  --t:49.7%; --w:18.3%; --h:17%"   type="button"><span class="chip">Finanzverwaltung</span><span class="zahl">1.240&nbsp;€/M</span></button>
+    <button class="raum" data-ziel="konto"     style="--l:50%;  --t:48.8%; --w:21.5%; --h:18%"   type="button"><span class="chip">Konto &amp; Profil</span></button>
+    <button class="raum" data-ziel="projekte"  style="--l:31.5%;--t:69.9%; --w:17.8%; --h:17.5%" type="button"><span class="chip">Projektraum</span></button>
+    <button class="raum" data-ziel="dokumente" style="--l:50%;  --t:69%;   --w:20.3%; --h:19.3%" type="button"><span class="chip">Dokumente</span><span class="zahl">1 neu</span></button>
   </div>
 </div>
 
 <div class="schleier" aria-hidden="true"></div>
 
 <div class="raum-ui" id="raum-ui">
+<section class="inhalt" data-raum="finanzen" aria-label="Finanzverwaltung – Einkommen, Auszahlungen und Steuern">
+  <h2>Finanz<em>zentrale.</em></h2>
+  <p class="fin-intro">Dein Einkommen, deine Auszahlungen, deine Steuern – alles auf einen Blick.</p>
 
-  <section class="inhalt" data-raum="finanzen" aria-label="Finanzverwaltung">
-    <h2>Finanz<em>verwaltung.</em></h2>
-    <div class="kpis">
-      <div class="kpi glass"><h4>Wiederkehrendes Einkommen</h4><b>1.240&nbsp;€ / Monat</b><span class="delta">+8,2 % zum Vorjahr</span></div>
-      <div class="kpi glass"><h4>Ausgezahlt insgesamt</h4><b>14.880&nbsp;€</b><span class="delta">davon 4.320&nbsp;€ reinvestiert</span></div>
-      <div class="kpi glass"><h4>Nächste Auszahlung</h4><b>15. August</b><span class="delta">in 4 Tagen, ~1.240&nbsp;€</span></div>
+  <div class="kpis">
+    <div class="kpi">
+      <h4>Einkommen / Monat</h4>
+      <b class="fin-zaehler" data-ziel="1240">1.240&nbsp;€</b>
+      <span class="delta">+8,2&nbsp;% zum Vorjahr</span>
     </div>
-    <div class="tabelle glass">
-      <table>
-        <thead><tr><th>Datum</th><th>Projekt</th><th>Art</th><th>Betrag</th></tr></thead>
-        <tbody>
-          <tr><td>15.07.2026</td><td>Quartier Hamburg-Ottensen</td><td>Miete</td><td><b>+518&nbsp;€</b></td></tr>
-          <tr><td>15.07.2026</td><td>Stadthaus Leipzig-Plagwitz</td><td>Miete</td><td><b>+412&nbsp;€</b></td></tr>
-          <tr><td>15.07.2026</td><td>Projekt München-Sendling</td><td>Verkaufserlös</td><td><b>+310&nbsp;€</b></td></tr>
-          <tr><td>15.06.2026</td><td>Quartier Hamburg-Ottensen</td><td>Miete</td><td><b>+518&nbsp;€</b></td></tr>
-        </tbody>
-      </table>
+    <div class="kpi">
+      <h4>Ausgezahlt gesamt</h4>
+      <b>14.880&nbsp;€</b>
+      <span class="delta">davon 4.320&nbsp;€ reinvestiert</span>
     </div>
-  </section>
+    <div class="kpi">
+      <h4>Nächste Auszahlung</h4>
+      <b>≈&nbsp;1.240&nbsp;€</b>
+      <span class="delta">15.08.2026 · in 4 Tagen</span>
+    </div>
+  </div>
 
-  <section class="inhalt" data-raum="projekte" aria-label="Projektraum">
-    <h2>Projekt<em>raum.</em></h2>
-    <div class="zeile glass">
-      <div class="l"><b>Quartier Hamburg-Ottensen</b><span>Beteiligt seit 03/2025 · <span class="pill pill-gruen">vermietet</span></span></div>
-      <div class="r"><b>7.180&nbsp;€</b><span>+518&nbsp;€ / Monat</span></div>
+  <div class="glass fin-panel fin-chartpanel">
+    <div class="fin-panelkopf">
+      <h3>Einkommensentwicklung</h3>
+      <span class="fin-sub">Sep 2025 – Aug 2026 · Ø-Rendite 12,1&nbsp;% p.a.</span>
     </div>
-    <div class="zeile glass">
-      <div class="l"><b>Stadthaus Leipzig-Plagwitz</b><span>Beteiligt seit 08/2025 · <span class="pill pill-violett">Sanierung läuft</span></span></div>
-      <div class="r"><b>5.610&nbsp;€</b><span>+412&nbsp;€ / Monat</span></div>
+    <figure class="fin-chartwrap">
+      <svg class="fin-chart" viewBox="0 0 620 248" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Einkommenskurve: monatliche Auszahlungen steigen von 980 Euro im September 2025 auf 1.240 Euro im August 2026">
+        <defs>
+          <linearGradient id="fin-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#7047EA" stop-opacity="0.22"/>
+            <stop offset="1" stop-color="#7047EA" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <g class="fin-gridlines" aria-hidden="true">
+          <line x1="46" y1="63.75" x2="590.5" y2="63.75"/>
+          <line x1="46" y1="120" x2="590.5" y2="120"/>
+          <line x1="46" y1="176.25" x2="590.5" y2="176.25"/>
+          <line x1="46" y1="210" x2="590.5" y2="210"/>
+        </g>
+        <g class="fin-ylabel" text-anchor="end" aria-hidden="true">
+          <text x="38" y="67">1.200</text>
+          <text x="38" y="123">1.100</text>
+          <text x="38" y="179">1.000</text>
+        </g>
+        <path class="fin-flaeche" d="M46,187.5 L95.5,173.4 L145,165 L194.5,153.8 L244,134.1 L293.5,125.6 L343,108.8 L392.5,91.9 L442,75 L491.5,63.8 L541,41.3 L590.5,41.3 L590.5,210 L46,210 Z" aria-hidden="true"/>
+        <path class="fin-linie" d="M46,187.5 L95.5,173.4 L145,165 L194.5,153.8 L244,134.1 L293.5,125.6 L343,108.8 L392.5,91.9 L442,75 L491.5,63.8 L541,41.3 L590.5,41.3" aria-hidden="true"/>
+        <g class="fin-punkte" aria-hidden="true">
+          <circle class="fin-punkt" cx="46" cy="187.5" r="3.5"/>
+          <circle class="fin-punkt" cx="95.5" cy="173.4" r="3.5"/>
+          <circle class="fin-punkt" cx="145" cy="165" r="3.5"/>
+          <circle class="fin-punkt" cx="194.5" cy="153.8" r="3.5"/>
+          <circle class="fin-punkt" cx="244" cy="134.1" r="3.5"/>
+          <circle class="fin-punkt" cx="293.5" cy="125.6" r="3.5"/>
+          <circle class="fin-punkt" cx="343" cy="108.8" r="3.5"/>
+          <circle class="fin-punkt" cx="392.5" cy="91.9" r="3.5"/>
+          <circle class="fin-punkt" cx="442" cy="75" r="3.5"/>
+          <circle class="fin-punkt" cx="491.5" cy="63.8" r="3.5"/>
+          <circle class="fin-punkt" cx="541" cy="41.3" r="3.5"/>
+          <circle class="fin-punkt" cx="590.5" cy="41.3" r="3.5"/>
+        </g>
+        <g class="fin-mlabels" text-anchor="middle" aria-hidden="true">
+          <text x="46" y="234">Sep</text>
+          <text x="95.5" y="234">Okt</text>
+          <text x="145" y="234">Nov</text>
+          <text x="194.5" y="234">Dez</text>
+          <text x="244" y="234">Jan</text>
+          <text x="293.5" y="234">Feb</text>
+          <text x="343" y="234">Mär</text>
+          <text x="392.5" y="234">Apr</text>
+          <text x="442" y="234">Mai</text>
+          <text x="491.5" y="234">Jun</text>
+          <text x="541" y="234">Jul</text>
+          <text x="590.5" y="234">Aug</text>
+        </g>
+        <g class="fin-hits">
+          <circle class="fin-hit" cx="46" cy="187.5" r="22" tabindex="0" role="img" aria-label="September 2025: 980 Euro" data-monat="Sep 2025" data-betrag="980 €"/>
+          <circle class="fin-hit" cx="95.5" cy="173.4" r="22" tabindex="0" role="img" aria-label="Oktober 2025: 1.005 Euro" data-monat="Okt 2025" data-betrag="1.005 €"/>
+          <circle class="fin-hit" cx="145" cy="165" r="22" tabindex="0" role="img" aria-label="November 2025: 1.020 Euro" data-monat="Nov 2025" data-betrag="1.020 €"/>
+          <circle class="fin-hit" cx="194.5" cy="153.8" r="22" tabindex="0" role="img" aria-label="Dezember 2025: 1.040 Euro" data-monat="Dez 2025" data-betrag="1.040 €"/>
+          <circle class="fin-hit" cx="244" cy="134.1" r="22" tabindex="0" role="img" aria-label="Januar 2026: 1.075 Euro" data-monat="Jan 2026" data-betrag="1.075 €"/>
+          <circle class="fin-hit" cx="293.5" cy="125.6" r="22" tabindex="0" role="img" aria-label="Februar 2026: 1.090 Euro" data-monat="Feb 2026" data-betrag="1.090 €"/>
+          <circle class="fin-hit" cx="343" cy="108.8" r="22" tabindex="0" role="img" aria-label="März 2026: 1.120 Euro" data-monat="Mär 2026" data-betrag="1.120 €"/>
+          <circle class="fin-hit" cx="392.5" cy="91.9" r="22" tabindex="0" role="img" aria-label="April 2026: 1.150 Euro" data-monat="Apr 2026" data-betrag="1.150 €"/>
+          <circle class="fin-hit" cx="442" cy="75" r="22" tabindex="0" role="img" aria-label="Mai 2026: 1.180 Euro" data-monat="Mai 2026" data-betrag="1.180 €"/>
+          <circle class="fin-hit" cx="491.5" cy="63.8" r="22" tabindex="0" role="img" aria-label="Juni 2026: 1.200 Euro" data-monat="Jun 2026" data-betrag="1.200 €"/>
+          <circle class="fin-hit" cx="541" cy="41.3" r="22" tabindex="0" role="img" aria-label="Juli 2026: 1.240 Euro" data-monat="Jul 2026" data-betrag="1.240 €"/>
+          <circle class="fin-hit" cx="590.5" cy="41.3" r="22" tabindex="0" role="img" aria-label="August 2026: 1.240 Euro" data-monat="Aug 2026" data-betrag="1.240 €"/>
+        </g>
+      </svg>
+      <div class="glass fin-tooltip" aria-hidden="true">
+        <span class="fin-tip-monat"></span>
+        <b class="fin-tip-wert"></b>
+      </div>
+      <figcaption class="fin-sr">Monatliche Auszahlungen September 2025 bis August 2026 in Euro.</figcaption>
+    </figure>
+  </div>
+
+  <div class="fin-unten">
+    <div class="glass fin-panel fin-historie">
+      <div class="fin-panelkopf">
+        <h3>Auszahlungs-Historie</h3>
+        <div class="fin-filterzeile" role="group" aria-label="Buchungen nach Art filtern">
+          <button type="button" class="btn btn-glass btn-small fin-filter" data-art="alle" aria-pressed="true">Alle</button>
+          <button type="button" class="btn btn-glass btn-small fin-filter" data-art="miete" aria-pressed="false">Miete</button>
+          <button type="button" class="btn btn-glass btn-small fin-filter" data-art="verkauf" aria-pressed="false">Verkaufserlös</button>
+        </div>
+      </div>
+      <div class="tabelle">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Datum</th>
+              <th scope="col">Projekt</th>
+              <th scope="col">Art</th>
+              <th scope="col" class="fin-rechts">Betrag</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="fin-buchung" data-art="miete">
+              <td class="fin-datum">15.07.2026</td>
+              <td>Quartier Hamburg-Ottensen</td>
+              <td><span class="pill pill-grau">Miete</span></td>
+              <td class="fin-betrag">+518,00&nbsp;€</td>
+            </tr>
+            <tr class="fin-buchung" data-art="miete">
+              <td class="fin-datum">15.07.2026</td>
+              <td>Stadthaus Leipzig-Plagwitz</td>
+              <td><span class="pill pill-grau">Miete</span></td>
+              <td class="fin-betrag">+412,00&nbsp;€</td>
+            </tr>
+            <tr class="fin-buchung" data-art="miete">
+              <td class="fin-datum">15.07.2026</td>
+              <td>Projekt München-Sendling</td>
+              <td><span class="pill pill-grau">Miete</span></td>
+              <td class="fin-betrag">+310,00&nbsp;€</td>
+            </tr>
+            <tr class="fin-buchung" data-art="miete">
+              <td class="fin-datum">15.06.2026</td>
+              <td>Quartier Hamburg-Ottensen</td>
+              <td><span class="pill pill-grau">Miete</span></td>
+              <td class="fin-betrag">+518,00&nbsp;€</td>
+            </tr>
+            <tr class="fin-buchung" data-art="miete">
+              <td class="fin-datum">15.06.2026</td>
+              <td>Stadthaus Leipzig-Plagwitz</td>
+              <td><span class="pill pill-grau">Miete</span></td>
+              <td class="fin-betrag">+412,00&nbsp;€</td>
+            </tr>
+            <tr class="fin-buchung" data-art="miete">
+              <td class="fin-datum">15.06.2026</td>
+              <td>Projekt München-Sendling</td>
+              <td><span class="pill pill-grau">Miete</span></td>
+              <td class="fin-betrag">+270,00&nbsp;€</td>
+            </tr>
+            <tr class="fin-buchung" data-art="miete">
+              <td class="fin-datum">15.05.2026</td>
+              <td>Quartier Hamburg-Ottensen</td>
+              <td><span class="pill pill-grau">Miete</span></td>
+              <td class="fin-betrag">+518,00&nbsp;€</td>
+            </tr>
+            <tr class="fin-buchung" data-art="miete">
+              <td class="fin-datum">15.05.2026</td>
+              <td>Stadthaus Leipzig-Plagwitz</td>
+              <td><span class="pill pill-grau">Miete</span></td>
+              <td class="fin-betrag">+400,00&nbsp;€</td>
+            </tr>
+            <tr class="fin-leer" hidden>
+              <td colspan="4">Noch keine Verkaufserlöse – der erste Exit ist für Q2&nbsp;2027 geplant (Stadthaus Leipzig-Plagwitz).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-    <div class="zeile glass">
-      <div class="l"><b>Projekt München-Sendling</b><span>Beteiligt seit 01/2026 · <span class="pill pill-grau">Verkauf geplant</span></span></div>
-      <div class="r"><b>5.860&nbsp;€</b><span>+310&nbsp;€ / Monat</span></div>
+
+    <div class="glass fin-panel fin-steuer">
+      <div class="fin-panelkopf">
+        <h3>Steuern</h3>
+        <span class="fin-sub">Stand 11.08.2026</span>
+      </div>
+      <div class="fin-frei">
+        <div class="fin-frei-zeile">
+          <span>Freistellungsauftrag</span>
+          <b>801&nbsp;€ von 1.000&nbsp;€ genutzt</b>
+        </div>
+        <div class="fin-balken" role="progressbar" aria-valuemin="0" aria-valuemax="1000" aria-valuenow="801" aria-label="Freistellungsauftrag: 801 von 1.000 Euro genutzt">
+          <span class="fin-balken-wert" data-breite="80.1%"></span>
+        </div>
+        <p class="fin-hinweis">199&nbsp;€ deiner Erträge bleiben dieses Jahr noch steuerfrei.</p>
+      </div>
+      <div class="zeile">
+        <div class="l">
+          <span class="fin-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>
+          </span>
+          <span class="fin-zeile-text">
+            <span class="fin-zeile-titel">Steuerbescheinigung 2025</span>
+            <span class="fin-zeile-sub">PDF · für deine Steuererklärung</span>
+          </span>
+        </div>
+        <div class="r">
+          <button type="button" class="btn btn-glass btn-small fin-download">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+            Herunterladen
+          </button>
+        </div>
+      </div>
+      <p class="fin-status" aria-live="polite"></p>
     </div>
-    <a class="btn btn-primary" style="align-self:flex-start" href="projekte.html">Neue Projekte ansehen</a>
-  </section>
+  </div>
+</section>
+<section class="inhalt" data-raum="projekte" aria-label="Projektraum: Portfolio und Beteiligungen">
+  <h2>Projekt<em>raum.</em></h2>
 
-  <section class="inhalt" data-raum="dokumente" aria-label="Dokumente">
-    <h2>Doku<em>mente.</em></h2>
-    <div class="zeile glass"><div class="l"><b>Jahressteuerbescheinigung 2025</b><span>PDF · 240 KB · 12.01.2026</span></div><button class="btn btn-glass btn-small" type="button">Herunterladen</button></div>
-    <div class="zeile glass"><div class="l"><b>Zeichnungsschein Stadthaus Leipzig-Plagwitz</b><span>PDF · 180 KB · 03.08.2025</span></div><button class="btn btn-glass btn-small" type="button">Herunterladen</button></div>
-    <div class="zeile glass"><div class="l"><b>Wertgutachten Leipzig, unabhängig</b><span>PDF · 3,1 MB · 21.07.2025</span></div><button class="btn btn-glass btn-small" type="button">Herunterladen</button></div>
-    <div class="zeile glass"><div class="l"><b>Verbraucherinformationen &amp; Risikohinweise</b><span>PDF · 90 KB</span></div><button class="btn btn-glass btn-small" type="button">Herunterladen</button></div>
-  </section>
+  <header class="pro-kopf glass">
+    <div class="pro-kopf-links">
+      <span class="pro-kopf-label">Portfoliowert</span>
+      <strong class="pro-portfoliowert" data-pro-ziel="18650">18.650&nbsp;€</strong>
+      <p class="pro-kopf-sub">16.780&nbsp;€ eingezahlt · Ø-Rendite 12,1&nbsp;% p.&nbsp;a.</p>
+    </div>
+    <span class="pill pill-gruen">+1.870&nbsp;€ seit Einstieg</span>
+  </header>
 
-  <section class="inhalt" data-raum="konto" aria-label="Konto und Profil">
-    <h2>Konto &amp; <em>Profil.</em></h2>
-    <div class="zeile glass"><div class="l"><b>Jonas M.</b><span>Identität geprüft · Anleger seit 03/2025</span></div><span class="pill pill-gruen">verifiziert</span></div>
-    <div class="zeile glass"><div class="l"><b>Auszahlungskonto</b><span>DE89 •••• •••• 3000 · Volksbank</span></div><button class="btn btn-glass btn-small" type="button">Ändern</button></div>
-    <div class="zeile glass"><div class="l"><b>Freistellungsauftrag</b><span>801&nbsp;€ von 1.000&nbsp;€ genutzt</span></div><button class="btn btn-glass btn-small" type="button">Anpassen</button></div>
-    <div class="zeile glass"><div class="l"><b>Automatisch reinvestieren</b><span>Auszahlungen fließen in neue Projekte</span></div><span class="pill pill-violett">aktiv</span></div>
-  </section>
+  <div class="pro-pane glass">
+    <h3 class="pro-titel">Aufteilung nach Wert</h3>
+    <div class="pro-balken" role="img" aria-label="Aufteilung nach Wert: Quartier Hamburg-Ottensen 38,5 Prozent, Stadthaus Leipzig-Plagwitz 30,1 Prozent, Projekt München-Sendling 31,4 Prozent">
+      <span class="pro-seg pro-seg-1" style="--pro-anteil:38.5%"></span>
+      <span class="pro-seg pro-seg-2" style="--pro-anteil:30.1%"></span>
+      <span class="pro-seg pro-seg-3" style="--pro-anteil:31.4%"></span>
+    </div>
+    <ul class="pro-legende">
+      <li><span class="pro-punkt pro-seg-1"></span><span class="pro-legende-name">Quartier Hamburg-Ottensen</span><b class="pro-prozent">38,5&nbsp;%</b></li>
+      <li><span class="pro-punkt pro-seg-2"></span><span class="pro-legende-name">Stadthaus Leipzig-Plagwitz</span><b class="pro-prozent">30,1&nbsp;%</b></li>
+      <li><span class="pro-punkt pro-seg-3"></span><span class="pro-legende-name">Projekt München-Sendling</span><b class="pro-prozent">31,4&nbsp;%</b></li>
+    </ul>
+  </div>
 
+  <div class="pro-karten">
+    <article class="pro-karte">
+      <button type="button" class="zeile pro-karte-kopf" aria-expanded="false" aria-controls="pro-detail-hh">
+        <span class="l">
+          <img class="pro-thumb" src="bilder/projekt-fassade.jpg" alt="Fassade des Quartiers Hamburg-Ottensen">
+          <span class="pro-karte-info">
+            <span class="pro-karte-name">Quartier Hamburg-Ottensen</span>
+            <span class="pro-karte-meta"><span class="pill pill-gruen">Vermietet</span><span class="pro-fluss">6.500&nbsp;€ → <b class="pro-fluss-wert">7.180&nbsp;€</b></span></span>
+          </span>
+        </span>
+        <span class="r">
+          <b class="pro-ertrag">+518&nbsp;€/Monat</b>
+          <svg class="pro-spark" width="60" height="20" viewBox="0 0 60 20" aria-hidden="true" data-pro-werte="478,488,498,505,518,518"></svg>
+          <svg class="pro-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </span>
+      </button>
+      <div class="pro-detail" id="pro-detail-hh" role="region" aria-label="Details zu Quartier Hamburg-Ottensen">
+        <div class="pro-detail-inner glass">
+          <dl class="pro-detail-liste">
+            <div><dt>Rendite</dt><dd>11,8&nbsp;% p.&nbsp;a.</dd></div>
+            <div><dt>Dabei seit</dt><dd>03/2025</dd></div>
+            <div><dt>Perspektive</dt><dd>Bestand, monatliche Mietausschüttung</dd></div>
+          </dl>
+        </div>
+      </div>
+    </article>
+
+    <article class="pro-karte">
+      <button type="button" class="zeile pro-karte-kopf" aria-expanded="false" aria-controls="pro-detail-le">
+        <span class="l">
+          <img class="pro-thumb" src="bilder/projekt-leipzig.jpg" alt="Stadthaus Leipzig-Plagwitz während der Sanierung">
+          <span class="pro-karte-info">
+            <span class="pro-karte-name">Stadthaus Leipzig-Plagwitz</span>
+            <span class="pro-karte-meta"><span class="pill pill-violett">Sanierung läuft</span><span class="pro-fluss">5.000&nbsp;€ → <b class="pro-fluss-wert">5.610&nbsp;€</b></span></span>
+          </span>
+        </span>
+        <span class="r">
+          <b class="pro-ertrag">+412&nbsp;€/Monat</b>
+          <svg class="pro-spark" width="60" height="20" viewBox="0 0 60 20" aria-hidden="true" data-pro-werte="372,382,393,400,412,412"></svg>
+          <svg class="pro-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </span>
+      </button>
+      <div class="pro-detail" id="pro-detail-le" role="region" aria-label="Details zu Stadthaus Leipzig-Plagwitz">
+        <div class="pro-detail-inner glass">
+          <dl class="pro-detail-liste">
+            <div><dt>Rendite</dt><dd>13,2&nbsp;% p.&nbsp;a.</dd></div>
+            <div><dt>Dabei seit</dt><dd>08/2025</dd></div>
+            <div><dt>Exit</dt><dd>Verkauf geplant für Q2 2027</dd></div>
+          </dl>
+          <p class="pro-baufortschritt">Baufortschritt vom 04.08.2026: Dach und Fassade sind fertiggestellt, der Innenausbau im 2.&nbsp;Obergeschoss läuft planmäßig.</p>
+        </div>
+      </div>
+    </article>
+
+    <article class="pro-karte">
+      <button type="button" class="zeile pro-karte-kopf" aria-expanded="false" aria-controls="pro-detail-mu">
+        <span class="l">
+          <img class="pro-thumb" src="bilder/projekt-muenchen.jpg" alt="Wohngebäude des Projekts München-Sendling">
+          <span class="pro-karte-info">
+            <span class="pro-karte-name">Projekt München-Sendling</span>
+            <span class="pro-karte-meta"><span class="pill pill-grau">Verkauf geplant</span><span class="pro-fluss">5.280&nbsp;€ → <b class="pro-fluss-wert">5.860&nbsp;€</b></span></span>
+          </span>
+        </span>
+        <span class="r">
+          <b class="pro-ertrag">+310&nbsp;€/Monat</b>
+          <svg class="pro-spark" width="60" height="20" viewBox="0 0 60 20" aria-hidden="true" data-pro-werte="270,280,289,295,310,310"></svg>
+          <svg class="pro-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </span>
+      </button>
+      <div class="pro-detail" id="pro-detail-mu" role="region" aria-label="Details zu Projekt München-Sendling">
+        <div class="pro-detail-inner glass">
+          <dl class="pro-detail-liste">
+            <div><dt>Rendite</dt><dd>ca. 12&nbsp;% p.&nbsp;a.</dd></div>
+            <div><dt>Dabei seit</dt><dd>01/2026</dd></div>
+            <div><dt>Exit</dt><dd>Vermarktung startet Q4 2026</dd></div>
+          </dl>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div class="pro-cta glass">
+    <div class="pro-cta-text">
+      <h3 class="pro-titel">Reinvestieren</h3>
+      <p class="pro-cta-hinweis">4.320&nbsp;€ deiner Auszahlungen hast du bereits reinvestiert. Nächste Auszahlung: 15.08.2026, voraussichtlich 1.240&nbsp;€.</p>
+    </div>
+    <div class="pro-cta-aktion">
+      <div class="pro-stepper" role="group" aria-label="Anlagebetrag in 100-Euro-Schritten wählen">
+        <button type="button" class="btn btn-glass pro-step pro-step-minus" aria-label="Betrag um 100 Euro verringern">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+        </button>
+        <output class="pro-betrag">500&nbsp;€</output>
+        <button type="button" class="btn btn-glass pro-step pro-step-plus" aria-label="Betrag um 100 Euro erhöhen">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+      <a class="btn btn-primary pro-cta-btn" href="projekte.html">In neues Projekt investieren</a>
+    </div>
+  </div>
+</section>
+<section class="inhalt" data-raum="dokumente" aria-label="Dokumente – Nachweise und Verträge deiner Beteiligungen">
+  <h2>Doku<em>mente.</em></h2>
+  <p class="dok-intro">Alle Nachweise deiner Beteiligungen – jederzeit als PDF.</p>
+
+  <div class="dok-kopf">
+    <label class="glass dok-suche">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>
+      <input class="dok-suchfeld" type="search" placeholder="Nach Titel suchen" aria-label="Dokumente nach Titel durchsuchen" autocomplete="off">
+    </label>
+    <div class="dok-filter" role="group" aria-label="Nach Kategorie filtern">
+      <button type="button" class="dok-kat" data-kat="alle" aria-pressed="true">Alle</button>
+      <button type="button" class="dok-kat" data-kat="steuern" aria-pressed="false">Steuern</button>
+      <button type="button" class="dok-kat" data-kat="zeichnungen" aria-pressed="false">Zeichnungen</button>
+      <button type="button" class="dok-kat" data-kat="berichte" aria-pressed="false">Berichte</button>
+      <button type="button" class="dok-kat" data-kat="rechtliches" aria-pressed="false">Rechtliches</button>
+    </div>
+  </div>
+
+  <div class="dok-liste">
+    <div class="zeile dok-doc" data-kategorie="berichte">
+      <div class="l">
+        <span class="dok-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/></svg></span>
+        <span class="dok-text">
+          <span class="dok-titel">Baufortschritt Leipzig Juli</span>
+          <span class="dok-meta">PDF &middot; 3,8 MB &middot; 28.07.2026</span>
+        </span>
+      </div>
+      <div class="r">
+        <span class="pill pill-violett">Neu</span>
+        <button type="button" class="btn btn-glass btn-small dok-download" aria-label="Baufortschritt Leipzig Juli herunterladen" aria-live="polite">
+          <span class="dok-fb-normal"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><polyline points="7 11 12 16 17 11"/><path d="M5 20h14"/></svg>Laden</span>
+          <span class="dok-fb-ok" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 8"/></svg>Geladen</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="zeile dok-doc" data-kategorie="berichte">
+      <div class="l">
+        <span class="dok-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/></svg></span>
+        <span class="dok-text">
+          <span class="dok-titel">Ertragsübersicht Q2 2026</span>
+          <span class="dok-meta">PDF &middot; 484 KB &middot; 05.07.2026</span>
+        </span>
+      </div>
+      <div class="r">
+        <button type="button" class="btn btn-glass btn-small dok-download" aria-label="Ertragsübersicht Q2 2026 herunterladen" aria-live="polite">
+          <span class="dok-fb-normal"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><polyline points="7 11 12 16 17 11"/><path d="M5 20h14"/></svg>Laden</span>
+          <span class="dok-fb-ok" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 8"/></svg>Geladen</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="zeile dok-doc" data-kategorie="zeichnungen">
+      <div class="l">
+        <span class="dok-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/></svg></span>
+        <span class="dok-text">
+          <span class="dok-titel">Zeichnungsschein München</span>
+          <span class="dok-meta">PDF &middot; 1,2 MB &middot; 20.01.2026</span>
+        </span>
+      </div>
+      <div class="r">
+        <button type="button" class="btn btn-glass btn-small dok-download" aria-label="Zeichnungsschein München herunterladen" aria-live="polite">
+          <span class="dok-fb-normal"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><polyline points="7 11 12 16 17 11"/><path d="M5 20h14"/></svg>Laden</span>
+          <span class="dok-fb-ok" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 8"/></svg>Geladen</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="zeile dok-doc" data-kategorie="steuern">
+      <div class="l">
+        <span class="dok-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/></svg></span>
+        <span class="dok-text">
+          <span class="dok-titel">Jahressteuerbescheinigung 2025</span>
+          <span class="dok-meta">PDF &middot; 156 KB &middot; 12.01.2026</span>
+        </span>
+      </div>
+      <div class="r">
+        <button type="button" class="btn btn-glass btn-small dok-download" aria-label="Jahressteuerbescheinigung 2025 herunterladen" aria-live="polite">
+          <span class="dok-fb-normal"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><polyline points="7 11 12 16 17 11"/><path d="M5 20h14"/></svg>Laden</span>
+          <span class="dok-fb-ok" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 8"/></svg>Geladen</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="zeile dok-doc" data-kategorie="zeichnungen">
+      <div class="l">
+        <span class="dok-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/></svg></span>
+        <span class="dok-text">
+          <span class="dok-titel">Zeichnungsschein Leipzig</span>
+          <span class="dok-meta">PDF &middot; 1,1 MB &middot; 03.08.2025</span>
+        </span>
+      </div>
+      <div class="r">
+        <button type="button" class="btn btn-glass btn-small dok-download" aria-label="Zeichnungsschein Leipzig herunterladen" aria-live="polite">
+          <span class="dok-fb-normal"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><polyline points="7 11 12 16 17 11"/><path d="M5 20h14"/></svg>Laden</span>
+          <span class="dok-fb-ok" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 8"/></svg>Geladen</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="zeile dok-doc" data-kategorie="berichte">
+      <div class="l">
+        <span class="dok-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/></svg></span>
+        <span class="dok-text">
+          <span class="dok-titel">Wertgutachten Leipzig</span>
+          <span class="dok-meta">PDF &middot; 2,4 MB &middot; 21.07.2025</span>
+        </span>
+      </div>
+      <div class="r">
+        <button type="button" class="btn btn-glass btn-small dok-download" aria-label="Wertgutachten Leipzig herunterladen" aria-live="polite">
+          <span class="dok-fb-normal"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><polyline points="7 11 12 16 17 11"/><path d="M5 20h14"/></svg>Laden</span>
+          <span class="dok-fb-ok" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 8"/></svg>Geladen</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="zeile dok-doc" data-kategorie="zeichnungen">
+      <div class="l">
+        <span class="dok-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/></svg></span>
+        <span class="dok-text">
+          <span class="dok-titel">Zeichnungsschein Hamburg</span>
+          <span class="dok-meta">PDF &middot; 1,1 MB &middot; 14.03.2025</span>
+        </span>
+      </div>
+      <div class="r">
+        <button type="button" class="btn btn-glass btn-small dok-download" aria-label="Zeichnungsschein Hamburg herunterladen" aria-live="polite">
+          <span class="dok-fb-normal"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><polyline points="7 11 12 16 17 11"/><path d="M5 20h14"/></svg>Laden</span>
+          <span class="dok-fb-ok" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 8"/></svg>Geladen</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="zeile dok-doc" data-kategorie="rechtliches">
+      <div class="l">
+        <span class="dok-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/></svg></span>
+        <span class="dok-text">
+          <span class="dok-titel">Verbraucherinformationen</span>
+          <span class="dok-meta">PDF &middot; 310 KB &middot; 14.03.2025</span>
+        </span>
+      </div>
+      <div class="r">
+        <button type="button" class="btn btn-glass btn-small dok-download" aria-label="Verbraucherinformationen herunterladen" aria-live="polite">
+          <span class="dok-fb-normal"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><polyline points="7 11 12 16 17 11"/><path d="M5 20h14"/></svg>Laden</span>
+          <span class="dok-fb-ok" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 8"/></svg>Geladen</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dok-leer" hidden>
+    <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/><line x1="8.5" y1="11" x2="13.5" y2="11"/></svg>
+    <p class="dok-leer-suche">Nichts gefunden zu <b class="dok-leer-begriff"></b>.</p>
+    <p class="dok-leer-filter" hidden>Keine Dokumente in dieser Auswahl.</p>
+    <span class="dok-leer-hinweis">Prüfe die Schreibweise oder setze die Filter zurück.</span>
+    <button type="button" class="btn btn-glass btn-small dok-reset">Filter zurücksetzen</button>
+  </div>
+
+  <div class="dok-fuss">
+    <span class="dok-anzahl" aria-live="polite">8 Dokumente &middot; 10,5 MB</span>
+    <button type="button" class="btn btn-glass dok-zip" aria-live="polite">
+      <span class="dok-fb-normal"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>Alle als ZIP</span>
+      <span class="dok-fb-ok" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="5 12 10 17 19 8"/></svg>ZIP erstellt</span>
+    </button>
+  </div>
+</section>
+<section class="inhalt" data-raum="konto" aria-label="Konto und Profil">
+  <h2>Konto<em> &amp; Profil.</em></h2>
+
+  <div class="glass kon-profil reveal">
+    <span class="kon-avatar" aria-hidden="true">J</span>
+    <div class="kon-profil-text">
+      <strong>Jonas M.</strong>
+      <span>Identität geprüft · Anleger seit 03/2025</span>
+    </div>
+    <span class="pill pill-gruen">Verifiziert</span>
+  </div>
+
+  <h3 class="kon-untertitel">Auszahlung &amp; Steuern</h3>
+
+  <div class="zeile reveal">
+    <div class="l">
+      <strong>Auszahlungskonto</strong>
+      <span class="kon-iban-wert kon-num">DE89 **** **** 3000 · Volksbank</span>
+    </div>
+    <div class="r">
+      <button type="button" class="btn btn-glass btn-small kon-iban-btn" aria-expanded="false" aria-controls="kon-iban-form">Ändern</button>
+    </div>
+  </div>
+  <form class="kon-inline" id="kon-iban-form" hidden novalidate>
+    <label class="kon-label" for="kon-iban-input">Neue IBAN</label>
+    <input class="kon-input" id="kon-iban-input" type="text" autocomplete="off" spellcheck="false" placeholder="DE12 3456 7890 1234 5678 90" aria-describedby="kon-iban-fehler">
+    <p class="kon-fehler" id="kon-iban-fehler" hidden>Diese IBAN ist zu kurz — sie braucht mindestens 15 Zeichen.</p>
+    <div class="kon-inline-aktionen">
+      <button type="submit" class="btn btn-primary btn-small">Speichern</button>
+      <button type="button" class="btn btn-glass btn-small kon-iban-abbrechen">Abbrechen</button>
+    </div>
+  </form>
+  <p class="kon-feedback kon-iban-feedback" role="status" hidden>Auszahlungskonto aktualisiert — künftige Auszahlungen gehen auf das neue Konto.</p>
+
+  <div class="zeile reveal">
+    <div class="l">
+      <strong>Freistellungsauftrag</strong>
+      <span><b class="kon-num kon-fsa-genutzt">801 €</b> von <b class="kon-num kon-fsa-max">1.000 €</b> genutzt</span>
+    </div>
+    <div class="r">
+      <button type="button" class="btn btn-glass btn-small kon-fsa-btn" aria-expanded="false" aria-controls="kon-fsa-form">Anpassen</button>
+    </div>
+  </div>
+  <div class="kon-inline" id="kon-fsa-form" hidden>
+    <label class="kon-label" for="kon-fsa-slider">Auftragshöhe: <output class="kon-fsa-out kon-num" for="kon-fsa-slider">1.000 €</output></label>
+    <input type="range" class="kon-slider" id="kon-fsa-slider" min="0" max="1000" step="50" value="1000" aria-label="Freistellungsauftrag in Euro, 0 bis 1.000 in 50er-Schritten">
+    <div class="kon-inline-aktionen">
+      <button type="button" class="btn btn-primary btn-small kon-fsa-speichern">Speichern</button>
+      <button type="button" class="btn btn-glass btn-small kon-fsa-abbrechen">Abbrechen</button>
+    </div>
+  </div>
+  <p class="kon-feedback kon-fsa-feedback" role="status" hidden>Freistellungsauftrag angepasst.</p>
+
+  <h3 class="kon-untertitel">Einstellungen</h3>
+
+  <div class="zeile reveal">
+    <div class="l">
+      <strong>Automatisch reinvestieren</strong>
+      <span>Auszahlungen fließen direkt in neue Beteiligungen</span>
+    </div>
+    <div class="r">
+      <button type="button" class="kon-toggle" aria-pressed="true" aria-label="Automatisch reinvestieren">
+        <span class="kon-track" aria-hidden="true"><span class="kon-knubbel"></span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="zeile reveal">
+    <div class="l">
+      <strong>Monatsreport per E-Mail</strong>
+      <span>Einkommen, Portfoliowert und Termine — einmal im Monat</span>
+    </div>
+    <div class="r">
+      <button type="button" class="kon-toggle" aria-pressed="true" aria-label="Monatsreport per E-Mail">
+        <span class="kon-track" aria-hidden="true"><span class="kon-knubbel"></span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="zeile reveal">
+    <div class="l">
+      <strong>Zwei-Faktor-Anmeldung <span class="pill pill-violett kon-2fa-pill">Empfohlen</span></strong>
+      <span>Bestätigungscode zusätzlich zum Passwort</span>
+    </div>
+    <div class="r">
+      <button type="button" class="kon-toggle kon-toggle-2fa" aria-pressed="false" aria-label="Zwei-Faktor-Anmeldung">
+        <span class="kon-track" aria-hidden="true"><span class="kon-knubbel"></span></span>
+      </button>
+    </div>
+  </div>
+
+  <h3 class="kon-untertitel">Sicherheit</h3>
+
+  <div class="zeile reveal">
+    <div class="l">
+      <strong>Passwort</strong>
+      <span>Zuletzt geändert 02/2026</span>
+    </div>
+    <div class="r">
+      <button type="button" class="btn btn-glass btn-small" disabled title="Im Prototyp nicht verfügbar">Ändern</button>
+    </div>
+  </div>
+
+  <div class="kon-abmelden-zeile reveal">
+    <button type="button" class="kon-abmelden">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <path d="M16 17l5-5-5-5"/>
+        <path d="M21 12H9"/>
+      </svg>
+      Abmelden
+    </button>
+    <p class="kon-feedback kon-abmelden-feedback" role="status" hidden>In der Demo bleibst du angemeldet.</p>
+  </div>
+</section>
+<section class="inhalt" data-raum="postfach" aria-label="Postfach mit deinen Nachrichten">
+  <h2>Post<em>fach.</em></h2>
+  <div class="pos-kopf">
+    <span class="pill pill-violett pos-zaehler" aria-live="polite">3 ungelesen</span>
+    <button class="btn btn-glass pos-alle-lesen" type="button">Alle als gelesen markieren</button>
+  </div>
+  <div class="pos-liste">
+
+    <article class="pos-nachricht" data-ungelesen="true" data-offen="false">
+      <button class="zeile pos-zeile" type="button" aria-expanded="false" aria-controls="pos-n1">
+        <span class="l">
+          <span class="pos-punkt" aria-hidden="true"></span>
+          <span class="pos-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 9.5V21h14V9.5"/></svg></span>
+          <span class="pos-titel"><span class="pos-sr">Ungelesen: </span>Baufortschritt Leipzig: Dächer dicht</span>
+        </span>
+        <span class="r">
+          <span class="pos-datum">28.07.2026</span>
+          <span class="pos-pfeil" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+        </span>
+      </button>
+      <div class="pos-inhalt" id="pos-n1">
+        <div class="pane pos-inhalt-innen">
+          <p class="pos-text">Meilenstein am Stadthaus Leipzig-Plagwitz: Beide Dachstühle sind saniert, die Neueindeckung ist abgeschlossen — das Gebäude ist dicht. Der Innenausbau läuft ab sofort wetterunabhängig weiter.</p>
+          <img class="pos-bild" src="bilder/projekt-interior.jpg" alt="Innenausbau im Stadthaus Leipzig-Plagwitz nach der Dachsanierung">
+          <p class="pos-text">Der Zeitplan hält: Als Nächstes folgen Elektro- und Sanitärinstallation, danach der Ausbau der Wohneinheiten. Die Fertigstellung bleibt für Anfang 2027 geplant, der Verkauf für Q2 2027 — deine Beteiligung verzinst sich weiter mit 13,2 % p.a.</p>
+          <div class="pos-aktion"><a class="btn btn-primary" href="projekte.html">Projekt ansehen</a></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="pos-nachricht" data-ungelesen="true" data-offen="false">
+      <button class="zeile pos-zeile" type="button" aria-expanded="false" aria-controls="pos-n2">
+        <span class="l">
+          <span class="pos-punkt" aria-hidden="true"></span>
+          <span class="pos-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6.5" width="19" height="11" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg></span>
+          <span class="pos-titel"><span class="pos-sr">Ungelesen: </span>Deine Juli-Auszahlung ist unterwegs: 1.240 €</span>
+        </span>
+        <span class="r">
+          <span class="pos-datum">15.07.2026</span>
+          <span class="pos-pfeil" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+        </span>
+      </button>
+      <div class="pos-inhalt" id="pos-n2">
+        <div class="pane pos-inhalt-innen">
+          <p class="pos-text">Deine Auszahlung für Juli ist angewiesen und erreicht dein Konto in 1–2 Bankarbeitstagen. Sie setzt sich so zusammen:</p>
+          <ul class="pos-aufstellung">
+            <li class="pos-posten"><span>Quartier Hamburg-Ottensen</span><span class="pos-betrag">518 €</span></li>
+            <li class="pos-posten"><span>Stadthaus Leipzig-Plagwitz</span><span class="pos-betrag">412 €</span></li>
+            <li class="pos-posten"><span>Projekt München-Sendling</span><span class="pos-betrag">310 €</span></li>
+            <li class="pos-posten pos-summe"><span>Gesamt</span><span class="pos-betrag">1.240 €</span></li>
+          </ul>
+          <p class="pos-text">Dein monatliches Einkommen liegt damit 8,2 % über dem Vorjahr. Die nächste Auszahlung folgt am 15.08.2026.</p>
+          <div class="pos-aktion"><a class="btn btn-primary" href="#finanzen">Zur Finanzverwaltung</a></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="pos-nachricht" data-ungelesen="true" data-offen="false">
+      <button class="zeile pos-zeile" type="button" aria-expanded="false" aria-controls="pos-n3">
+        <span class="l">
+          <span class="pos-punkt" aria-hidden="true"></span>
+          <span class="pos-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3H7a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V8z"/><path d="M13 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/></svg></span>
+          <span class="pos-titel"><span class="pos-sr">Ungelesen: </span>Steuerbescheinigung 2025 liegt bereit</span>
+        </span>
+        <span class="r">
+          <span class="pos-datum">12.01.2026</span>
+          <span class="pos-pfeil" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+        </span>
+      </button>
+      <div class="pos-inhalt" id="pos-n3">
+        <div class="pane pos-inhalt-innen">
+          <p class="pos-text">Deine Steuerbescheinigung für das Jahr 2025 liegt bereit. Sie fasst alle Erträge aus deinen Beteiligungen zusammen — die Werte trägst du in der Anlage KAP deiner Steuererklärung ein.</p>
+          <p class="pos-text">Das Dokument bleibt dauerhaft in deinem Konto abrufbar, du findest es in der Finanzverwaltung unter deinen Dokumenten.</p>
+          <div class="pos-aktion"><a class="btn btn-primary" href="#finanzen">In der Finanzverwaltung öffnen</a></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="pos-nachricht" data-ungelesen="false" data-offen="false">
+      <button class="zeile pos-zeile" type="button" aria-expanded="false" aria-controls="pos-n4">
+        <span class="l">
+          <span class="pos-punkt" aria-hidden="true"></span>
+          <span class="pos-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 5 6 10H4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2l10 5V5z"/><path d="M19.5 9.5a5 5 0 0 1 0 5"/></svg></span>
+          <span class="pos-titel">Neues Projekt: Hafenspeicher Bremen öffnet Freitag</span>
+        </span>
+        <span class="r">
+          <span class="pos-datum">08.08.2026</span>
+          <span class="pos-pfeil" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+        </span>
+      </button>
+      <div class="pos-inhalt" id="pos-n4">
+        <div class="pane pos-inhalt-innen">
+          <p class="pos-text">Am Freitag, 14.08.2026, öffnet die Zeichnung für den Hafenspeicher Bremen: die Sanierung eines denkmalgeschützten Speichergebäudes in der Überseestadt, Beteiligung ab 100 €.</p>
+          <p class="pos-text">Gefragte Projekte sind erfahrungsgemäß schnell voll gezeichnet — sieh dir die Eckdaten am besten vorab an.</p>
+          <div class="pos-aktion"><a class="btn btn-primary" href="projekte.html">Projekt ansehen</a></div>
+        </div>
+      </div>
+    </article>
+
+    <article class="pos-nachricht" data-ungelesen="false" data-offen="false">
+      <button class="zeile pos-zeile" type="button" aria-expanded="false" aria-controls="pos-n5">
+        <span class="l">
+          <span class="pos-punkt" aria-hidden="true"></span>
+          <span class="pos-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5S3.5 15.5 3.5 9.8a4.3 4.3 0 0 1 8.5-1 4.3 4.3 0 0 1 8.5 1c0 5.7-8.5 10.7-8.5 10.7z"/></svg></span>
+          <span class="pos-titel">Willkommen bei currily</span>
+        </span>
+        <span class="r">
+          <span class="pos-datum">März 2025</span>
+          <span class="pos-pfeil" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></span>
+        </span>
+      </button>
+      <div class="pos-inhalt" id="pos-n5">
+        <div class="pane pos-inhalt-innen">
+          <p class="pos-text">Schön, dass du dabei bist. Dein Konto ist verifiziert und dein Geld arbeitet seit März 2025 in echten Immobilienprojekten — ab 100 € pro Beteiligung.</p>
+          <p class="pos-text">Alle Auszahlungen, Dokumente und Kennzahlen findest du jederzeit in deiner Finanzverwaltung.</p>
+          <div class="pos-aktion"><a class="btn btn-glass" href="#finanzen">Zur Finanzverwaltung</a></div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+<section class="inhalt" data-raum="markt" aria-label="Marktplatz – neue Projekte zeichnen">
+  <h2>Markt<em>platz.</em></h2>
+  <p class="mar-intro">Neue Beteiligungen, bevor die Zeichnung öffnet – sichere dir deinen Platz.</p>
+
+  <article class="glass mar-featured reveal">
+    <div class="mar-media">
+      <img class="mar-bild" src="bilder/projekt-muenchen.jpg" alt="Neubau am Wasser, Bremen">
+      <span class="pill pill-violett mar-badge">Zeichnung ab Freitag 12:00</span>
+    </div>
+    <div class="mar-body">
+      <h3 class="mar-titel">Hafenspeicher Bremen</h3>
+      <p class="mar-desc">Neubau mit 24 Wohneinheiten direkt an der Weser. Vollvermietung vor Fertigstellung geplant, Auszahlung monatlich.</p>
+
+      <div class="kpis mar-kpis">
+        <div class="kpi">
+          <h4>Rendite</h4>
+          <b>12,6&nbsp;% p.a.</b>
+        </div>
+        <div class="kpi">
+          <h4>Laufzeit</h4>
+          <b>30 Mon.</b>
+        </div>
+        <div class="kpi">
+          <h4>Einstieg</h4>
+          <b>ab 100&nbsp;€</b>
+        </div>
+      </div>
+
+      <div class="mar-progress">
+        <div class="mar-progress-kopf">
+          <span>Vormerkungen</span>
+          <span class="mar-pct">41&nbsp;%</span>
+        </div>
+        <div class="mar-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="41" aria-label="Vormerkungen: 41 Prozent">
+          <div class="mar-fill"></div>
+        </div>
+      </div>
+
+      <p class="mar-countdown">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        Öffnet in 3 Tagen 2 Std
+      </p>
+
+      <div class="mar-aktion" aria-live="polite">
+        <button type="button" class="btn btn-primary mar-vormerken">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6"/><path d="M10.5 20a1.8 1.8 0 0 0 3 0"/></svg>
+          Kostenlos vormerken
+        </button>
+        <span class="pill pill-gruen mar-vorgemerkt" hidden>Vorgemerkt – wir erinnern dich</span>
+      </div>
+    </div>
+  </article>
+
+  <div class="zeile mar-zeile reveal">
+    <div class="l">
+      <b>Quartier Hamburg-Ottensen – Aufstockung</b>
+      <span class="mar-meta">11,4&nbsp;% p.a. · 24 Mon. · 78&nbsp;% finanziert</span>
+    </div>
+    <div class="r">
+      <a class="btn btn-glass btn-small" href="projekt.html">Details</a>
+    </div>
+  </div>
+
+  <p class="mar-risiko">Vermögensanlagen bergen erhebliche Risiken bis hin zum Totalverlust des eingesetzten Kapitals.</p>
+</section>
 </div>
 
+<script>
+window.raumInit = {};
+</script>
+<script>
+window.raumInit = window.raumInit || {};
+window.raumInit["finanzen"] = function (sec) {
+  if (sec.dataset.finInit === "1") return;
+  sec.dataset.finInit = "1";
+
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var fmt = new Intl.NumberFormat("de-DE");
+
+  /* KPI-Zaehler: zaehlt von 0 auf den Zielwert hoch */
+  var zaehler = sec.querySelector(".fin-zaehler");
+  if (zaehler && !reduced) {
+    var ziel = parseInt(zaehler.getAttribute("data-ziel"), 10);
+    var dauer = 1100;
+    var start = null;
+    var schritt = function (ts) {
+      if (start === null) start = ts;
+      var t = Math.min((ts - start) / dauer, 1);
+      var e = 1 - Math.pow(1 - t, 3);
+      zaehler.textContent = fmt.format(Math.round(ziel * e)) + " €";
+      if (t < 1) requestAnimationFrame(schritt);
+    };
+    requestAnimationFrame(schritt);
+  }
+
+  /* Linie zeichnet sich, Flaeche und Punkte blenden nach */
+  var linie = sec.querySelector(".fin-linie");
+  var flaeche = sec.querySelector(".fin-flaeche");
+  var punkte = sec.querySelector(".fin-punkte");
+  if (linie && flaeche && punkte && !reduced) {
+    var len = 0;
+    try { len = linie.getTotalLength(); } catch (err) { len = 0; }
+    if (len > 0) {
+      linie.style.strokeDasharray = String(len);
+      linie.style.strokeDashoffset = String(len);
+      flaeche.style.opacity = "0";
+      punkte.style.opacity = "0";
+      void linie.getBoundingClientRect();
+      linie.style.transition = "stroke-dashoffset 1.2s var(--ease-default)";
+      flaeche.style.transition = "opacity .6s var(--ease-default) .7s";
+      punkte.style.transition = "opacity .5s var(--ease-default) .9s";
+      requestAnimationFrame(function () {
+        linie.style.strokeDashoffset = "0";
+        flaeche.style.opacity = "1";
+        punkte.style.opacity = "1";
+      });
+    }
+  }
+
+  /* Fortschrittsbalken Freistellungsauftrag */
+  var balken = sec.querySelector(".fin-balken-wert");
+  if (balken && !reduced) {
+    balken.style.width = "0%";
+    void balken.getBoundingClientRect();
+    balken.style.transition = "width .9s var(--ease-default) .3s";
+    requestAnimationFrame(function () {
+      balken.style.width = balken.getAttribute("data-breite");
+    });
+  }
+
+  /* Glas-Tooltip am Chart (Hover, Touch und Tastatur) */
+  var tip = sec.querySelector(".fin-tooltip");
+  var tipMonat = sec.querySelector(".fin-tip-monat");
+  var tipWert = sec.querySelector(".fin-tip-wert");
+  var hits = sec.querySelectorAll(".fin-hit");
+  var dots = sec.querySelectorAll(".fin-punkt");
+  var aktiverPunkt = null;
+
+  function zeige(hit, i) {
+    var cx = parseFloat(hit.getAttribute("cx"));
+    var cy = parseFloat(hit.getAttribute("cy"));
+    tipMonat.textContent = hit.getAttribute("data-monat");
+    tipWert.textContent = hit.getAttribute("data-betrag");
+    tip.style.left = (cx / 620 * 100) + "%";
+    tip.style.top = (cy / 248 * 100) + "%";
+    var tx = cx < 90 ? "-12%" : (cx > 540 ? "-88%" : "-50%");
+    var ty = cy < 75 ? "35%" : "-135%";
+    tip.style.transform = "translate(" + tx + ", " + ty + ")";
+    tip.classList.add("fin-sichtbar");
+    if (aktiverPunkt) aktiverPunkt.setAttribute("r", "3.5");
+    aktiverPunkt = dots[i];
+    if (aktiverPunkt) aktiverPunkt.setAttribute("r", "5");
+  }
+
+  function verstecke() {
+    tip.classList.remove("fin-sichtbar");
+    if (aktiverPunkt) {
+      aktiverPunkt.setAttribute("r", "3.5");
+      aktiverPunkt = null;
+    }
+  }
+
+  if (tip && tipMonat && tipWert) {
+    hits.forEach(function (hit, i) {
+      hit.addEventListener("pointerenter", function () { zeige(hit, i); });
+      hit.addEventListener("pointerleave", verstecke);
+      hit.addEventListener("focus", function () { zeige(hit, i); });
+      hit.addEventListener("blur", verstecke);
+      hit.addEventListener("click", function () { zeige(hit, i); });
+      hit.addEventListener("keydown", function (ev) {
+        if (ev.key === "Escape") verstecke();
+      });
+    });
+  }
+
+  /* Filter-Pillen der Auszahlungs-Historie */
+  var filterKnoepfe = sec.querySelectorAll(".fin-filter");
+  var buchungen = sec.querySelectorAll(".fin-buchung");
+  var leer = sec.querySelector(".fin-leer");
+  filterKnoepfe.forEach(function (knopf) {
+    knopf.addEventListener("click", function () {
+      var art = knopf.getAttribute("data-art");
+      filterKnoepfe.forEach(function (k) {
+        k.setAttribute("aria-pressed", k === knopf ? "true" : "false");
+      });
+      var sichtbar = 0;
+      buchungen.forEach(function (zeile) {
+        var zeigen = art === "alle" || zeile.getAttribute("data-art") === art;
+        zeile.hidden = !zeigen;
+        if (zeigen) sichtbar++;
+      });
+      if (leer) leer.hidden = sichtbar > 0;
+    });
+  });
+
+  /* Steuerbescheinigung: sichtbares Vorbereitet-Feedback */
+  var dl = sec.querySelector(".fin-download");
+  var status = sec.querySelector(".fin-status");
+  if (dl && status) {
+    dl.addEventListener("click", function () {
+      if (dl.dataset.fertig === "1") return;
+      dl.dataset.fertig = "1";
+      dl.disabled = true;
+      dl.textContent = "Wird vorbereitet …";
+      window.setTimeout(function () {
+        dl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4 10-10"/></svg>Vorbereitet';
+        status.textContent = "Deine Steuerbescheinigung 2025 liegt zum Abruf im Postfach bereit.";
+      }, reduced ? 0 : 900);
+    });
+  }
+};
+</script>
+<script>
+window.raumInit = window.raumInit || {};
+window.raumInit["projekte"] = function (sec) {
+  if (sec.dataset.proInit === "1") return;
+  sec.dataset.proInit = "1";
+
+  var NBSP = " ";
+  var reduziert = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var fmt = function (n) { return n.toLocaleString("de-DE"); };
+
+  /* (a) Portfoliowert hochzaehlen */
+  var wertEl = sec.querySelector(".pro-portfoliowert");
+  if (wertEl) {
+    var ziel = parseInt(wertEl.getAttribute("data-pro-ziel"), 10) || 0;
+    if (reduziert) {
+      wertEl.textContent = fmt(ziel) + NBSP + "€";
+    } else {
+      var start = null, dauer = 900;
+      var tick = function (ts) {
+        if (start === null) start = ts;
+        var t = Math.min((ts - start) / dauer, 1);
+        var e = 1 - Math.pow(1 - t, 3);
+        wertEl.textContent = fmt(Math.round(ziel * e)) + NBSP + "€";
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      wertEl.textContent = "0" + NBSP + "€";
+      requestAnimationFrame(tick);
+    }
+  }
+
+  /* (b) Allokationsbalken einwachsen lassen */
+  var segs = sec.querySelectorAll(".pro-seg");
+  var wachsen = function () {
+    segs.forEach(function (s) { s.classList.add("pro-an"); });
+  };
+  if (reduziert) { wachsen(); }
+  else { requestAnimationFrame(function () { requestAnimationFrame(wachsen); }); }
+
+  /* (c) Sparklines zeichnen (letzte 6 Monatsertraege) */
+  var NS = "http://www.w3.org/2000/svg";
+  sec.querySelectorAll(".pro-spark").forEach(function (svg) {
+    var werte = (svg.getAttribute("data-pro-werte") || "")
+      .split(",").map(Number).filter(function (n) { return !isNaN(n); });
+    if (werte.length < 2 || svg.childNodes.length) return;
+    var min = Math.min.apply(null, werte);
+    var max = Math.max.apply(null, werte);
+    var spanne = (max - min) || 1;
+    var xy = werte.map(function (w, i) {
+      return [2 + i * (56 / (werte.length - 1)), 17 - ((w - min) / spanne) * 14];
+    });
+    var linie = document.createElementNS(NS, "polyline");
+    linie.setAttribute("points", xy.map(function (p) {
+      return p[0].toFixed(1) + "," + p[1].toFixed(1);
+    }).join(" "));
+    linie.setAttribute("fill", "none");
+    linie.setAttribute("stroke", "currentColor");
+    linie.setAttribute("stroke-width", "2");
+    linie.setAttribute("stroke-linecap", "round");
+    linie.setAttribute("stroke-linejoin", "round");
+    svg.appendChild(linie);
+    var ende = xy[xy.length - 1];
+    var punkt = document.createElementNS(NS, "circle");
+    punkt.setAttribute("cx", ende[0].toFixed(1));
+    punkt.setAttribute("cy", ende[1].toFixed(1));
+    punkt.setAttribute("r", "2.5");
+    punkt.setAttribute("fill", "currentColor");
+    svg.appendChild(punkt);
+    if (!reduziert) {
+      var laenge = 0;
+      for (var i = 1; i < xy.length; i++) {
+        laenge += Math.hypot(xy[i][0] - xy[i - 1][0], xy[i][1] - xy[i - 1][1]);
+      }
+      linie.style.strokeDasharray = laenge;
+      linie.style.strokeDashoffset = laenge;
+      punkt.style.opacity = "0";
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          linie.style.transition = "stroke-dashoffset .8s ease-out";
+          linie.style.strokeDashoffset = "0";
+          punkt.style.transition = "opacity .3s ease .6s";
+          punkt.style.opacity = "1";
+        });
+      });
+    }
+  });
+
+  /* (c) Detailzeilen auf- und zuklappen */
+  sec.querySelectorAll(".pro-karte-kopf").forEach(function (kopf) {
+    kopf.addEventListener("click", function () {
+      var offen = kopf.getAttribute("aria-expanded") === "true";
+      kopf.setAttribute("aria-expanded", offen ? "false" : "true");
+      var detail = sec.querySelector("#" + kopf.getAttribute("aria-controls"));
+      if (detail) detail.classList.toggle("pro-offen", !offen);
+    });
+  });
+
+  /* (d) Betrag-Stepper fuer Reinvestieren */
+  var betragEl = sec.querySelector(".pro-betrag");
+  var minus = sec.querySelector(".pro-step-minus");
+  var plus = sec.querySelector(".pro-step-plus");
+  var ctaBtn = sec.querySelector(".pro-cta-btn");
+  if (betragEl && minus && plus && ctaBtn) {
+    var MIN = 100, MAX = 10000, SCHRITT = 100, betrag = 500;
+    var zeigen = function () {
+      betragEl.textContent = fmt(betrag) + NBSP + "€";
+      minus.disabled = betrag <= MIN;
+      plus.disabled = betrag >= MAX;
+      ctaBtn.setAttribute("href", "projekte.html?betrag=" + betrag);
+    };
+    minus.addEventListener("click", function () { betrag = Math.max(MIN, betrag - SCHRITT); zeigen(); });
+    plus.addEventListener("click", function () { betrag = Math.min(MAX, betrag + SCHRITT); zeigen(); });
+    zeigen();
+  }
+};
+</script>
+<script>
+window.raumInit = window.raumInit || {};
+window.raumInit["dokumente"] = function (sec) {
+  if (sec.dataset.dokInit) return;
+  sec.dataset.dokInit = "1";
+
+  var suchfeld = sec.querySelector(".dok-suchfeld");
+  var katKnoepfe = Array.prototype.slice.call(sec.querySelectorAll(".dok-kat"));
+  var zeilen = Array.prototype.slice.call(sec.querySelectorAll(".dok-doc"));
+  var leer = sec.querySelector(".dok-leer");
+  var leerSuche = sec.querySelector(".dok-leer-suche");
+  var leerFilter = sec.querySelector(".dok-leer-filter");
+  var begriff = sec.querySelector(".dok-leer-begriff");
+  var anzahl = sec.querySelector(".dok-anzahl");
+  var gesamt = zeilen.length;
+  var aktiveKat = "alle";
+
+  zeilen.forEach(function (z) {
+    z.dataset.suchtext = z.querySelector(".dok-titel").textContent.toLowerCase();
+  });
+
+  function filtern() {
+    var q = suchfeld.value.trim().toLowerCase();
+    var treffer = 0;
+    zeilen.forEach(function (z) {
+      var passt =
+        (aktiveKat === "alle" || z.dataset.kategorie === aktiveKat) &&
+        (!q || z.dataset.suchtext.indexOf(q) !== -1);
+      z.hidden = !passt;
+      if (passt) treffer++;
+    });
+    var nichts = treffer === 0;
+    leer.hidden = !nichts;
+    if (nichts) {
+      leerSuche.hidden = !q;
+      leerFilter.hidden = !!q;
+      if (q) begriff.textContent = "„" + suchfeld.value.trim() + "“";
+    }
+    if (treffer === gesamt) {
+      anzahl.textContent = gesamt + " Dokumente · 10,5 MB";
+    } else {
+      anzahl.textContent = treffer + " von " + gesamt + " Dokumenten";
+    }
+  }
+
+  suchfeld.addEventListener("input", filtern);
+
+  katKnoepfe.forEach(function (k) {
+    k.addEventListener("click", function () {
+      aktiveKat = k.dataset.kat;
+      katKnoepfe.forEach(function (b) {
+        b.setAttribute("aria-pressed", b === k ? "true" : "false");
+      });
+      filtern();
+    });
+  });
+
+  sec.querySelector(".dok-reset").addEventListener("click", function () {
+    suchfeld.value = "";
+    aktiveKat = "alle";
+    katKnoepfe.forEach(function (b) {
+      b.setAttribute("aria-pressed", b.dataset.kat === "alle" ? "true" : "false");
+    });
+    filtern();
+    suchfeld.focus();
+  });
+
+  function feedback(btn, dauer) {
+    if (btn.dataset.aktiv) return;
+    var normal = btn.querySelector(".dok-fb-normal");
+    var ok = btn.querySelector(".dok-fb-ok");
+    btn.dataset.aktiv = "1";
+    normal.hidden = true;
+    ok.hidden = false;
+    window.setTimeout(function () {
+      normal.hidden = false;
+      ok.hidden = true;
+      delete btn.dataset.aktiv;
+    }, dauer);
+  }
+
+  zeilen.forEach(function (z) {
+    var btn = z.querySelector(".dok-download");
+    btn.addEventListener("click", function () {
+      feedback(btn, 1500);
+    });
+  });
+
+  sec.querySelector(".dok-zip").addEventListener("click", function () {
+    feedback(sec.querySelector(".dok-zip"), 2000);
+  });
+
+  filtern();
+};
+</script>
+<script>
+window.raumInit = window.raumInit || {};
+window.raumInit["konto"] = function (sec) {
+  if (sec.dataset.konInit === "1") return;
+  sec.dataset.konInit = "1";
+
+  var reduziert = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function euro(n) { return n.toLocaleString("de-DE") + " €"; }
+
+  function zeigeFeedback(el) {
+    if (!el) return;
+    el.hidden = false;
+    if (reduziert) {
+      el.classList.add("kon-an");
+    } else {
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () { el.classList.add("kon-an"); });
+      });
+    }
+    clearTimeout(el._konTimer);
+    el._konTimer = setTimeout(function () {
+      el.classList.remove("kon-an");
+      if (reduziert) { el.hidden = true; }
+      else { setTimeout(function () { el.hidden = true; }, 300); }
+    }, 3000);
+  }
+
+  /* Auszahlungskonto: IBAN inline aendern */
+  var ibanBtn = sec.querySelector(".kon-iban-btn");
+  var ibanForm = sec.querySelector("#kon-iban-form");
+  var ibanInput = sec.querySelector("#kon-iban-input");
+  var ibanFehler = sec.querySelector("#kon-iban-fehler");
+  var ibanWert = sec.querySelector(".kon-iban-wert");
+  var ibanFeedback = sec.querySelector(".kon-iban-feedback");
+
+  function ibanFehlerZeigen(zeig) {
+    ibanFehler.hidden = !zeig;
+    if (zeig) { ibanInput.setAttribute("aria-invalid", "true"); }
+    else { ibanInput.removeAttribute("aria-invalid"); }
+  }
+
+  function ibanAufklappen(offen) {
+    ibanForm.hidden = !offen;
+    ibanBtn.setAttribute("aria-expanded", String(offen));
+    if (offen) { ibanInput.value = ""; ibanFehlerZeigen(false); ibanInput.focus(); }
+  }
+
+  ibanBtn.addEventListener("click", function () { ibanAufklappen(ibanForm.hidden); });
+  sec.querySelector(".kon-iban-abbrechen").addEventListener("click", function () {
+    ibanAufklappen(false);
+    ibanBtn.focus();
+  });
+  ibanInput.addEventListener("input", function () { ibanFehlerZeigen(false); });
+  ibanForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var roh = ibanInput.value.replace(/\s+/g, "").toUpperCase();
+    if (roh.length < 15) { ibanFehlerZeigen(true); ibanInput.focus(); return; }
+    ibanWert.textContent = roh.slice(0, 4) + " **** **** " + roh.slice(-4);
+    ibanAufklappen(false);
+    ibanBtn.focus();
+    zeigeFeedback(ibanFeedback);
+  });
+
+  /* Freistellungsauftrag: Slider inline anpassen */
+  var fsaBtn = sec.querySelector(".kon-fsa-btn");
+  var fsaForm = sec.querySelector("#kon-fsa-form");
+  var fsaSlider = sec.querySelector("#kon-fsa-slider");
+  var fsaOut = sec.querySelector(".kon-fsa-out");
+  var fsaGenutzt = sec.querySelector(".kon-fsa-genutzt");
+  var fsaMax = sec.querySelector(".kon-fsa-max");
+  var fsaFeedback = sec.querySelector(".kon-fsa-feedback");
+  var fsaGespeichert = 1000;
+  var GENUTZT = 801;
+
+  function fsaAufklappen(offen) {
+    fsaForm.hidden = !offen;
+    fsaBtn.setAttribute("aria-expanded", String(offen));
+    if (offen) {
+      fsaSlider.value = String(fsaGespeichert);
+      fsaOut.textContent = euro(fsaGespeichert);
+      fsaSlider.focus();
+    }
+  }
+
+  fsaBtn.addEventListener("click", function () { fsaAufklappen(fsaForm.hidden); });
+  fsaSlider.addEventListener("input", function () { fsaOut.textContent = euro(Number(fsaSlider.value)); });
+  sec.querySelector(".kon-fsa-abbrechen").addEventListener("click", function () {
+    fsaAufklappen(false);
+    fsaBtn.focus();
+  });
+  sec.querySelector(".kon-fsa-speichern").addEventListener("click", function () {
+    fsaGespeichert = Number(fsaSlider.value);
+    fsaMax.textContent = euro(fsaGespeichert);
+    fsaGenutzt.textContent = euro(Math.min(GENUTZT, fsaGespeichert));
+    fsaAufklappen(false);
+    fsaBtn.focus();
+    zeigeFeedback(fsaFeedback);
+  });
+
+  /* Schalter */
+  var zweiFaPill = sec.querySelector(".kon-2fa-pill");
+  sec.querySelectorAll(".kon-toggle").forEach(function (schalter) {
+    schalter.addEventListener("click", function () {
+      var an = schalter.getAttribute("aria-pressed") === "true";
+      schalter.setAttribute("aria-pressed", String(!an));
+      if (schalter.classList.contains("kon-toggle-2fa") && zweiFaPill) {
+        if (an) {
+          zweiFaPill.className = "pill pill-violett kon-2fa-pill";
+          zweiFaPill.textContent = "Empfohlen";
+        } else {
+          zweiFaPill.className = "pill pill-gruen kon-2fa-pill";
+          zweiFaPill.textContent = "Aktiv";
+        }
+      }
+    });
+  });
+
+  /* Abmelden */
+  var abmeldenFeedback = sec.querySelector(".kon-abmelden-feedback");
+  sec.querySelector(".kon-abmelden").addEventListener("click", function () {
+    zeigeFeedback(abmeldenFeedback);
+  });
+};
+</script>
+<script>
+window.raumInit = window.raumInit || {};
+window.raumInit["postfach"] = function (sec) {
+  if (sec.dataset.posInit === "1") return;
+  sec.dataset.posInit = "1";
+
+  var reduziert = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var pill = sec.querySelector(".pos-zaehler");
+  var alleBtn = sec.querySelector(".pos-alle-lesen");
+
+  function anzahlUngelesen() {
+    return sec.querySelectorAll('.pos-nachricht[data-ungelesen="true"]').length;
+  }
+
+  function pillAktualisieren() {
+    if (!pill) return;
+    var n = anzahlUngelesen();
+    if (n > 0) {
+      pill.textContent = n + " ungelesen";
+      pill.classList.add("pill-violett");
+      pill.classList.remove("pill-grau");
+    } else {
+      pill.textContent = "Alles gelesen";
+      pill.classList.remove("pill-violett");
+      pill.classList.add("pill-grau");
+      if (alleBtn) alleBtn.disabled = true;
+    }
+    if (!reduziert) {
+      pill.classList.remove("pos-puls");
+      void pill.offsetWidth;
+      pill.classList.add("pos-puls");
+    }
+  }
+
+  function alsGelesen(nachricht) {
+    if (nachricht.dataset.ungelesen !== "true") return;
+    nachricht.dataset.ungelesen = "false";
+    var hinweis = nachricht.querySelector(".pos-sr");
+    if (hinweis) hinweis.textContent = "";
+    pillAktualisieren();
+  }
+
+  Array.prototype.forEach.call(sec.querySelectorAll(".pos-nachricht"), function (nachricht) {
+    var knopf = nachricht.querySelector(".pos-zeile");
+    var inhalt = nachricht.querySelector(".pos-inhalt");
+    if (!knopf || !inhalt) return;
+
+    inhalt.addEventListener("transitionend", function (e) {
+      if (e.propertyName === "max-height" && nachricht.dataset.offen === "true") {
+        inhalt.style.maxHeight = "none";
+      }
+    });
+
+    knopf.addEventListener("click", function () {
+      var offen = nachricht.dataset.offen === "true";
+      if (offen) {
+        nachricht.dataset.offen = "false";
+        knopf.setAttribute("aria-expanded", "false");
+        inhalt.style.maxHeight = inhalt.scrollHeight + "px";
+        void inhalt.offsetHeight;
+        inhalt.style.maxHeight = "0px";
+      } else {
+        nachricht.dataset.offen = "true";
+        knopf.setAttribute("aria-expanded", "true");
+        inhalt.style.maxHeight = reduziert ? "none" : inhalt.scrollHeight + "px";
+        alsGelesen(nachricht);
+      }
+    });
+  });
+
+  if (alleBtn) {
+    alleBtn.addEventListener("click", function () {
+      Array.prototype.forEach.call(
+        sec.querySelectorAll('.pos-nachricht[data-ungelesen="true"]'),
+        alsGelesen
+      );
+    });
+  }
+};
+</script>
+<script>
+window.raumInit = window.raumInit || {};
+window.raumInit["markt"] = function (sec) {
+  if (sec.dataset.marInit) return;
+  sec.dataset.marInit = "1";
+
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var TARGET = 41;
+
+  // Fortschrittsbalken füllen
+  var fill = sec.querySelector(".mar-fill");
+  if (fill) {
+    if (reduced) {
+      fill.style.width = TARGET + "%";
+    } else {
+      // Doppeltes rAF, damit die CSS-Transition ab 0 greift
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          fill.style.width = TARGET + "%";
+        });
+      });
+    }
+  }
+
+  // Prozentwert hochzählen (synchron zur Balken-Dauer)
+  var pct = sec.querySelector(".mar-pct");
+  if (pct) {
+    if (reduced) {
+      pct.textContent = TARGET + " %";
+    } else {
+      var DURATION = 900;
+      var start = null;
+      var tick = function (ts) {
+        if (start === null) start = ts;
+        var p = Math.min((ts - start) / DURATION, 1);
+        var eased = 1 - Math.pow(1 - p, 3);
+        pct.textContent = Math.round(eased * TARGET) + " %";
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      pct.textContent = "0 %";
+      requestAnimationFrame(tick);
+    }
+  }
+
+  // Vormerken-Flow: Button wird zur Bestätigungs-Pill (Container ist aria-live)
+  var btn = sec.querySelector(".mar-vormerken");
+  var confirmation = sec.querySelector(".mar-vorgemerkt");
+  if (btn && confirmation) {
+    btn.addEventListener("click", function () {
+      btn.hidden = true;
+      confirmation.hidden = false;
+    });
+  }
+};
+</script>
 <script>
 (function(){
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const kamera = document.getElementById('kamera');
   const ui = document.getElementById('raum-ui');
-  const zurueck = document.getElementById('zurueck');
+  const ort = document.getElementById('ort');
+  const namen = {finanzen:'Finanzverwaltung', projekte:'Projektraum', dokumente:'Dokumente',
+                 konto:'Konto & Profil', postfach:'Postfach', markt:'Marktplatz'};
+  const initialisiert = {};
   let offen = null;
 
   function zoomZu(raum){
     const ziel = raum.dataset.ziel;
     if (!ziel || offen) return;
     offen = ziel;
-    // Kamerafahrt: Raummitte exakt in die Bildschirmmitte, Raum füllt den Blick
     const kb = kamera.getBoundingClientRect();
     const rw = raum.offsetWidth, rh = raum.offsetHeight;
     const rcxSeite = kb.left + raum.offsetLeft + rw/2;
@@ -229,8 +2603,20 @@
     kamera.style.transform = 'translate(' + (innerWidth/2 - rcxSeite) + 'px,' + (innerHeight/2 - rcySeite) + 'px) scale(' + s + ')';
     document.body.classList.add('drin');
     ui.classList.add('offen');
-    document.querySelectorAll('.inhalt').forEach(s => s.classList.toggle('aktiv', s.dataset.raum === ziel));
+    ort.textContent = namen[ziel] || '';
+    document.querySelectorAll('.inhalt').forEach(sec => {
+      const an = sec.dataset.raum === ziel;
+      sec.classList.toggle('aktiv', an);
+      if (an && !initialisiert[ziel] && window.raumInit[ziel]){
+        initialisiert[ziel] = true;
+        try { window.raumInit[ziel](sec); } catch(e) { console.error('raumInit', ziel, e); }
+      }
+    });
     ui.scrollTop = 0;
+    if (ziel === 'postfach'){
+      const z = document.querySelector('[data-zahl="postfach"]');
+      if (z) z.style.display = 'none';
+    }
     history.replaceState(null, '', '#' + ziel);
   }
 
@@ -244,8 +2630,15 @@
   }
 
   document.querySelectorAll('.raum[data-ziel]').forEach(r => r.addEventListener('click', () => zoomZu(r)));
-  zurueck.addEventListener('click', raus);
+  document.getElementById('zurueck').addEventListener('click', raus);
   window.addEventListener('keydown', e => { if (e.key === 'Escape') raus(); });
+  ui.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const ziel = a.getAttribute('href').slice(1);
+    const r = document.querySelector('.raum[data-ziel="' + ziel + '"]');
+    if (r){ e.preventDefault(); raus(); setTimeout(() => zoomZu(r), reduced ? 0 : 650); }
+  });
   window.addEventListener('resize', () => {
     if (!offen) return;
     const r = document.querySelector('.raum[data-ziel="' + offen + '"]');
@@ -256,11 +2649,10 @@
     offen = z;
   });
 
-  // Direkteinstieg per #raum
   const hash = location.hash.replace('#','');
   if (hash){
     const r = document.querySelector('.raum[data-ziel="' + hash + '"]');
-    if (r) setTimeout(() => zoomZu(r), reduced ? 0 : 350);
+    if (r) setTimeout(() => zoomZu(r), reduced ? 0 : 450);
   }
 })();
 </script>

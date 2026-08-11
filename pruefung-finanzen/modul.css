@@ -1,0 +1,278 @@
+[data-raum="finanzen"] .fin-intro {
+  color: var(--grey);
+  margin: var(--space-2) 0 var(--space-6);
+  max-width: 52ch;
+}
+[data-raum="finanzen"] .kpis {
+  margin-bottom: var(--space-6);
+}
+[data-raum="finanzen"] .fin-panel {
+  padding: var(--space-6);
+}
+[data-raum="finanzen"] .fin-chartpanel {
+  margin-bottom: var(--space-6);
+}
+[data-raum="finanzen"] .fin-unten {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: var(--space-6);
+  align-items: start;
+}
+@media (max-width: 900px) {
+  [data-raum="finanzen"] .fin-unten {
+    grid-template-columns: 1fr;
+  }
+}
+[data-raum="finanzen"] .fin-panelkopf {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+}
+[data-raum="finanzen"] .fin-panelkopf h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+[data-raum="finanzen"] .fin-sub {
+  color: var(--grey);
+  font-size: 0.85rem;
+}
+[data-raum="finanzen"] .fin-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Chart */
+[data-raum="finanzen"] .fin-chartwrap {
+  position: relative;
+  margin: 0;
+}
+[data-raum="finanzen"] .fin-chart {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+[data-raum="finanzen"] .fin-gridlines line {
+  stroke: rgba(8, 27, 74, 0.07);
+  stroke-width: 1;
+}
+[data-raum="finanzen"] .fin-ylabel text,
+[data-raum="finanzen"] .fin-mlabels text {
+  fill: var(--grey);
+  font-size: 11px;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+}
+[data-raum="finanzen"] .fin-linie {
+  fill: none;
+  stroke: var(--purple);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+[data-raum="finanzen"] .fin-flaeche {
+  fill: url(#fin-grad);
+}
+[data-raum="finanzen"] .fin-punkt {
+  fill: var(--bg);
+  stroke: var(--purple);
+  stroke-width: 2;
+  transition: r var(--dur-fast) var(--ease-default);
+}
+[data-raum="finanzen"] .fin-hit {
+  fill: transparent;
+  cursor: pointer;
+}
+[data-raum="finanzen"] .fin-hit:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+[data-raum="finanzen"] .fin-tooltip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  opacity: 0;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-lg);
+  white-space: nowrap;
+  transform: translate(-50%, -135%);
+  transition: opacity var(--dur-fast) var(--ease-default);
+}
+[data-raum="finanzen"] .fin-tooltip.fin-sichtbar {
+  opacity: 1;
+}
+[data-raum="finanzen"] .fin-tip-monat {
+  display: block;
+  color: var(--grey);
+  font-size: 0.75rem;
+}
+[data-raum="finanzen"] .fin-tip-wert {
+  display: block;
+  color: var(--money);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Historie */
+[data-raum="finanzen"] .fin-filterzeile {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+[data-raum="finanzen"] .fin-filter {
+  min-height: 44px;
+  cursor: pointer;
+  transition: transform var(--dur-instant) var(--ease-spring), background-color var(--dur-fast) var(--ease-default), color var(--dur-fast) var(--ease-default);
+}
+[data-raum="finanzen"] .fin-filter:hover {
+  transform: translateY(-2px);
+}
+[data-raum="finanzen"] .fin-filter:active {
+  transform: scale(0.97);
+}
+[data-raum="finanzen"] .fin-filter:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+[data-raum="finanzen"] .fin-filter[aria-pressed="true"] {
+  background: var(--purple);
+  border-color: var(--purple);
+  color: #fff;
+}
+[data-raum="finanzen"] .fin-rechts {
+  text-align: right;
+}
+[data-raum="finanzen"] .fin-datum {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+[data-raum="finanzen"] .fin-betrag {
+  color: var(--money);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+[data-raum="finanzen"] .fin-leer td {
+  color: var(--grey);
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+}
+
+/* Steuern */
+[data-raum="finanzen"] .fin-frei {
+  margin-bottom: var(--space-5);
+}
+[data-raum="finanzen"] .fin-frei-zeile {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: var(--ink);
+  margin-bottom: var(--space-2);
+}
+[data-raum="finanzen"] .fin-frei-zeile b {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+[data-raum="finanzen"] .fin-balken {
+  height: 6px;
+  border-radius: var(--radius-full);
+  background: rgba(8, 27, 74, 0.08);
+  overflow: hidden;
+}
+[data-raum="finanzen"] .fin-balken-wert {
+  display: block;
+  height: 100%;
+  width: 80.1%;
+  border-radius: var(--radius-full);
+  background: var(--purple);
+}
+[data-raum="finanzen"] .fin-hinweis {
+  color: var(--grey);
+  font-size: 0.85rem;
+  margin: var(--space-2) 0 0;
+}
+[data-raum="finanzen"] .fin-steuer .zeile {
+  margin-top: var(--space-4);
+}
+[data-raum="finanzen"] .fin-steuer .zeile .l {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+[data-raum="finanzen"] .fin-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  background: rgba(8, 27, 74, 0.04);
+  color: var(--ink);
+}
+[data-raum="finanzen"] .fin-icon svg {
+  width: 20px;
+  height: 20px;
+}
+[data-raum="finanzen"] .fin-zeile-text {
+  display: flex;
+  flex-direction: column;
+}
+[data-raum="finanzen"] .fin-zeile-titel {
+  font-weight: 600;
+  color: var(--ink);
+}
+[data-raum="finanzen"] .fin-zeile-sub {
+  color: var(--grey);
+  font-size: 0.85rem;
+}
+[data-raum="finanzen"] .fin-download {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  transition: transform var(--dur-instant) var(--ease-spring);
+}
+[data-raum="finanzen"] .fin-download svg {
+  width: 18px;
+  height: 18px;
+}
+[data-raum="finanzen"] .fin-download:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+[data-raum="finanzen"] .fin-download:active:not(:disabled) {
+  transform: scale(0.97);
+}
+[data-raum="finanzen"] .fin-download:focus-visible {
+  outline: 2px solid var(--purple);
+  outline-offset: 2px;
+}
+[data-raum="finanzen"] .fin-download:disabled {
+  cursor: default;
+  opacity: 1;
+  color: var(--ink);
+}
+[data-raum="finanzen"] .fin-status {
+  margin: var(--space-3) 0 0;
+  font-size: 0.85rem;
+  color: var(--grey);
+  min-height: 1.2em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-raum="finanzen"] * {
+    transition: none !important;
+  }
+}
