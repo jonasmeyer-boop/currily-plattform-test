@@ -3125,6 +3125,18 @@ window.raumInit["markt"] = function (sec) {
     const r = document.querySelector('.raum[data-ziel="' + hash + '"]');
     if (r) setTimeout(() => zoomZu(r), reduced ? 0 : 450);
   }
+
+  // Hash ändert sich ohne Neuladen (Vor/Zurück, von außen gesetzt): Raum folgt
+  window.addEventListener('hashchange', () => {
+    if (document.getElementById('anflug')) return;
+    const ziel = location.hash.replace('#','');
+    if (ziel){
+      const r = document.querySelector('.raum[data-ziel="' + ziel + '"]');
+      if (!r || offen === ziel) return;
+      if (offen){ raus(); setTimeout(() => zoomZu(r), reduced ? 0 : 650); }
+      else zoomZu(r);
+    } else if (offen){ raus(); }
+  });
 })();
 </script>
 <script>
