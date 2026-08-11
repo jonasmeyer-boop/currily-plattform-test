@@ -34,26 +34,27 @@
     transition:background var(--dur-fast) var(--ease-default),box-shadow var(--dur-fast) var(--ease-default)}
   .raum:hover,.raum:focus-visible{background:rgba(255,238,200,.16);
     box-shadow:inset 0 0 0 2px rgba(112,71,234,.55),0 0 40px rgba(112,71,234,.22)}
-  .raum .chip{position:absolute;left:50%;top:-14px;transform:translate(-50%,-100%) scale(.94);
+  /* Schilder: mittig im Raum, pro Etage per --chipt auf exakt gleicher Höhe */
+  .raum .chip{position:absolute;left:50%;top:var(--chipt,50%);transform:translate(-50%,-50%);
     white-space:nowrap;font-size:13px;font-weight:700;color:var(--ink);
     background:rgba(255,255,255,.7);border:0.5px solid rgba(8,27,74,.10);
     backdrop-filter:blur(16px) saturate(170%);-webkit-backdrop-filter:blur(16px) saturate(170%);
     border-radius:var(--radius-full);padding:7px 14px;
     box-shadow:0 10px 26px rgba(8,27,74,.16);
-    opacity:0;pointer-events:none;
-    transition:opacity var(--dur-fast) var(--ease-default),transform var(--dur-fast) var(--ease-spring)}
-  .raum:hover .chip,.raum:focus-visible .chip{opacity:1;transform:translate(-50%,-100%) scale(1)}
-  @media (hover:none){ .raum .chip{opacity:1;transform:translate(-50%,-100%) scale(1)} }
-  body.drin .raum{pointer-events:none}
-  body.drin .raum .chip,body.drin .raum .zahl{opacity:0}
-
-  /* Türschilder mit Live-Zahl */
-  .raum .zahl{position:absolute;right:6px;bottom:6px;font-size:11px;font-weight:800;color:var(--ink);
-    background:rgba(255,255,255,.78);border:0.5px solid rgba(8,27,74,.10);
-    border-radius:var(--radius-full);padding:3px 9px;pointer-events:none;
-    box-shadow:0 6px 16px rgba(8,27,74,.14);font-variant-numeric:tabular-nums;
+    pointer-events:none;
     transition:opacity var(--dur-fast) var(--ease-default)}
-  .raum .zahl.violett{background:var(--purple);color:#fff;border-color:var(--purple)}
+  body.drin .raum{pointer-events:none}
+  body.drin .raum .chip,body.drin .raum .neu{opacity:0}
+
+  /* Zähler für Neues: oben außen am Zimmer, Button-Lila, 99+ gedeckelt */
+  .raum .neu{position:absolute;top:6px;min-width:22px;height:22px;padding:0 6px;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--purple);color:#fff;font-size:12px;font-weight:800;line-height:1;
+    border-radius:var(--radius-full);box-shadow:0 6px 16px rgba(112,71,234,.35);
+    pointer-events:none;font-variant-numeric:tabular-nums;
+    transition:opacity var(--dur-fast) var(--ease-default)}
+  .raum .neu.links{left:6px}
+  .raum .neu.rechts{right:6px}
 
   /* Schleier + Raum-Oberfläche */
   .schleier{position:fixed;inset:0;z-index:150;background:rgba(255,255,255,.42);
@@ -1091,9 +1092,10 @@
     .raum-ui .inhalt{padding-top:136px}
     .buehne{padding-top:76px;gap:var(--space-3);justify-content:flex-start}
     .kamera{width:190vw;max-width:none;margin-top:var(--space-4)}
-    .raum .chip{font-size:11px;padding:5px 11px;top:50%;transform:translate(-50%,-50%) scale(1)}
-    .raum:hover .chip,.raum:focus-visible .chip{transform:translate(-50%,-50%) scale(1)}
-    .raum .zahl{right:4px;bottom:4px;font-size:10px;padding:2px 7px}
+    .raum .chip{font-size:11px;padding:5px 11px}
+    .raum .neu{min-width:18px;height:18px;font-size:10.5px;top:4px}
+    .raum .neu.links{left:4px}
+    .raum .neu.rechts{right:4px}
     .zeile{flex-wrap:wrap}
     .zeile .r{text-align:left}
   }
@@ -1155,12 +1157,12 @@
 <div class="buehne">
   <div class="kamera" id="kamera">
     <img src="bilder/haus-zoom.webp?v=2" width="5120" height="2858" alt="Dein currily-Haus im Querschnitt: jede Funktion ist ein Zimmer">
-    <button class="raum" data-ziel="postfach"  style="--l:30.5%;--t:31%;   --w:14%;   --h:13.5%" type="button"><span class="chip">Postfach</span><span class="zahl violett" data-zahl="postfach">3</span></button>
-    <button class="raum" data-ziel="markt"     style="--l:50%;  --t:28%;   --w:16.5%; --h:17.5%" type="button"><span class="chip">Marktplatz</span><span class="zahl">NEU</span></button>
-    <button class="raum" data-ziel="finanzen"  style="--l:30%;  --t:49.7%; --w:18.3%; --h:17%"   type="button"><span class="chip">Finanzverwaltung</span><span class="zahl">1.240&nbsp;€/M</span></button>
-    <button class="raum" data-ziel="konto"     style="--l:50%;  --t:48.8%; --w:21.5%; --h:18%"   type="button"><span class="chip">Konto &amp; Profil</span></button>
+    <button class="raum" data-ziel="postfach"  style="--l:30.5%;--t:31%;   --w:14%;   --h:13.5%;--chipt:44.4%" type="button"><span class="chip">Postfach</span><span class="neu links" data-zahl="postfach">3</span></button>
+    <button class="raum" data-ziel="markt"     style="--l:50%;  --t:28%;   --w:16.5%; --h:17.5%;--chipt:51.4%" type="button"><span class="chip">Marktplatz</span><span class="neu rechts">1</span></button>
+    <button class="raum" data-ziel="finanzen"  style="--l:30%;  --t:49.7%; --w:18.3%; --h:17%;  --chipt:48.8%" type="button"><span class="chip">Finanzverwaltung</span></button>
+    <button class="raum" data-ziel="konto"     style="--l:50%;  --t:48.8%; --w:21.5%; --h:18%;  --chipt:51.1%" type="button"><span class="chip">Konto &amp; Profil</span></button>
     <button class="raum" data-ziel="projekte"  style="--l:31.5%;--t:69.9%; --w:17.8%; --h:17.5%" type="button"><span class="chip">Projektraum</span></button>
-    <button class="raum" data-ziel="dokumente" style="--l:50%;  --t:69%;   --w:20.3%; --h:19.3%" type="button"><span class="chip">Dokumente</span><span class="zahl">1 neu</span></button>
+    <button class="raum" data-ziel="dokumente" style="--l:50%;  --t:69%;   --w:20.3%; --h:19.3%" type="button"><span class="chip">Dokumente</span><span class="neu rechts">1</span></button>
   </div>
 </div>
 
