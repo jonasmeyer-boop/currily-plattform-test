@@ -65,16 +65,17 @@
   body.drin .raum{pointer-events:none}
   body.drin .raum .chip,body.drin .raum .neu{opacity:0}
 
-  /* Zähler für Neues: oben außen am Zimmer, Button-Lila, 99+ gedeckelt */
-  .raum .neu{position:absolute;top:var(--neut,4px);min-width:22px;height:22px;padding:0 6px;
+  /* Zähler für Neues: direkt an der Ecke des Schilds, 99+ gedeckelt */
+  .raum .chip{position:relative}
+  .raum .neu{position:absolute;top:-9px;min-width:20px;height:20px;padding:0 6px;
     display:flex;align-items:center;justify-content:center;
     background:var(--ink);color:#fff;border:none;
-    font-size:12px;font-weight:800;line-height:1;
+    font-size:11.5px;font-weight:800;line-height:1;
     border-radius:var(--radius-full);box-shadow:0 4px 12px rgba(8,27,74,.28);
     pointer-events:none;font-variant-numeric:tabular-nums;
     transition:opacity var(--dur-fast) var(--ease-default)}
-  .raum .neu.links{left:var(--neul,4px)}
-  .raum .neu.rechts{right:var(--neur,4px)}
+  .raum .neu.links{left:-9px}
+  .raum .neu.rechts{right:-9px}
 
   /* Schleier + Raum-Oberfläche */
   /* Choreografie: erst fliegt die Kamera frei (1,05s), dann Glas, dann Inhalt.
@@ -1126,14 +1127,14 @@
     .leiste{left:16px;top:80px}
     .raum-ui .inhalt{padding-top:136px}
     .buehne{padding-top:76px;gap:var(--space-3);justify-content:flex-start}
-    .kamera{width:190vw;max-width:none;margin-top:var(--space-4)}
+    .kamera{width:172vw;max-width:none;margin-top:var(--space-4)}
     .anflug{padding-top:76px;align-items:flex-start}
-    .anflug-kamera{width:190vw;max-width:none;margin-top:var(--space-4)}
+    .anflug-kamera{width:172vw;max-width:none;margin-top:var(--space-4)}
     .anflug-tafel{white-space:normal;text-align:center;max-width:86vw;font-size:19px;padding:11px 20px}
     .raum .chip{font-size:11px;padding:5px 11px}
-    .raum .neu{min-width:18px;height:18px;font-size:10.5px;top:4px}
-    .raum .neu.links{left:4px}
-    .raum .neu.rechts{right:4px}
+    .raum .neu{min-width:17px;height:17px;font-size:10px;top:-7px}
+    .raum .neu.links{left:-7px}
+    .raum .neu.rechts{right:-7px}
     .zeile{flex-wrap:wrap}
     .zeile .r{text-align:left}
   }
@@ -1272,12 +1273,12 @@
 <div class="buehne">
   <div class="kamera" id="kamera">
     <img src="bilder/haus-zoom.webp?v=2" width="5120" height="2858" alt="Dein currily-Haus im Querschnitt: jede Funktion ist ein Zimmer">
-    <button class="raum" data-ziel="postfach"  style="--l:30.5%;--t:31%;   --w:14%;   --h:13.5%;--chipt:44.4%;--neut:26%;--neul:6%" type="button"><span class="chip">Postfach</span><span class="neu links" data-zahl="postfach">3</span></button>
-    <button class="raum" data-ziel="markt"     style="--l:50%;  --t:28%;   --w:16.5%; --h:17.5%;--chipt:51.4%;--neut:34%;--neur:5%" type="button"><span class="chip">Marktplatz</span><span class="neu rechts">1</span></button>
+    <button class="raum" data-ziel="postfach"  style="--l:30.5%;--t:31%;   --w:14%;   --h:13.5%;--chipt:44.4%" type="button"><span class="chip">Postfach<span class="neu links" data-zahl="postfach">3</span></span></button>
+    <button class="raum" data-ziel="markt"     style="--l:50%;  --t:28%;   --w:16.5%; --h:17.5%;--chipt:51.4%" type="button"><span class="chip">Marktplatz<span class="neu rechts">1</span></span></button>
     <button class="raum" data-ziel="finanzen"  style="--l:30%;  --t:49.7%; --w:18.3%; --h:17%;  --chipt:48.8%" type="button"><span class="chip">Finanzverwaltung</span></button>
     <button class="raum" data-ziel="konto"     style="--l:50%;  --t:48.8%; --w:21.5%; --h:18%;  --chipt:51.1%" type="button"><span class="chip">Konto &amp; Profil</span></button>
     <button class="raum" data-ziel="projekte"  style="--l:31.5%;--t:69.9%; --w:17.8%; --h:17.5%" type="button"><span class="chip">Projektraum</span></button>
-    <button class="raum" data-ziel="dokumente" style="--l:50%;  --t:69%;   --w:20.3%; --h:19.3%" type="button"><span class="chip">Dokumente</span><span class="neu rechts">1</span></button>
+    <button class="raum" data-ziel="dokumente" style="--l:50%;  --t:69%;   --w:20.3%; --h:19.3%" type="button"><span class="chip">Dokumente<span class="neu rechts">1</span></span></button>
   </div>
 </div>
 
