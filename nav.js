@@ -45,7 +45,7 @@
     schliessen();
   });
 
-  // Esc schließt zuerst das Menü — und erst ein weiteres Esc den Raum (haus.html)
+  // Esc schließt zuerst das Menü — und erst ein weiteres Esc den Raum (home.html)
   window.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     const offen = (kontoMenue && kontoMenue.classList.contains('offen')) ||
