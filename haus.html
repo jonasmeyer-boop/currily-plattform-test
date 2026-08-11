@@ -105,6 +105,9 @@
   .raum-ui .inhalt.aktiv > *:nth-child(5){animation-delay:.83s}
   .raum-ui .inhalt.aktiv > *:nth-child(6){animation-delay:.90s}
   .raum-ui .inhalt.aktiv > *:nth-child(n+7){animation-delay:.96s}
+  /* Nachträglich aufgeklappte Kästen sollen sofort erscheinen, nicht erneut einfliegen */
+  .raum-ui .inhalt.aktiv > .kon-inline,.raum-ui .inhalt.aktiv > .kon-feedback,
+  .raum-ui .inhalt.aktiv > .kon-backup,.raum-ui .inhalt.aktiv > .mz-flow{animation:none}
   @keyframes panelIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
   .raum-ui h2{font-size:clamp(28px,3.4vw,42px);letter-spacing:-.03em;font-weight:800}
   .raum-ui h2 em{font-style:italic;color:var(--purple)}
@@ -131,7 +134,7 @@
   .tabelle{overflow-x:auto;padding:var(--space-2)}
   .zeile{display:flex;justify-content:space-between;align-items:center;gap:var(--space-5);padding:var(--space-4) var(--space-5)}
   .zeile + .zeile{margin-top:var(--space-3)}
-  .zeile .l b{display:block;font-weight:700}
+  .zeile .l > b,.zeile .l > strong{display:block;font-weight:700}
   .zeile .l span{font-size:13px;color:var(--grey)}
   .zeile .r{text-align:right;font-variant-numeric:tabular-nums}
   .zeile .r b{display:block;font-weight:700}
@@ -768,6 +771,16 @@
 [data-raum="konto"] .kon-abmelden:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
 
 [data-raum="konto"] .btn[disabled] { opacity: .45; cursor: not-allowed; }
+[data-raum="konto"] .kon-2fa-qr{display:flex;gap:var(--space-4);align-items:center;flex-wrap:wrap}
+[data-raum="konto"] .kon-qr{width:118px;height:118px;border-radius:12px;border:0.5px solid var(--line);background:#fff;flex:0 0 auto}
+[data-raum="konto"] .kon-2fa-hinweis{font-size:13.5px;color:var(--grey);max-width:36ch;line-height:1.5}
+[data-raum="konto"] .kon-code{font-size:24px;letter-spacing:.35em;text-align:center;font-weight:700}
+[data-raum="konto"] .kon-backup{padding:var(--space-4);border:1px dashed rgba(8,27,74,.28);border-radius:var(--radius-lg);background:rgba(255,255,255,.6)}
+[data-raum="konto"] [hidden]{display:none!important}
+[data-raum="konto"] .kon-backup h4{font-size:13px;color:var(--grey);font-weight:600;margin-bottom:var(--space-3)}
+[data-raum="konto"] .kon-backup-codes{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-2) var(--space-3);font-variant-numeric:tabular-nums;font-weight:700;font-size:14px;letter-spacing:.02em}
+[data-raum="konto"] .kon-weg{opacity:0;transform:translateX(10px);transition:opacity .3s var(--ease-default),transform .3s var(--ease-default)}
+@media (max-width:700px){ [data-raum="konto"] .kon-backup-codes{grid-template-columns:repeat(2,1fr)} }
 
 @media (prefers-reduced-motion: reduce) {
   [data-raum="konto"] .kon-toggle, [data-raum="konto"] .kon-track, [data-raum="konto"] .kon-knubbel, [data-raum="konto"] .kon-feedback, [data-raum="konto"] .kon-abmelden { transition: none; }
@@ -1800,6 +1813,34 @@
     <span class="pill pill-gruen">Verifiziert</span>
   </div>
 
+  <h3 class="kon-untertitel">Persönliche Daten</h3>
+
+  <div class="zeile reveal">
+    <div class="l">
+      <strong>Name &amp; Anschrift</strong>
+      <span class="kon-pd-wert">Jonas M. · Musterstraße 12, 10115 Berlin · jonas@quoroai.de</span>
+    </div>
+    <div class="r">
+      <button type="button" class="btn btn-glass btn-small kon-pd-btn" aria-expanded="false" aria-controls="kon-pd-form">Bearbeiten</button>
+    </div>
+  </div>
+  <form class="kon-inline" id="kon-pd-form" hidden novalidate>
+    <label class="kon-label" for="kon-pd-name">Vollständiger Name</label>
+    <input class="kon-input" id="kon-pd-name" type="text" value="Jonas M." autocomplete="name">
+    <label class="kon-label" for="kon-pd-strasse">Straße und Hausnummer</label>
+    <input class="kon-input" id="kon-pd-strasse" type="text" value="Musterstraße 12" autocomplete="street-address">
+    <label class="kon-label" for="kon-pd-ort">PLZ und Ort</label>
+    <input class="kon-input" id="kon-pd-ort" type="text" value="10115 Berlin">
+    <label class="kon-label" for="kon-pd-mail">E-Mail-Adresse</label>
+    <input class="kon-input" id="kon-pd-mail" type="email" value="jonas@quoroai.de" autocomplete="email" aria-describedby="kon-pd-fehler">
+    <p class="kon-fehler" id="kon-pd-fehler" hidden>Bitte alle Felder ausfüllen — die E-Mail braucht ein @.</p>
+    <div class="kon-inline-aktionen">
+      <button type="submit" class="btn btn-primary btn-small">Speichern</button>
+      <button type="button" class="btn btn-glass btn-small kon-pd-abbrechen">Abbrechen</button>
+    </div>
+  </form>
+  <p class="kon-feedback kon-pd-feedback" role="status" hidden>Persönliche Daten aktualisiert.</p>
+
   <h3 class="kon-untertitel">Auszahlung &amp; Steuern</h3>
 
   <div class="zeile reveal">
@@ -1841,6 +1882,16 @@
   </div>
   <p class="kon-feedback kon-fsa-feedback" role="status" hidden>Freistellungsauftrag angepasst.</p>
 
+  <div class="zeile reveal">
+    <div class="l">
+      <strong>Steuer-Identifikationsnummer</strong>
+      <span class="kon-num">65 899 601 483</span>
+    </div>
+    <div class="r">
+      <span class="pill pill-grau">Hinterlegt</span>
+    </div>
+  </div>
+
   <h3 class="kon-untertitel">Einstellungen</h3>
 
   <div class="zeile reveal">
@@ -1873,23 +1924,101 @@
       <span>Bestätigungscode zusätzlich zum Passwort</span>
     </div>
     <div class="r">
-      <button type="button" class="kon-toggle kon-toggle-2fa" aria-pressed="false" aria-label="Zwei-Faktor-Anmeldung">
+      <button type="button" class="kon-toggle kon-toggle-2fa" aria-pressed="false" aria-label="Zwei-Faktor-Anmeldung" aria-controls="kon-2fa-form">
         <span class="kon-track" aria-hidden="true"><span class="kon-knubbel"></span></span>
       </button>
     </div>
   </div>
+  <div class="kon-inline" id="kon-2fa-form" hidden>
+    <div class="kon-2fa-qr">
+      <svg class="kon-qr" viewBox="0 0 29 29" aria-label="QR-Code zum Scannen mit der Authenticator-App" role="img">
+        <rect width="29" height="29" fill="#fff"/>
+        <g fill="#081B4A">
+          <path d="M0 0h7v7H0zM2 2h3v3H2zM22 0h7v7h-7zM24 2h3v3h-3zM0 22h7v7H0zM2 24h3v3H2z" fill-rule="evenodd"/>
+          <rect x="9" y="1" width="2" height="2"/><rect x="13" y="0" width="2" height="2"/><rect x="17" y="2" width="2" height="2"/>
+          <rect x="10" y="4" width="2" height="2"/><rect x="14" y="5" width="2" height="2"/><rect x="18" y="4" width="1" height="1"/>
+          <rect x="1" y="9" width="2" height="2"/><rect x="4" y="12" width="2" height="2"/><rect x="0" y="15" width="2" height="2"/>
+          <rect x="3" y="17" width="2" height="2"/><rect x="6" y="14" width="1" height="2"/><rect x="5" y="19" width="2" height="1"/>
+          <rect x="9" y="9" width="3" height="3"/><rect x="14" y="10" width="2" height="2"/><rect x="18" y="9" width="2" height="2"/>
+          <rect x="11" y="13" width="2" height="2"/><rect x="15" y="14" width="3" height="2"/><rect x="20" y="12" width="2" height="3"/>
+          <rect x="9" y="17" width="2" height="2"/><rect x="13" y="18" width="2" height="2"/><rect x="17" y="17" width="2" height="2"/>
+          <rect x="23" y="9" width="2" height="2"/><rect x="26" y="12" width="2" height="2"/><rect x="23" y="15" width="2" height="2"/>
+          <rect x="26" y="18" width="2" height="2"/><rect x="23" y="21" width="2" height="2"/><rect x="10" y="22" width="2" height="2"/>
+          <rect x="14" y="23" width="2" height="2"/><rect x="18" y="22" width="2" height="2"/><rect x="21" y="25" width="2" height="2"/>
+          <rect x="12" y="26" width="2" height="2"/><rect x="16" y="26" width="2" height="2"/><rect x="25" y="25" width="2" height="2"/>
+        </g>
+      </svg>
+      <p class="kon-2fa-hinweis">Scanne den Code mit deiner Authenticator-App und gib danach den sechsstelligen Code ein.</p>
+    </div>
+    <label class="kon-label" for="kon-2fa-code">Bestätigungscode</label>
+    <input class="kon-input kon-code" id="kon-2fa-code" type="text" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="one-time-code" aria-describedby="kon-2fa-fehler">
+    <p class="kon-fehler" id="kon-2fa-fehler" hidden>Der Code hat sechs Ziffern — bitte prüf deine App.</p>
+    <div class="kon-inline-aktionen">
+      <button type="button" class="btn btn-primary btn-small kon-2fa-aktivieren">Aktivieren</button>
+      <button type="button" class="btn btn-glass btn-small kon-2fa-abbrechen">Abbrechen</button>
+    </div>
+  </div>
+  <div class="kon-backup" hidden>
+    <h4>Deine Backup-Codes — sicher aufbewahren, jeder gilt einmal</h4>
+    <div class="kon-backup-codes">
+      <span>9F2K-11QG</span><span>M4TA-83LP</span><span>XR07-2WKD</span><span>QQ5N-64HZ</span>
+      <span>7BVE-90SM</span><span>KL28-4RTF</span><span>ZP61-3AYC</span><span>DW49-77NE</span>
+    </div>
+  </div>
+  <p class="kon-feedback kon-2fa-feedback" role="status" hidden>Zwei-Faktor-Anmeldung ist aktiv — ab jetzt fragen wir zusätzlich nach dem Code.</p>
 
   <h3 class="kon-untertitel">Sicherheit</h3>
 
   <div class="zeile reveal">
     <div class="l">
       <strong>Passwort</strong>
-      <span>Zuletzt geändert 02/2026</span>
+      <span class="kon-pass-wert">Zuletzt geändert 02/2026</span>
     </div>
     <div class="r">
-      <button type="button" class="btn btn-glass btn-small" disabled title="Im Prototyp nicht verfügbar">Ändern</button>
+      <button type="button" class="btn btn-glass btn-small kon-pass-btn" aria-expanded="false" aria-controls="kon-pass-form">Ändern</button>
     </div>
   </div>
+  <form class="kon-inline" id="kon-pass-form" hidden novalidate>
+    <label class="kon-label" for="kon-pass-alt">Aktuelles Passwort</label>
+    <input class="kon-input" id="kon-pass-alt" type="password" autocomplete="current-password">
+    <label class="kon-label" for="kon-pass-neu">Neues Passwort (mindestens 8 Zeichen)</label>
+    <input class="kon-input" id="kon-pass-neu" type="password" autocomplete="new-password" aria-describedby="kon-pass-fehler">
+    <label class="kon-label" for="kon-pass-wdh">Neues Passwort wiederholen</label>
+    <input class="kon-input" id="kon-pass-wdh" type="password" autocomplete="new-password">
+    <p class="kon-fehler" id="kon-pass-fehler" hidden></p>
+    <div class="kon-inline-aktionen">
+      <button type="submit" class="btn btn-primary btn-small">Passwort ändern</button>
+      <button type="button" class="btn btn-glass btn-small kon-pass-abbrechen">Abbrechen</button>
+    </div>
+  </form>
+  <p class="kon-feedback kon-pass-feedback" role="status" hidden>Passwort geändert — alle anderen Geräte müssen sich neu anmelden.</p>
+
+  <div class="zeile reveal">
+    <div class="l">
+      <strong>Dieses Gerät</strong>
+      <span>Chrome auf Windows · Berlin · jetzt aktiv</span>
+    </div>
+    <div class="r"><span class="pill pill-gruen">Aktiv</span></div>
+  </div>
+  <div class="zeile reveal kon-geraet">
+    <div class="l">
+      <strong>iPhone 15</strong>
+      <span>currily-App · zuletzt heute 14:02</span>
+    </div>
+    <div class="r">
+      <button type="button" class="btn btn-glass btn-small kon-geraet-abmelden">Abmelden</button>
+    </div>
+  </div>
+  <div class="zeile reveal kon-geraet">
+    <div class="l">
+      <strong>iPad</strong>
+      <span>Safari · zuletzt 28.07.2026</span>
+    </div>
+    <div class="r">
+      <button type="button" class="btn btn-glass btn-small kon-geraet-abmelden">Abmelden</button>
+    </div>
+  </div>
+  <p class="kon-feedback kon-geraet-feedback" role="status" hidden>Gerät abgemeldet — die Sitzung ist beendet.</p>
 
   <div class="kon-abmelden-zeile reveal">
     <button type="button" class="kon-abmelden">
@@ -2649,21 +2778,120 @@ window.raumInit["konto"] = function (sec) {
     zeigeFeedback(fsaFeedback);
   });
 
-  /* Schalter */
-  var zweiFaPill = sec.querySelector(".kon-2fa-pill");
-  sec.querySelectorAll(".kon-toggle").forEach(function (schalter) {
+  /* Schalter (2FA hat eine eigene Einrichtung weiter unten) */
+  sec.querySelectorAll(".kon-toggle:not(.kon-toggle-2fa)").forEach(function (schalter) {
     schalter.addEventListener("click", function () {
       var an = schalter.getAttribute("aria-pressed") === "true";
       schalter.setAttribute("aria-pressed", String(!an));
-      if (schalter.classList.contains("kon-toggle-2fa") && zweiFaPill) {
-        if (an) {
-          zweiFaPill.className = "pill pill-violett kon-2fa-pill";
-          zweiFaPill.textContent = "Empfohlen";
-        } else {
-          zweiFaPill.className = "pill pill-gruen kon-2fa-pill";
-          zweiFaPill.textContent = "Aktiv";
-        }
-      }
+    });
+  });
+
+  /* Zwei-Faktor: erst Code aus der App, dann aktiv + Backup-Codes */
+  var zweiFaPill = sec.querySelector(".kon-2fa-pill");
+  var zfToggle = sec.querySelector(".kon-toggle-2fa");
+  var zfForm = sec.querySelector("#kon-2fa-form");
+  var zfCode = sec.querySelector("#kon-2fa-code");
+  var zfFehler = sec.querySelector("#kon-2fa-fehler");
+  var zfBackup = sec.querySelector(".kon-backup");
+  var zfFeedback = sec.querySelector(".kon-2fa-feedback");
+
+  function zfZu() { zfForm.hidden = true; zfFehler.hidden = true; zfCode.value = ""; }
+
+  zfToggle.addEventListener("click", function () {
+    var an = zfToggle.getAttribute("aria-pressed") === "true";
+    if (an) {
+      zfToggle.setAttribute("aria-pressed", "false");
+      zfBackup.hidden = true;
+      zweiFaPill.className = "pill pill-violett kon-2fa-pill";
+      zweiFaPill.textContent = "Empfohlen";
+      zfZu();
+    } else {
+      zfForm.hidden = !zfForm.hidden;
+      if (!zfForm.hidden && !reduziert) zfCode.focus();
+    }
+  });
+  sec.querySelector(".kon-2fa-abbrechen").addEventListener("click", zfZu);
+  zfCode.addEventListener("input", function () { zfFehler.hidden = true; });
+  sec.querySelector(".kon-2fa-aktivieren").addEventListener("click", function () {
+    if (!/^\d{6}$/.test(zfCode.value.trim())) { zfFehler.hidden = false; zfCode.focus(); return; }
+    zfZu();
+    zfToggle.setAttribute("aria-pressed", "true");
+    zweiFaPill.className = "pill pill-gruen kon-2fa-pill";
+    zweiFaPill.textContent = "Aktiv";
+    zfBackup.hidden = false;
+    zeigeFeedback(zfFeedback);
+  });
+
+  /* Persönliche Daten inline bearbeiten */
+  var pdBtn = sec.querySelector(".kon-pd-btn");
+  var pdForm = sec.querySelector("#kon-pd-form");
+  var pdFehler = sec.querySelector("#kon-pd-fehler");
+  var pdWert = sec.querySelector(".kon-pd-wert");
+  var pdFeedback = sec.querySelector(".kon-pd-feedback");
+
+  function pdAuf(offen) {
+    pdForm.hidden = !offen;
+    pdBtn.setAttribute("aria-expanded", String(offen));
+    pdFehler.hidden = true;
+    if (offen && !reduziert) sec.querySelector("#kon-pd-name").focus();
+  }
+  pdBtn.addEventListener("click", function () { pdAuf(pdForm.hidden); });
+  sec.querySelector(".kon-pd-abbrechen").addEventListener("click", function () { pdAuf(false); pdBtn.focus(); });
+  pdForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = sec.querySelector("#kon-pd-name").value.trim();
+    var strasse = sec.querySelector("#kon-pd-strasse").value.trim();
+    var ort = sec.querySelector("#kon-pd-ort").value.trim();
+    var mail = sec.querySelector("#kon-pd-mail").value.trim();
+    if (!name || !strasse || !ort || mail.indexOf("@") < 1) { pdFehler.hidden = false; return; }
+    pdWert.textContent = name + " · " + strasse + ", " + ort + " · " + mail;
+    pdAuf(false);
+    pdBtn.focus();
+    zeigeFeedback(pdFeedback);
+  });
+
+  /* Passwort ändern */
+  var passBtn = sec.querySelector(".kon-pass-btn");
+  var passForm = sec.querySelector("#kon-pass-form");
+  var passFehler = sec.querySelector("#kon-pass-fehler");
+  var passWert = sec.querySelector(".kon-pass-wert");
+  var passFeedback = sec.querySelector(".kon-pass-feedback");
+
+  function passAuf(offen) {
+    passForm.hidden = !offen;
+    passBtn.setAttribute("aria-expanded", String(offen));
+    passFehler.hidden = true;
+    if (offen) {
+      passForm.reset();
+      if (!reduziert) sec.querySelector("#kon-pass-alt").focus();
+    }
+  }
+  passBtn.addEventListener("click", function () { passAuf(passForm.hidden); });
+  sec.querySelector(".kon-pass-abbrechen").addEventListener("click", function () { passAuf(false); passBtn.focus(); });
+  passForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var alt = sec.querySelector("#kon-pass-alt").value;
+    var neu = sec.querySelector("#kon-pass-neu").value;
+    var wdh = sec.querySelector("#kon-pass-wdh").value;
+    var problem = !alt ? "Bitte gib dein aktuelles Passwort ein."
+      : neu.length < 8 ? "Das neue Passwort braucht mindestens 8 Zeichen."
+      : neu !== wdh ? "Die Wiederholung stimmt nicht mit dem neuen Passwort überein."
+      : "";
+    if (problem) { passFehler.textContent = problem; passFehler.hidden = false; return; }
+    passWert.textContent = "Zuletzt geändert 08/2026";
+    passAuf(false);
+    passBtn.focus();
+    zeigeFeedback(passFeedback);
+  });
+
+  /* Geräte & Sitzungen */
+  var geraetFeedback = sec.querySelector(".kon-geraet-feedback");
+  sec.querySelectorAll(".kon-geraet .kon-geraet-abmelden").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var zeile = btn.closest(".zeile");
+      zeile.classList.add("kon-weg");
+      setTimeout(function () { zeile.style.display = "none"; }, reduziert ? 0 : 300);
+      zeigeFeedback(geraetFeedback);
     });
   });
 
