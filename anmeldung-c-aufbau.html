@@ -111,6 +111,10 @@
     .baustand{max-width:330px;margin:var(--space-2) auto 0}
     .an-karte{justify-self:stretch;max-width:none;padding:var(--space-6);margin-top:var(--space-5)}
   }
+  /* Ankunft nach dem Abmelde-Kino: aus dem Schwarz aufblenden */
+  .blende{position:fixed;inset:0;z-index:999;background:#000;pointer-events:none;
+    transition:opacity .45s var(--ease-default)}
+
   @media (prefers-reduced-motion:reduce){
     .baustand .balken i{transition:none}
     .bau-buehne.fertig canvas{animation:none}
@@ -392,7 +396,18 @@
   });
   formCode.querySelector('.an-nochmal').addEventListener('click', function(){ zeige(true); });
 
-  if (location.hash === '#anmelden') zeige(false); else baustandNeu(true);
+  if (location.hash === '#abgemeldet'){
+    /* Ankunft aus dem Abmelde-Kino: Anmelden-Tab, und die Seite blendet aus dem Schwarz auf */
+    zeige(false);
+    if (!reduziert){
+      var blende = document.createElement('div');
+      blende.className = 'blende';
+      document.body.appendChild(blende);
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ blende.style.opacity = '0'; }); });
+      setTimeout(function(){ blende.remove(); }, 600);
+    }
+  }
+  else if (location.hash === '#anmelden') zeige(false); else baustandNeu(true);
 
   /* Das große Home-Bild schon beim Tippen in den Browser-Cache holen —
      sonst kommt man im Home an, bevor das Haus dort geladen ist */

@@ -36,9 +36,13 @@
     }
   });
 
-  // Abmelden führt zur Anmeldung (Entwurf C, siehe docs/chronik)
+  // Abmelden führt zur Anmeldung (Entwurf C, siehe docs/chronik) — im Home mit
+  // Abbau-Kino (window.abmeldenKino), sonst direkter Wechsel
   document.querySelectorAll('.abmelden').forEach((btn) => {
-    btn.addEventListener('click', () => { window.location.href = 'anmeldung-c-aufbau.html#anmelden'; });
+    btn.addEventListener('click', () => {
+      if (window.abmeldenKino) window.abmeldenKino();
+      else window.location.href = 'anmeldung-c-aufbau.html#anmelden';
+    });
   });
 
   document.addEventListener('click', (e) => {
