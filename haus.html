@@ -15,6 +15,34 @@
   .top .nav-inner{pointer-events:auto}
   /* Chip- und Menü-Styles liegen zentral in plattform.css */
 
+  /* Anflug: Scroll-Film vom leeren Grundstück zum fertigen Haus */
+  html.mit-anflug,html.mit-anflug body{overflow:auto;height:auto}
+  body.mit-anflug .top{opacity:0;pointer-events:none}
+  .top{transition:opacity .5s var(--ease-default)}
+  .anflug{position:fixed;inset:0;z-index:400;background:var(--bg);
+    display:flex;align-items:center;justify-content:center;padding-top:56px;
+    transition:opacity .7s var(--ease-default)}
+  .anflug.fertig{opacity:0;pointer-events:none}
+  .anflug-kamera{width:min(1280px,96vw,calc((100svh - 190px) * 1.792))}
+  .anflug-kamera canvas{display:block;width:100%;aspect-ratio:1792/1000}
+  .anflug-tafel{position:fixed;left:50%;top:13%;transform:translateX(-50%) translateY(10px);
+    white-space:nowrap;font-size:clamp(19px,2.6vw,32px);font-weight:800;letter-spacing:-.02em;color:var(--ink);
+    background:rgba(255,255,255,.65);border:0.5px solid rgba(8,27,74,.10);
+    backdrop-filter:blur(20px) saturate(170%);-webkit-backdrop-filter:blur(20px) saturate(170%);
+    border-radius:var(--radius-full);padding:14px 28px;box-shadow:0 14px 38px rgba(8,27,74,.14);
+    opacity:0;pointer-events:none}
+  .anflug-tafel em{font-style:italic;color:var(--purple)}
+  .anflug-hinweis{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    color:var(--grey);font-size:13px;font-weight:600;letter-spacing:.02em;
+    display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none;
+    animation:huepf 1.6s var(--ease-default) infinite}
+  @keyframes huepf{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
+  .anflug-skip{position:fixed;right:20px;bottom:20px;z-index:401}
+  .anflug-strecke{height:460vh}
+  html:not(.mit-anflug) .anflug,html:not(.mit-anflug) .anflug-strecke{display:none}
+  .raum.zeigt{background:rgba(255,238,200,.16);
+    box-shadow:inset 0 0 0 2px rgba(112,71,234,.55),0 0 40px rgba(112,71,234,.22)}
+
   /* Bühne */
   .buehne{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-5);padding-top:56px}
 
@@ -1094,6 +1122,10 @@
     .raum-ui .inhalt{padding-top:136px}
     .buehne{padding-top:76px;gap:var(--space-3);justify-content:flex-start}
     .kamera{width:190vw;max-width:none;margin-top:var(--space-4)}
+    .anflug{padding-top:76px;align-items:flex-start}
+    .anflug-kamera{width:190vw;max-width:none;margin-top:var(--space-4)}
+    .anflug-tafel{white-space:normal;text-align:center;max-width:86vw;font-size:19px;padding:11px 20px}
+    .anflug-strecke{height:380vh}
     .raum .chip{font-size:11px;padding:5px 11px}
     .raum .neu{min-width:18px;height:18px;font-size:10.5px;top:4px}
     .raum .neu.links{left:4px}
@@ -1111,6 +1143,19 @@
 </head>
 <body>
 <div class="aurora" aria-hidden="true"><i></i><i></i></div>
+
+<div class="anflug" id="anflug" aria-hidden="true">
+  <div class="anflug-kamera"><canvas id="anflug-cv"></canvas></div>
+  <div class="anflug-tafel" id="anflug-t1">Willkommen bei <em>currily.</em></div>
+  <div class="anflug-tafel" id="anflug-t2">Das hier ist <em>dein Haus.</em></div>
+  <div class="anflug-tafel" id="anflug-t3">Sechs Räume. Alles an einem Ort.</div>
+  <div class="anflug-hinweis" id="anflug-hinweis">
+    Scrollen
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M12 5v14m0 0 6-6m-6 6-6-6"/></svg>
+  </div>
+  <button class="btn btn-glass btn-small anflug-skip" id="anflug-skip" type="button">Überspringen</button>
+</div>
+<div class="anflug-strecke" id="anflug-strecke" aria-hidden="true"></div>
 
 <div class="top">
   <div class="nav-inner">
@@ -2681,6 +2726,102 @@ window.raumInit["markt"] = function (sec) {
     const r = document.querySelector('.raum[data-ziel="' + hash + '"]');
     if (r) setTimeout(() => zoomZu(r), reduced ? 0 : 450);
   }
+})();
+</script>
+<script>
+// Anflug: Scroll-Film — das Haus baut sich auf, dann stellen sich die Räume vor
+(function(){
+  'use strict';
+  const anflug = document.getElementById('anflug');
+  const strecke = document.getElementById('anflug-strecke');
+  if (!anflug || !strecke) return;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced || location.hash){ anflug.remove(); strecke.remove(); return; }
+  document.documentElement.classList.add('mit-anflug');
+  document.body.classList.add('mit-anflug');
+
+  const cv = document.getElementById('anflug-cv');
+  const ctx = cv.getContext('2d');
+  const N = 110;
+  const SRC = i => 'anflug/frame_' + String(i+1).padStart(3,'0') + '.jpg';
+  const frames = new Array(N); let erstes = false;
+  function lade(i){
+    const im = new Image();
+    im.onload = () => { if (!erstes){ erstes = true; groesse(); male(0); } };
+    im.src = SRC(i); frames[i] = im;
+  }
+  for (let i = 0; i < N; i++) lade(i);
+
+  function groesse(){
+    const r = cv.getBoundingClientRect();
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+    letzter = -1;
+  }
+  let letzter = -1;
+  function male(t){
+    let idx = Math.min(N - 1, Math.max(0, Math.round(t * (N - 1))));
+    while (idx > 0 && !(frames[idx] && frames[idx].complete && frames[idx].naturalWidth)) idx--;
+    const im = frames[idx];
+    if (!(im && im.complete && im.naturalWidth) || idx === letzter) return;
+    letzter = idx;
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    ctx.drawImage(im, 0, 0, cv.width, cv.height);
+  }
+
+  const clamp = (v,a,b) => Math.min(b, Math.max(a, v));
+  const seg = (p,a,b) => clamp((p - a) / (b - a), 0, 1);
+  const tafeln = [
+    [document.getElementById('anflug-t1'), .05, .17],
+    [document.getElementById('anflug-t2'), .31, .45],
+    [document.getElementById('anflug-t3'), .57, .70]
+  ];
+  const hinweis = document.getElementById('anflug-hinweis');
+  let fertig = false;
+
+  function render(){
+    if (fertig) return;
+    const total = Math.max(1, strecke.offsetHeight - innerHeight);
+    const p = clamp(scrollY / total, 0, 1);
+    male(seg(p, 0, .78));
+    tafeln.forEach(([el, a, b]) => {
+      const an = seg(p, a, a + .05), aus = 1 - seg(p, b, b + .05);
+      el.style.opacity = Math.min(an, aus);
+      el.style.transform = 'translateX(-50%) translateY(' + (10 * (1 - an)) + 'px)';
+    });
+    hinweis.style.opacity = 1 - seg(p, .02, .08);
+    anflug.style.opacity = 1 - seg(p, .84, .97);
+    if (p > .86) document.body.classList.remove('mit-anflug');
+    if (p >= .995) ankommen();
+  }
+
+  function ankommen(){
+    if (fertig) return;
+    fertig = true;
+    document.documentElement.classList.remove('mit-anflug');
+    document.body.classList.remove('mit-anflug');
+    scrollTo(0, 0);
+    anflug.style.opacity = '';
+    anflug.classList.add('fertig');
+    setTimeout(() => { anflug.remove(); strecke.remove(); }, 750);
+    // Vorstellungsrunde: jeder Raum leuchtet einmal kurz auf
+    ['postfach','markt','finanzen','konto','projekte','dokumente'].forEach((z, i) => {
+      setTimeout(() => {
+        const r = document.querySelector('.raum[data-ziel="' + z + '"]');
+        if (!r) return;
+        r.classList.add('zeigt');
+        setTimeout(() => r.classList.remove('zeigt'), 820);
+      }, 400 + i * 380);
+    });
+  }
+
+  document.getElementById('anflug-skip').addEventListener('click', ankommen);
+  let laeuft = false;
+  addEventListener('scroll', () => {
+    if (!laeuft){ laeuft = true; requestAnimationFrame(() => { render(); laeuft = false; }); }
+  }, {passive:true});
+  addEventListener('resize', () => { groesse(); render(); });
+  render();
 })();
 </script>
 <script src="nav.js?v=2"></script>
