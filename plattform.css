@@ -49,6 +49,62 @@ nav{position:sticky;top:var(--space-4);z-index:100;margin:0 auto;max-width:1092p
 .nav-links a{transition:color var(--dur-fast) var(--ease-default)}
 .nav-links a:hover,.nav-links a.aktiv{color:var(--ink)}
 .nav-links a.aktiv{font-weight:600}
+.nav-links a{display:inline-flex;align-items:center;gap:7px}
+.nav-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;
+  padding:0 5px;border-radius:var(--radius-full);background:var(--purple);color:#fff;
+  font-size:11px;font-weight:700;line-height:1}
+.nav-rechts{display:flex;align-items:center;gap:var(--space-2)}
+
+/* Konto-Menü (Chip rechts klappt auf) */
+.konto-menue{position:relative}
+.konto-chip{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600;font-family:inherit;color:var(--ink);
+  padding:8px 12px 8px 8px;border-radius:var(--radius-full);cursor:pointer;
+  background:rgba(255,255,255,.45);border:0.5px solid rgba(8,27,74,.12);
+  backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%)}
+.konto-chip .avatar{width:30px;height:30px;border-radius:50%;background:var(--purple);color:#fff;
+  display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.konto-chip .pfeil{color:var(--grey);transition:transform var(--dur-fast) var(--ease-default)}
+.konto-menue.offen .konto-chip .pfeil{transform:rotate(180deg)}
+.konto-blatt{position:absolute;right:0;top:calc(100% + 10px);min-width:232px;z-index:230;
+  display:flex;flex-direction:column;padding:var(--space-2);
+  background:rgba(255,255,255,.85);
+  backdrop-filter:blur(36px) saturate(190%);-webkit-backdrop-filter:blur(36px) saturate(190%);
+  border:0.5px solid rgba(8,27,74,.10);border-radius:18px;
+  box-shadow:0 18px 48px rgba(8,27,74,.16);
+  opacity:0;visibility:hidden;transform:translateY(-6px) scale(.98);transform-origin:top right;
+  transition:opacity var(--dur-fast) var(--ease-default),transform var(--dur-fast) var(--ease-spring),visibility 0s linear var(--dur-fast)}
+.konto-menue.offen .konto-blatt{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+.konto-blatt a,.konto-blatt button{display:flex;align-items:center;min-height:44px;padding:0 var(--space-3);
+  border:0;border-radius:12px;background:transparent;cursor:pointer;font-family:inherit;text-align:left;
+  font-size:14.5px;font-weight:500;color:var(--ink);
+  transition:background var(--dur-fast) var(--ease-default)}
+.konto-blatt a:hover,.konto-blatt button:hover{background:rgba(8,27,74,.06)}
+.konto-blatt .abmelden{color:var(--grey)}
+.konto-blatt hr{border:0;border-top:0.5px solid rgba(8,27,74,.10);margin:var(--space-2) var(--space-3)}
+
+/* Burger + mobiles Menü */
+.burger{display:none;border:0;background:transparent;color:var(--ink);cursor:pointer;
+  width:44px;height:44px;align-items:center;justify-content:center;border-radius:var(--radius-full)}
+.mobil-menue{display:none}
+@media (max-width:700px){
+  .burger{display:inline-flex}
+  .konto-chip{padding:4px}
+  .konto-chip .name,.konto-chip .pfeil{display:none}
+  .mobil-menue{display:flex;flex-direction:column;gap:2px;position:fixed;z-index:220;
+    left:var(--space-4);right:var(--space-4);top:calc(var(--space-4) + 68px);
+    padding:var(--space-2);pointer-events:auto;
+    background:rgba(255,255,255,.88);
+    backdrop-filter:blur(40px) saturate(200%);-webkit-backdrop-filter:blur(40px) saturate(200%);
+    border:0.5px solid rgba(8,27,74,.10);border-radius:22px;
+    box-shadow:0 24px 64px rgba(8,27,74,.18);
+    opacity:0;visibility:hidden;transform:translateY(-10px) scale(.99);transform-origin:top center;
+    transition:opacity var(--dur-fast) var(--ease-default),transform var(--dur-fast) var(--ease-spring),visibility 0s linear var(--dur-fast)}
+  .mobil-menue.offen{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+  .mobil-menue a{display:flex;align-items:center;justify-content:space-between;min-height:48px;
+    padding:0 var(--space-4);border-radius:14px;font-size:16px;font-weight:600;color:var(--ink);
+    transition:background var(--dur-fast) var(--ease-default)}
+  .mobil-menue a:hover,.mobil-menue a:active{background:rgba(8,27,74,.06)}
+}
 
 /* Knöpfe */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);

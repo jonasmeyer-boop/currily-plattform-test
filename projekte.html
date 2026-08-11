@@ -51,13 +51,37 @@
 
 <nav>
   <div class="nav-inner">
-    <a class="logo" href="index.html">currily<span>.</span></a>
+    <a class="logo" href="haus.html" aria-label="currily — zum Haus">currily<span>.</span></a>
     <div class="nav-links">
       <a href="projekte.html" class="aktiv">Projekte</a>
-      <a href="index.html#schritte">So funktioniert's</a>
-      <a href="dashboard.html">Dashboard</a>
+      <a href="haus.html#finanzen">Portfolio</a>
+      <a href="haus.html#postfach">Postfach<span class="nav-badge">3</span></a>
+      <a href="haus.html#dokumente">Dokumente</a>
     </div>
-    <a class="btn btn-primary btn-small" href="projekt.html">Jetzt investieren</a>
+    <div class="nav-rechts">
+      <div class="konto-menue">
+        <button class="konto-chip" type="button" aria-haspopup="menu" aria-expanded="false">
+          <span class="avatar">J</span><span class="name">Jonas</span>
+          <svg class="pfeil" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="konto-blatt" role="menu">
+          <a role="menuitem" href="haus.html#konto">Konto &amp; Profil</a>
+          <a role="menuitem" href="haus.html#konto">Einstellungen</a>
+          <a role="menuitem" href="mailto:hilfe@currily.de">Hilfe &amp; Support</a>
+          <hr>
+          <button role="menuitem" type="button" class="abmelden">Abmelden</button>
+        </div>
+      </div>
+      <button class="burger" type="button" aria-label="Menü" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="mobil-menue">
+    <a href="projekte.html" class="aktiv">Projekte</a>
+    <a href="haus.html#finanzen">Portfolio</a>
+    <a href="haus.html#postfach">Postfach<span class="nav-badge">3</span></a>
+    <a href="haus.html#dokumente">Dokumente</a>
   </div>
 </nav>
 
@@ -179,5 +203,6 @@
   }));
 })();
 </script>
+<script src="nav.js"></script>
 </body>
 </html>

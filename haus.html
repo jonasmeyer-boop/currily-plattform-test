@@ -13,12 +13,7 @@
 
   .top{position:fixed;top:var(--space-4);left:0;right:0;z-index:200;margin:0 auto;max-width:1092px;padding:0 var(--space-6);pointer-events:none}
   .top .nav-inner{pointer-events:auto}
-  .konto-chip{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600;
-    padding:8px 16px 8px 8px;border-radius:var(--radius-full);
-    background:rgba(255,255,255,.45);border:0.5px solid rgba(8,27,74,.12);
-    backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%)}
-  .konto-chip .avatar{width:30px;height:30px;border-radius:50%;background:var(--purple);color:#fff;
-    display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+  /* Chip- und Menü-Styles liegen zentral in plattform.css */
 
   /* Bühne */
   .buehne{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-5);padding-top:56px}
@@ -1122,11 +1117,37 @@
 
 <div class="top">
   <div class="nav-inner">
-    <a class="logo" href="haus.html">currily<span>.</span></a>
+    <a class="logo" href="haus.html" aria-label="currily — zum Haus">currily<span>.</span></a>
     <div class="nav-links">
-      <a href="projekte.html">Alle Projekte</a>
+      <a href="projekte.html">Projekte</a>
+      <a href="haus.html#finanzen">Portfolio</a>
+      <a href="haus.html#postfach">Postfach<span class="nav-badge" data-zahl="postfach">3</span></a>
+      <a href="haus.html#dokumente">Dokumente</a>
     </div>
-    <span class="konto-chip"><span class="avatar">J</span> Jonas</span>
+    <div class="nav-rechts">
+      <div class="konto-menue">
+        <button class="konto-chip" type="button" aria-haspopup="menu" aria-expanded="false">
+          <span class="avatar">J</span><span class="name">Jonas</span>
+          <svg class="pfeil" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="konto-blatt" role="menu">
+          <a role="menuitem" href="haus.html#konto">Konto &amp; Profil</a>
+          <a role="menuitem" href="haus.html#konto">Einstellungen</a>
+          <a role="menuitem" href="mailto:hilfe@currily.de">Hilfe &amp; Support</a>
+          <hr>
+          <button role="menuitem" type="button" class="abmelden">Abmelden</button>
+        </div>
+      </div>
+      <button class="burger" type="button" aria-label="Menü" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="mobil-menue">
+    <a href="projekte.html">Projekte</a>
+    <a href="haus.html#finanzen">Portfolio</a>
+    <a href="haus.html#postfach">Postfach<span class="nav-badge" data-zahl="postfach">3</span></a>
+    <a href="haus.html#dokumente">Dokumente</a>
   </div>
 </div>
 
@@ -2613,8 +2634,7 @@ window.raumInit["markt"] = function (sec) {
     });
     ui.scrollTop = 0;
     if (ziel === 'postfach'){
-      const z = document.querySelector('[data-zahl="postfach"]');
-      if (z) z.style.display = 'none';
+      document.querySelectorAll('[data-zahl="postfach"]').forEach(z => z.style.display = 'none');
     }
     history.replaceState(null, '', '#' + ziel);
   }
@@ -2648,6 +2668,20 @@ window.raumInit["markt"] = function (sec) {
     offen = z;
   });
 
+  // Navigation oben: Raum-Links zoomen direkt, statt die Seite neu zu laden
+  document.querySelectorAll('a[href^="haus.html#"]').forEach(a => {
+    const ziel = a.getAttribute('href').split('#')[1];
+    a.addEventListener('click', e => {
+      const r = document.querySelector('.raum[data-ziel="' + ziel + '"]');
+      if (!r) return;
+      e.preventDefault();
+      if (window.navMenuesSchliessen) window.navMenuesSchliessen();
+      if (offen === ziel) return;
+      if (offen){ raus(); setTimeout(() => zoomZu(r), reduced ? 0 : 650); }
+      else zoomZu(r);
+    });
+  });
+
   const hash = location.hash.replace('#','');
   if (hash){
     const r = document.querySelector('.raum[data-ziel="' + hash + '"]');
@@ -2655,5 +2689,6 @@ window.raumInit["markt"] = function (sec) {
   }
 })();
 </script>
+<script src="nav.js"></script>
 </body>
 </html>
