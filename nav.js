@@ -36,6 +36,11 @@
     }
   });
 
+  // Abmelden führt zur Anmeldung (Entwurf C, siehe docs/chronik)
+  document.querySelectorAll('.abmelden').forEach((btn) => {
+    btn.addEventListener('click', () => { window.location.href = 'anmeldung-c-aufbau.html#anmelden'; });
+  });
+
   document.addEventListener('click', (e) => {
     if (e.target.closest('.konto-chip') || e.target.closest('.burger')) return;
     if (e.target.closest('.konto-blatt') || e.target.closest('.mobil-menue')) {

@@ -89,12 +89,10 @@
   .an-nochmal{border:0;background:none;padding:0;cursor:pointer;align-self:center;
     font:inherit;font-size:.85rem;font-weight:600;color:var(--purple)}
 
-  .zurueck{position:fixed;left:20px;bottom:20px;z-index:10}
-
   /* Einzug: Haus wächst in die Home-Position, der Rest wird weggedrückt.
      animation:none ist Pflicht — die Einschwebe-Animationen (fill:both) würden
      sonst ihre End-Deckkraft festhalten und die Ausblendung übersteuern */
-  body.geht-rein .baustelle,body.geht-rein .baustand,body.geht-rein .zurueck{opacity:0;animation:none;
+  body.geht-rein .baustelle,body.geht-rein .baustand{opacity:0;animation:none;
     transition:opacity .45s var(--ease-default)}
   body.geht-rein .an-karte{opacity:0;transform:translateX(48px);animation:none;
     transition:opacity .5s var(--ease-default),transform .5s var(--ease-default)}
@@ -113,9 +111,6 @@
     .baustand{max-width:330px;margin:var(--space-2) auto 0}
     .an-karte{justify-self:stretch;max-width:none;padding:var(--space-6);margin-top:var(--space-5)}
   }
-  @media (max-width:700px){
-    .zurueck{position:static;display:flex;width:max-content;margin:var(--space-6) auto var(--space-8)}
-  }
   @media (prefers-reduced-motion:reduce){
     .baustand .balken i{transition:none}
     .bau-buehne.fertig canvas{animation:none}
@@ -128,7 +123,7 @@
 <main>
   <div class="szene">
     <section class="baustelle">
-      <a class="logo" href="anmeldung-varianten.html" aria-label="currily">currily<span>.</span></a>
+      <span class="logo">currily<span>.</span></span>
       <h1 class="bau-titel">Dein <em>Home</em> entsteht.</h1>
       <p class="sub bau-sub">Jedes fertige Feld ist eine Baustufe — beim letzten Haken ist dein Home bezugsfertig.</p>
     </section>
@@ -202,7 +197,6 @@
   </div>
 </main>
 
-<a class="btn btn-glass btn-small zurueck" href="anmeldung-varianten.html">← Alle Entwürfe</a>
 
 <script>
 (function(){
