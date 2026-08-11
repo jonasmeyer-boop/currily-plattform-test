@@ -45,6 +45,8 @@ nav{position:sticky;top:var(--space-4);z-index:100;margin:0 auto;max-width:1092p
 }
 .logo{font-weight:800;font-size:21px;letter-spacing:-.02em}
 .logo span{color:var(--purple)}
+/* Echte Wortmarke (bilder/currily-logo.svg, Quelle currily.com) — Text-Logo bleibt Fallback */
+.logo img{display:block;height:26px;width:auto}
 .nav-links{display:flex;gap:var(--space-8);font-size:15px;color:var(--grey)}
 .nav-links a{transition:color var(--dur-fast) var(--ease-default)}
 .nav-links a:hover,.nav-links a.aktiv{color:var(--ink)}

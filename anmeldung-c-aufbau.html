@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="plattform.css?v=2">
+<link rel="stylesheet" href="plattform.css?v=3">
 <style>
   /* Entwurf C: jedes fertige Feld ist eine echte Baustufe — die Stufen sitzen auf den
      Phasen des Aufbau-Films (Bodenplatte ~10%, EG ~24%, 2. Etage ~44%, Dach ~62%, fertig 100%).
@@ -20,6 +20,7 @@
     padding:var(--space-10) var(--space-6)}
   .baustelle{grid-area:kopf;animation:grussAuf .9s var(--ease-default) both}
   .baustelle .logo{font-size:26px}
+  .baustelle .logo img{height:32px}
   .baustelle h1{margin-top:var(--space-8);font-size:clamp(34px,3.8vw,50px);line-height:1.05;letter-spacing:-.035em;font-weight:800}
   .baustelle h1 em{font-style:italic;color:var(--purple)}
   .baustelle .sub{margin-top:var(--space-4);font-size:18px;color:var(--grey);max-width:44ch}
@@ -127,7 +128,7 @@
 <main>
   <div class="szene">
     <section class="baustelle">
-      <span class="logo">currily<span>.</span></span>
+      <span class="logo"><img src="bilder/currily-logo.svg" alt="currily"></span>
       <h1 class="bau-titel">Dein <em>Home</em> entsteht.</h1>
       <p class="sub bau-sub">Jedes fertige Feld ist eine Baustufe — beim letzten Haken ist dein Home bezugsfertig.</p>
     </section>
