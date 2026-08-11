@@ -47,7 +47,7 @@
   body.drin .raum .chip,body.drin .raum .neu{opacity:0}
 
   /* Zähler für Neues: oben außen am Zimmer, Button-Lila, 99+ gedeckelt */
-  .raum .neu{position:absolute;top:6px;min-width:22px;height:22px;padding:0 6px;
+  .raum .neu{position:absolute;top:var(--neut,4px);min-width:22px;height:22px;padding:0 6px;
     display:flex;align-items:center;justify-content:center;
     background:rgba(255,255,255,.7);color:var(--ink);border:0.5px solid rgba(8,27,74,.10);
     backdrop-filter:blur(16px) saturate(170%);-webkit-backdrop-filter:blur(16px) saturate(170%);
@@ -55,8 +55,8 @@
     border-radius:var(--radius-full);box-shadow:0 6px 16px rgba(8,27,74,.16);
     pointer-events:none;font-variant-numeric:tabular-nums;
     transition:opacity var(--dur-fast) var(--ease-default)}
-  .raum .neu.links{left:6px}
-  .raum .neu.rechts{right:6px}
+  .raum .neu.links{left:var(--neul,4px)}
+  .raum .neu.rechts{right:var(--neur,4px)}
 
   /* Schleier + Raum-Oberfläche */
   .schleier{position:fixed;inset:0;z-index:150;background:rgba(255,255,255,.42);
@@ -1159,8 +1159,8 @@
 <div class="buehne">
   <div class="kamera" id="kamera">
     <img src="bilder/haus-zoom.webp?v=2" width="5120" height="2858" alt="Dein currily-Haus im Querschnitt: jede Funktion ist ein Zimmer">
-    <button class="raum" data-ziel="postfach"  style="--l:30.5%;--t:31%;   --w:14%;   --h:13.5%;--chipt:44.4%" type="button"><span class="chip">Postfach</span><span class="neu links" data-zahl="postfach">3</span></button>
-    <button class="raum" data-ziel="markt"     style="--l:50%;  --t:28%;   --w:16.5%; --h:17.5%;--chipt:51.4%" type="button"><span class="chip">Marktplatz</span><span class="neu rechts">1</span></button>
+    <button class="raum" data-ziel="postfach"  style="--l:30.5%;--t:31%;   --w:14%;   --h:13.5%;--chipt:44.4%;--neut:26%;--neul:6%" type="button"><span class="chip">Postfach</span><span class="neu links" data-zahl="postfach">3</span></button>
+    <button class="raum" data-ziel="markt"     style="--l:50%;  --t:28%;   --w:16.5%; --h:17.5%;--chipt:51.4%;--neut:34%;--neur:5%" type="button"><span class="chip">Marktplatz</span><span class="neu rechts">1</span></button>
     <button class="raum" data-ziel="finanzen"  style="--l:30%;  --t:49.7%; --w:18.3%; --h:17%;  --chipt:48.8%" type="button"><span class="chip">Finanzverwaltung</span></button>
     <button class="raum" data-ziel="konto"     style="--l:50%;  --t:48.8%; --w:21.5%; --h:18%;  --chipt:51.1%" type="button"><span class="chip">Konto &amp; Profil</span></button>
     <button class="raum" data-ziel="projekte"  style="--l:31.5%;--t:69.9%; --w:17.8%; --h:17.5%" type="button"><span class="chip">Projektraum</span></button>
