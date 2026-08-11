@@ -8,7 +8,13 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="plattform.css?v=2">
+<script>
+/* Ankunft aus der Anmeldung (#willkommen): dort ist das Haus gerade an genau diese
+   Position gewachsen — es darf hier nicht erneut einschweben, sonst hakt die Übergabe */
+if (location.hash === '#willkommen') document.documentElement.classList.add('direkt');
+</script>
 <style>
+  html.direkt .kamera,html.direkt .kamera img{animation:none}
   html,body{height:100%;overflow:hidden}
 
   .top{position:fixed;top:var(--space-4);left:0;right:0;z-index:200;margin:0 auto;max-width:1092px;padding:0 var(--space-6);pointer-events:none}

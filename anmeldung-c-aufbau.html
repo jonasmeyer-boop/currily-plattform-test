@@ -336,12 +336,14 @@
   function einziehen(){
     document.body.classList.add('geht-rein');
     if (reduziert){ location.href = 'home.html#willkommen'; return; }
-    /* Zielgeometrie = .kamera im Home: width:min(1280px,96vw,(100svh-190px)*1.792), mittig unter 56px Kopf */
+    /* Zielgeometrie = .kamera im Home: Desktop width:min(1280px,96vw,(100svh-190px)*1.792)
+       mittig unter 56px Kopf; mobil (<=700px) width:172vw ab y=92 (76 Kopf + 16 Abstand) */
     var r = cv.getBoundingClientRect();
     var vw = innerWidth, vh = innerHeight;
-    var W = Math.min(1280, vw * 0.96, (vh - 190) * 1.792);
+    var mobil = vw <= 700;
+    var W = mobil ? vw * 1.72 : Math.min(1280, vw * 0.96, (vh - 190) * 1.792);
     var x = (vw - W) / 2;
-    var y = 56 + (vh - 56 - W / 1.792) / 2;
+    var y = mobil ? 92 : 56 + (vh - 56 - W / 1.792) / 2;
     cv.style.position = 'fixed';
     cv.style.left = r.left + 'px';
     cv.style.top = r.top + 'px';
@@ -352,7 +354,14 @@
     void cv.getBoundingClientRect();
     cv.style.transition = 'transform 1.05s cubic-bezier(.3,.7,.25,1)';
     cv.style.transform = 'translate(' + (x - r.left) + 'px,' + (y - r.top) + 'px) scale(' + (W / r.width) + ')';
-    setTimeout(function(){ location.href = 'home.html#willkommen'; }, 1150);
+    /* Weiter exakt am Ende der Bewegung — kein eingefrorener Zwischenmoment */
+    var weiter = function(){
+      if (weiter.war) return;
+      weiter.war = true;
+      location.href = 'home.html#willkommen';
+    };
+    cv.addEventListener('transitionend', weiter, { once: true });
+    setTimeout(weiter, 1300);
   }
 
   formAn.addEventListener('submit', function(e){
@@ -384,6 +393,10 @@
   formCode.querySelector('.an-nochmal').addEventListener('click', function(){ zeige(true); });
 
   if (location.hash === '#anmelden') zeige(false); else baustandNeu(true);
+
+  /* Das große Home-Bild schon beim Tippen in den Browser-Cache holen —
+     sonst kommt man im Home an, bevor das Haus dort geladen ist */
+  setTimeout(function(){ new Image().src = 'bilder/haus-zoom.webp?v=2'; }, 1200);
 })();
 </script>
 </body>
