@@ -113,7 +113,9 @@
 
   /* Gemeinsame Bausteine für Raum-Module */
   .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4)}
-  .kpi{padding:var(--space-5) var(--space-6)}
+  /* KPIs stehen ohne Kasten frei auf der Seite — kein Innenabstand, damit ihre
+     Schrift auf derselben Flucht sitzt wie Intro-Texte und Panel-Kanten */
+  .kpi{padding:0}
   .kpi h4{font-size:13px;font-weight:500;color:var(--grey)}
   .kpi b{display:block;font-size:26px;font-weight:800;letter-spacing:-.02em;margin-top:2px;font-variant-numeric:tabular-nums}
   .kpi .delta{font-size:13px;font-weight:700;color:var(--money)}
@@ -722,6 +724,10 @@
   }
 }
   /* --- konto --- */
+/* Aktionen rechts in den Zeilen: eine Spalte, eine Breite — nichts flattert */
+[data-raum="konto"] .zeile .r .btn,
+[data-raum="konto"] .zeile .r .pill { min-width: 140px; justify-content: center; }
+[data-raum="konto"] .zeile .r .pill { padding-top: 9px; padding-bottom: 9px; }
 [data-raum="konto"] .kon-profil { display: flex; align-items: center; gap: var(--space-4); padding: var(--space-5); margin-bottom: var(--space-6); }
 [data-raum="konto"] .kon-avatar { flex: 0 0 56px; width: 56px; height: 56px; border-radius: var(--radius-full); background: var(--purple); color: #fff; display: grid; place-items: center; font-size: 1.35rem; font-weight: 600; }
 [data-raum="konto"] .kon-profil-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; margin-right: auto; }
@@ -883,10 +889,14 @@
 }
 [data-raum="postfach"] .pos-inhalt-innen {
   margin-top: var(--space-2);
+  padding: var(--space-5) var(--space-6);
 }
 [data-raum="postfach"] .pos-text {
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-4);
   line-height: 1.55;
+}
+[data-raum="postfach"] .pos-inhalt-innen > :last-child {
+  margin-bottom: 0;
 }
 [data-raum="postfach"] .pos-bild {
   display: block;
@@ -923,7 +933,7 @@
 [data-raum="postfach"] .pos-aktion {
   display: flex;
   justify-content: flex-start;
-  margin-top: var(--space-2);
+  margin-top: var(--space-5);
 }
 [data-raum="postfach"] .pos-sr {
   position: absolute;
@@ -1026,7 +1036,8 @@
   margin-bottom: var(--space-2);
 }
 
-[data-raum="markt"] .mar-pct {
+[data-raum="markt"] .mar-pct,
+[data-raum="markt"] .mz-pct {
   color: var(--ink);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -1059,6 +1070,8 @@
 [data-raum="markt"] .mar-aktion {
   display: flex;
   align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
 }
 
 [data-raum="markt"] .mar-vormerken {
@@ -2163,7 +2176,7 @@
 
       <div class="mar-aktion">
         <button type="button" class="btn btn-primary mz-start">Jetzt zeichnen</button>
-        <a class="btn btn-glass btn-small" href="projekt.html">Details</a>
+        <a class="btn btn-glass" href="projekt.html">Details</a>
       </div>
     </div>
   </article>
