@@ -340,24 +340,39 @@
   function einziehen(){
     document.body.classList.add('geht-rein');
     if (reduziert){ location.href = 'home.html#willkommen'; return; }
-    /* Zielgeometrie = .kamera im Home: Desktop width:min(1280px,96vw,(100svh-190px)*1.792)
-       mittig unter 56px Kopf; mobil (<=700px) width:172vw ab y=92 (76 Kopf + 16 Abstand) */
+    /* Das Ziel ist nicht der Bild-Kasten des Home, sondern das HAUS darin: das Home zeigt
+       haus-zoom.webp, in dem das Haus ~5,6% kleiner im Bild sitzt als im Filmbild frame_110.
+       Kästen deckungsgleich = Haus springt. Deshalb wird das Haus des Filmbilds exakt auf
+       das Haus des Zoom-Bilds gelegt (leicht ungleichmäßige Skalierung, 1,4% — unsichtbar).
+       Haus-Boxen per Bildanalyse gemessen (frame_110: Pixel dunkler 200; haus-zoom: Alpha > 200). */
+    var BILD = 1.7915;                          /* Seitenverhältnis haus-zoom.webp (5120x2858) */
+    var BF = [0.2455, 0.7857, 0.062, 0.928];    /* Haus im Filmbild frame_110, relativ */
+    var BZ = [0.2516, 0.7617, 0.0616, 0.8677];  /* Haus im Zoom-Bild des Home, relativ */
     var r = cv.getBoundingClientRect();
     var vw = innerWidth, vh = innerHeight;
     var mobil = vw <= 700;
-    var W = mobil ? vw * 1.72 : Math.min(1280, vw * 0.96, (vh - 190) * 1.792);
-    var x = (vw - W) / 2;
-    var y = mobil ? 92 : 56 + (vh - 56 - W / 1.792) / 2;
+    /* Bild-Kasten der .kamera im Home: Desktop width:min(1280px,96vw,(100svh-190px)*1.792)
+       mittig unter 56px Kopf; mobil (<=700px) width:172vw ab y=92 (76 Kopf + 16 Abstand) */
+    var W0 = mobil ? vw * 1.72 : Math.min(1280, vw * 0.96, (vh - 190) * 1.792);
+    var H0 = W0 / BILD;
+    var X0 = (vw - W0) / 2;
+    var Y0 = mobil ? 92 : 56 + (vh - 56 - H0) / 2;
+    var Wend = W0 * (BZ[1] - BZ[0]) / (BF[1] - BF[0]);
+    var Hend = H0 * (BZ[3] - BZ[2]) / (BF[3] - BF[2]);
+    var Xend = X0 + BZ[0] * W0 - BF[0] * Wend;
+    var Yend = Y0 + BZ[2] * H0 - BF[2] * Hend;
     cv.style.position = 'fixed';
     cv.style.left = r.left + 'px';
     cv.style.top = r.top + 'px';
     cv.style.width = r.width + 'px';
+    cv.style.height = r.height + 'px';
     cv.style.margin = '0';
     cv.style.zIndex = '60';
     cv.style.transformOrigin = 'top left';
     void cv.getBoundingClientRect();
     cv.style.transition = 'transform 1.05s cubic-bezier(.3,.7,.25,1)';
-    cv.style.transform = 'translate(' + (x - r.left) + 'px,' + (y - r.top) + 'px) scale(' + (W / r.width) + ')';
+    cv.style.transform = 'translate(' + (Xend - r.left) + 'px,' + (Yend - r.top) + 'px) ' +
+      'scale(' + (Wend / r.width) + ',' + (Hend / r.height) + ')';
     /* Weiter exakt am Ende der Bewegung — kein eingefrorener Zwischenmoment */
     var weiter = function(){
       if (weiter.war) return;
