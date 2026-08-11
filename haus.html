@@ -68,10 +68,9 @@
   /* Zähler für Neues: oben außen am Zimmer, Button-Lila, 99+ gedeckelt */
   .raum .neu{position:absolute;top:var(--neut,4px);min-width:22px;height:22px;padding:0 6px;
     display:flex;align-items:center;justify-content:center;
-    background:rgba(255,255,255,.7);color:var(--ink);border:0.5px solid rgba(8,27,74,.10);
-    backdrop-filter:blur(16px) saturate(170%);-webkit-backdrop-filter:blur(16px) saturate(170%);
+    background:var(--ink);color:#fff;border:none;
     font-size:12px;font-weight:800;line-height:1;
-    border-radius:var(--radius-full);box-shadow:0 6px 16px rgba(8,27,74,.16);
+    border-radius:var(--radius-full);box-shadow:0 4px 12px rgba(8,27,74,.28);
     pointer-events:none;font-variant-numeric:tabular-nums;
     transition:opacity var(--dur-fast) var(--ease-default)}
   .raum .neu.links{left:var(--neul,4px)}

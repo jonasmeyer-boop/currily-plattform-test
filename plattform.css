@@ -52,8 +52,8 @@ nav{position:sticky;top:var(--space-4);z-index:100;margin:0 auto;max-width:1092p
 .nav-links a{display:inline-flex;align-items:center;gap:7px}
 .nav-badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;
   padding:0 5px;border-radius:var(--radius-full);
-  background:rgba(255,255,255,.7);color:var(--ink);border:0.5px solid rgba(8,27,74,.14);
-  box-shadow:0 2px 8px rgba(8,27,74,.10);
+  background:var(--ink);color:#fff;border:none;
+  box-shadow:0 2px 6px rgba(8,27,74,.22);
   font-size:11px;font-weight:700;line-height:1}
 .nav-rechts{display:flex;align-items:center;gap:var(--space-2)}
 
